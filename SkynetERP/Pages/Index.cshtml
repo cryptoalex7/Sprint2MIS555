@@ -18,33 +18,39 @@
                     <h1 class="login-title text-center mb-3">Welcome Back</h1>
                     <p class="login-subtitle text-center text-muted mb-3">Sign in to your SkynetERP account</p>
 
-                    <form id="loginForm" novalidate>
+                    @if (!string.IsNullOrEmpty(Model.ErrorMessage))
+                    {
+                        <div class="alert alert-danger" role="alert">
+                            @Model.ErrorMessage
+                        </div>
+                    }
+
+                    <form method="post" asp-page-handler="OnPostAsync">
                         <div class="mb-3">
-                            <label for="email" class="form-label form-label-hrm">Email Address</label>
+                            <label asp-for="Login.Username" class="form-label form-label-hrm">Username</label>
                             <div class="input-group">
                                 <span class="input-group-text">
-                                    <i class="fas fa-envelope"></i>
+                                    <i class="fas fa-user"></i>
                                 </span>
-                                <input type="email" class="form-control form-control-hrm" id="email" 
-                                       placeholder="Enter your email" required 
-                                       aria-describedby="emailHelp">
+                                <input asp-for="Login.Username" class="form-control form-control-hrm" 
+                                       placeholder="Enter your username" required>
                             </div>
-                            <div class="invalid-feedback">Please provide a valid email address.</div>
+                            <span asp-validation-for="Login.Username" class="text-danger"></span>
                         </div>
 
                         <div class="mb-3">
-                            <label for="password" class="form-label form-label-hrm">Password</label>
+                            <label asp-for="Login.Password" class="form-label form-label-hrm">Password</label>
                             <div class="input-group">
                                 <span class="input-group-text">
                                     <i class="fas fa-lock"></i>
                                 </span>
-                                <input type="password" class="form-control form-control-hrm" id="password" 
+                                <input asp-for="Login.Password" type="password" class="form-control form-control-hrm" 
                                        placeholder="Enter your password" required>
                                 <button class="btn btn-outline-secondary" type="button" id="togglePassword">
                                     <i class="fas fa-eye"></i>
                                 </button>
                             </div>
-                            <div class="invalid-feedback">Please provide your password.</div>
+                            <span asp-validation-for="Login.Password" class="text-danger"></span>
                         </div>
 
                         <div class="d-grid">
@@ -65,7 +71,7 @@
     <script>
         // Password toggle functionality
         document.getElementById('togglePassword').addEventListener('click', function() {
-            const passwordField = document.getElementById('password');
+            const passwordField = document.getElementById('Login_Password');
             const toggleIcon = this.querySelector('i');
             
             if (passwordField.type === 'password') {
@@ -76,21 +82,6 @@
                 passwordField.type = 'password';
                 toggleIcon.classList.remove('fa-eye-slash');
                 toggleIcon.classList.add('fa-eye');
-            }
-        });
-
-        // Form validation
-        document.getElementById('loginForm').addEventListener('submit', function(event) {
-            event.preventDefault();
-            event.stopPropagation();
-            
-            const form = event.currentTarget;
-            if (form.checkValidity()) {
-                // Handle login logic here
-                // Redirect to HRM page automatically
-                window.location.href = '/HRM';
-            } else {
-                form.classList.add('was-validated');
             }
         });
 

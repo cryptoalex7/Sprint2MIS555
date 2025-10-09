@@ -1,21 +1,36 @@
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.RazorPages;
+using Microsoft.AspNetCore.Authorization;
+using SkynetERP.Services;
 using System.ComponentModel.DataAnnotations;
+using System.Security.Claims;
 
 namespace SkynetERP.Pages;
 
+[Authorize]
 public class HRMModel : PageModel
 {
     private readonly ILogger<HRMModel> _logger;
+    private readonly UserService _userService;
 
-    public HRMModel(ILogger<HRMModel> logger)
+    public HRMModel(ILogger<HRMModel> logger, UserService userService)
     {
         _logger = logger;
+        _userService = userService;
     }
+
+    public bool CanViewSalary { get; set; }
+    public string? UserRole { get; set; }
+    public string? Username { get; set; }
 
     public void OnGet()
     {
-        // Initialize HRM page data
+        // Get user role from claims
+        UserRole = User.FindFirst("Role")?.Value;
+        Username = User.FindFirst(ClaimTypes.Name)?.Value;
+        
+        // Check if user can view salary
+        CanViewSalary = _userService.CanViewSalary(UserRole);
     }
 
     public IActionResult OnPostAddEmployee(EmployeeModel employee)

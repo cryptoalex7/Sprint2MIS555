@@ -8,8 +8,8 @@
     <!-- Page Header -->
     <div class="row mb-4">
         <div class="col-12">
-            <h1 class="display-4 text-center fw-bold text-primary mb-0">Human Resource Management</h1>
-            <p class="text-center text-muted">Manage your workforce efficiently and effectively</p>
+            <h1 class="display-4 fw-bold text-primary mb-0">Human Resource Management</h1>
+            <p class="text-muted">Manage your workforce efficiently and effectively</p>
         </div>
     </div>
 
@@ -133,7 +133,10 @@
                                     <th scope="col" class="fw-bold">Role</th>
                                     <th scope="col" class="fw-bold">Address</th>
                                     <th scope="col" class="fw-bold">Phone</th>
-                                    <th scope="col" class="fw-bold">Salary</th>
+                                    @if (Model.CanViewSalary)
+                                    {
+                                        <th scope="col" class="fw-bold">Salary</th>
+                                    }
                                     <th scope="col" class="fw-bold text-center">Actions</th>
                                 </tr>
                             </thead>
@@ -145,7 +148,10 @@
                                     <td>Senior Developer</td>
                                     <td>123 Main St, City, State</td>
                                     <td>(555) 123-4567</td>
-                                    <td class="text-success fw-bold">$85,000</td>
+                                    @if (Model.CanViewSalary)
+                                    {
+                                        <td class="text-success fw-bold">$85,000</td>
+                                    }
                                     <td class="text-center">
                                         <div class="btn-group btn-group-hrm" role="group" aria-label="Employee actions">
                                             <button class="btn btn-sm btn-outline-primary" title="View Details" aria-label="View employee details">
@@ -166,7 +172,10 @@
                                     <td>HR Manager</td>
                                     <td>456 Oak Ave, City, State</td>
                                     <td>(555) 234-5678</td>
-                                    <td class="text-success fw-bold">$75,000</td>
+                                    @if (Model.CanViewSalary)
+                                    {
+                                        <td class="text-success fw-bold">$75,000</td>
+                                    }
                                     <td class="text-center">
                                         <div class="btn-group btn-group-hrm" role="group" aria-label="Employee actions">
                                             <button class="btn btn-sm btn-outline-primary" title="View Details" aria-label="View employee details">
@@ -187,7 +196,10 @@
                                     <td>Financial Analyst</td>
                                     <td>789 Pine St, City, State</td>
                                     <td>(555) 345-6789</td>
-                                    <td class="text-success fw-bold">$65,000</td>
+                                    @if (Model.CanViewSalary)
+                                    {
+                                        <td class="text-success fw-bold">$65,000</td>
+                                    }
                                     <td class="text-center">
                                         <div class="btn-group btn-group-hrm" role="group" aria-label="Employee actions">
                                             <button class="btn btn-sm btn-outline-primary" title="View Details" aria-label="View employee details">

@@ -94,3 +94,4 @@
 /Users/alex/Desktop/MIS555/SemesterProject/SkynetERP/obj/Debug/net9.0/SkynetERP.genruntimeconfig.cache
 /Users/alex/Desktop/MIS555/SemesterProject/SkynetERP/obj/Debug/net9.0/ref/SkynetERP.dll
 /Users/alex/Desktop/MIS555/SemesterProject/SkynetERP/obj/Debug/net9.0/compressed/uuphlmmem9-t95y2lm8op.gz
+/Users/alex/Desktop/MIS555/SemesterProject/SkynetERP/obj/Debug/net9.0/SkynetERP.sourcelink.json
