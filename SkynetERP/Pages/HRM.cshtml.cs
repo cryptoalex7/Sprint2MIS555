@@ -1,0 +1,64 @@
+using Microsoft.AspNetCore.Mvc;
+using Microsoft.AspNetCore.Mvc.RazorPages;
+using System.ComponentModel.DataAnnotations;
+
+namespace SkynetERP.Pages;
+
+public class HRMModel : PageModel
+{
+    private readonly ILogger<HRMModel> _logger;
+
+    public HRMModel(ILogger<HRMModel> logger)
+    {
+        _logger = logger;
+    }
+
+    public void OnGet()
+    {
+        // Initialize HRM page data
+    }
+
+    public IActionResult OnPostAddEmployee(EmployeeModel employee)
+    {
+        if (!ModelState.IsValid)
+        {
+            return Page();
+        }
+
+        // TODO: Add employee to database
+        _logger.LogInformation("New employee added: {FirstName} {LastName}", employee.FirstName, employee.LastName);
+        
+        return RedirectToPage();
+    }
+}
+
+// Employee model for form binding
+public class EmployeeModel
+{
+    [Required(ErrorMessage = "First name is required")]
+    [StringLength(50, ErrorMessage = "First name cannot exceed 50 characters")]
+    public string FirstName { get; set; } = string.Empty;
+
+    [Required(ErrorMessage = "Last name is required")]
+    [StringLength(50, ErrorMessage = "Last name cannot exceed 50 characters")]
+    public string LastName { get; set; } = string.Empty;
+
+    [Required(ErrorMessage = "Department is required")]
+    public string Department { get; set; } = string.Empty;
+
+    [Required(ErrorMessage = "Role is required")]
+    [StringLength(100, ErrorMessage = "Role cannot exceed 100 characters")]
+    public string Role { get; set; } = string.Empty;
+
+    [Required(ErrorMessage = "Address is required")]
+    [StringLength(200, ErrorMessage = "Address cannot exceed 200 characters")]
+    public string Address { get; set; } = string.Empty;
+
+    [Required(ErrorMessage = "Phone number is required")]
+    [Phone(ErrorMessage = "Please enter a valid phone number")]
+    public string Phone { get; set; } = string.Empty;
+
+    [Required(ErrorMessage = "Salary is required")]
+    [Range(0, double.MaxValue, ErrorMessage = "Salary must be a positive number")]
+    public decimal Salary { get; set; }
+}
