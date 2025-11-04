@@ -9,6 +9,7 @@ builder.Services.AddRazorPages();
 
 // Register custom services
 builder.Services.AddScoped<UserService>();
+builder.Services.AddSingleton<EmployeeService>();
 
 // Add authentication services
 builder.Services.AddAuthentication(CookieAuthenticationDefaults.AuthenticationScheme)
