@@ -1,87 +1,97 @@
+using Microsoft.EntityFrameworkCore;
+using SkynetERP.Data;
+using SkynetERP.Models;
 using SkynetERP.Pages;
 
 namespace SkynetERP.Services;
 
 public class EmployeeService
 {
-    private readonly List<EmployeeModel> _employees = new()
-    {
-        new EmployeeModel 
-        { 
-            Id = 1,
-            FirstName = "John", 
-            LastName = "Smith", 
-            Department = "IT", 
-            Role = "Senior Developer", 
-            Address = "123 Main St, City, State", 
-            Phone = "(555)-123-4567", 
-            Salary = 85000 
-        },
-        new EmployeeModel 
-        { 
-            Id = 2,
-            FirstName = "Sarah", 
-            LastName = "Johnson", 
-            Department = "HR", 
-            Role = "HR Manager", 
-            Address = "456 Oak Ave, City, State", 
-            Phone = "(555)-234-5678", 
-            Salary = 75000 
-        },
-        new EmployeeModel 
-        { 
-            Id = 3,
-            FirstName = "Mike", 
-            LastName = "Davis", 
-            Department = "Finance", 
-            Role = "Financial Analyst", 
-            Address = "789 Pine St, City, State", 
-            Phone = "(555)-345-6789", 
-            Salary = 65000 
-        }
-    };
+    private readonly ApplicationDbContext _context;
 
-    private int _nextId = 4;
+    public EmployeeService(ApplicationDbContext context)
+    {
+        _context = context;
+    }
 
     public List<EmployeeModel> GetAllEmployees()
     {
-        return _employees.ToList();
+        return _context.Employees
+            .Select(e => new EmployeeModel
+            {
+                Id = e.Id,
+                FirstName = e.FirstName,
+                LastName = e.LastName,
+                Department = e.Department,
+                Role = e.Role,
+                Address = e.Address,
+                Phone = e.Phone,
+                Salary = e.Salary
+            })
+            .ToList();
     }
 
     public EmployeeModel? GetEmployeeById(int id)
     {
-        return _employees.FirstOrDefault(e => e.Id == id);
+        var employee = _context.Employees.Find(id);
+        if (employee == null) return null;
+
+        return new EmployeeModel
+        {
+            Id = employee.Id,
+            FirstName = employee.FirstName,
+            LastName = employee.LastName,
+            Department = employee.Department,
+            Role = employee.Role,
+            Address = employee.Address,
+            Phone = employee.Phone,
+            Salary = employee.Salary
+        };
     }
 
-    public void AddEmployee(EmployeeModel employee)
+    public void AddEmployee(EmployeeModel employeeModel)
     {
-        employee.Id = _nextId++;
-        _employees.Add(employee);
+        var employee = new Employee
+        {
+            FirstName = employeeModel.FirstName,
+            LastName = employeeModel.LastName,
+            Department = employeeModel.Department,
+            Role = employeeModel.Role,
+            Address = employeeModel.Address,
+            Phone = employeeModel.Phone,
+            Salary = employeeModel.Salary
+        };
+
+        _context.Employees.Add(employee);
+        _context.SaveChanges();
     }
 
     public bool DeleteEmployee(int id)
     {
-        var employee = _employees.FirstOrDefault(e => e.Id == id);
+        var employee = _context.Employees.Find(id);
         if (employee != null)
         {
-            _employees.Remove(employee);
+            _context.Employees.Remove(employee);
+            _context.SaveChanges();
             return true;
         }
         return false;
     }
 
-    public bool UpdateEmployee(EmployeeModel updatedEmployee)
+    public bool UpdateEmployee(EmployeeModel employeeModel)
     {
-        var employee = _employees.FirstOrDefault(e => e.Id == updatedEmployee.Id);
+        var employee = _context.Employees.Find(employeeModel.Id);
         if (employee != null)
         {
-            employee.FirstName = updatedEmployee.FirstName;
-            employee.LastName = updatedEmployee.LastName;
-            employee.Department = updatedEmployee.Department;
-            employee.Role = updatedEmployee.Role;
-            employee.Address = updatedEmployee.Address;
-            employee.Phone = updatedEmployee.Phone;
-            employee.Salary = updatedEmployee.Salary;
+            employee.FirstName = employeeModel.FirstName;
+            employee.LastName = employeeModel.LastName;
+            employee.Department = employeeModel.Department;
+            employee.Role = employeeModel.Role;
+            employee.Address = employeeModel.Address;
+            employee.Phone = employeeModel.Phone;
+            employee.Salary = employeeModel.Salary;
+
+            _context.SaveChanges();
             return true;
         }
         return false;
