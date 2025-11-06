@@ -13,6 +13,7 @@ public class ApplicationDbContext : DbContext
     public DbSet<Employee> Employees { get; set; }
     public DbSet<Vendor> Vendors { get; set; }
     public DbSet<Delivery> Deliveries { get; set; }
+    public DbSet<User> Users { get; set; }
 
     protected override void OnModelCreating(ModelBuilder modelBuilder)
     {
@@ -120,6 +121,96 @@ public class ApplicationDbContext : DbContext
             entity.Property(d => d.CreatedBy)
                 .HasMaxLength(100);
         });
+
+        // Configure User entity
+        modelBuilder.Entity<User>(entity =>
+        {
+            entity.ToTable("Users");
+            
+            entity.HasKey(u => u.Id);
+            
+            entity.HasIndex(u => u.Username)
+                .IsUnique();
+            
+            entity.HasIndex(u => u.Email)
+                .IsUnique();
+            
+            entity.Property(u => u.FirstName)
+                .IsRequired()
+                .HasMaxLength(100);
+            
+            entity.Property(u => u.LastName)
+                .IsRequired()
+                .HasMaxLength(100);
+            
+            entity.Property(u => u.Email)
+                .IsRequired()
+                .HasMaxLength(255);
+            
+            entity.Property(u => u.Username)
+                .IsRequired()
+                .HasMaxLength(100);
+            
+            entity.Property(u => u.Password)
+                .IsRequired()
+                .HasMaxLength(255);
+            
+            entity.Property(u => u.Role)
+                .IsRequired()
+                .HasMaxLength(50);
+            
+            entity.Property(u => u.CreatedAt)
+                .IsRequired();
+        });
+
+        // Seed initial users (with hashed passwords)
+        // Pre-computed SHA256 hashes for default passwords (Base64 encoded)
+        modelBuilder.Entity<User>().HasData(
+            new User
+            {
+                Id = 1,
+                FirstName = "Admin",
+                LastName = "User",
+                Email = "admin@erp.com",
+                Username = "admin",
+                Password = "XohImNooBHFR0OVvjcYpJ3NgPQ1qq73WKhHvch0VQtg=", // password
+                Role = "Admin",
+                CreatedAt = new DateTime(2024, 1, 1)
+            },
+            new User
+            {
+                Id = 2,
+                FirstName = "HR",
+                LastName = "Manager",
+                Email = "hr@erp.com",
+                Username = "hr",
+                Password = "Bwo7Xo1L1cRqzMuRycVGFMDNZJ54xMRxnjpkJwuuXd8=", // hr123
+                Role = "HR",
+                CreatedAt = new DateTime(2024, 1, 1)
+            },
+            new User
+            {
+                Id = 3,
+                FirstName = "Vendor",
+                LastName = "User",
+                Email = "vendor@erp.com",
+                Username = "vendor",
+                Password = "APwebGAoJHk8mEDngeXiB0dQfibd8NYPq5llZ6AyfN8=", // vendor123
+                Role = "Vendor",
+                CreatedAt = new DateTime(2024, 1, 1)
+            },
+            new User
+            {
+                Id = 4,
+                FirstName = "Regular",
+                LastName = "User",
+                Email = "user@erp.com",
+                Username = "user",
+                Password = "5gbjiw2MGbJM8O44CBgxYup81j/3kS27IrXoAyhrREY=", // user123
+                Role = "User",
+                CreatedAt = new DateTime(2024, 1, 1)
+            }
+        );
 
         // Seed initial data
         modelBuilder.Entity<Employee>().HasData(

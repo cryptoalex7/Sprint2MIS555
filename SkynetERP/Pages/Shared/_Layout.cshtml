@@ -26,12 +26,19 @@
                         </li>
                         @if (User.Identity?.IsAuthenticated == true)
                         {
-                            <li class="nav-item">
-                                <a class="nav-link text-dark" asp-area="" asp-page="/HRM">HRM</a>
-                            </li>
-                            <li class="nav-item">
-                                <a class="nav-link text-dark" asp-area="" asp-page="/VendorManagement">Vendor Management</a>
-                            </li>
+                            var userRole = User.FindFirst("Role")?.Value ?? User.FindFirst(System.Security.Claims.ClaimTypes.Role)?.Value;
+                            @if (userRole == "Admin" || userRole == "HR")
+                            {
+                                <li class="nav-item">
+                                    <a class="nav-link text-dark" asp-area="" asp-page="/HRM">HRM</a>
+                                </li>
+                            }
+                            @if (userRole == "Admin" || userRole == "Vendor")
+                            {
+                                <li class="nav-item">
+                                    <a class="nav-link text-dark" asp-area="" asp-page="/VendorManagement">Vendor Management</a>
+                                </li>
+                            }
                         }
                         <li class="nav-item">
                             <a class="nav-link text-dark" asp-area="" asp-page="/Privacy">Privacy</a>

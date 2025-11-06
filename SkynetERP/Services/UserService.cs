@@ -1,11 +1,16 @@
 using System.Security.Claims;
+using System.Security.Cryptography;
+using System.Text;
 using Microsoft.AspNetCore.Authentication.Cookies;
+using Microsoft.EntityFrameworkCore;
+using SkynetERP.Data;
+using SkynetERP.Models;
 
 namespace SkynetERP.Services;
 
 public class UserService
 {
-    public class User
+    public class UserDto
     {
         public string Username { get; set; } = string.Empty;
         public string Password { get; set; } = string.Empty;
@@ -13,19 +18,63 @@ public class UserService
         public string Email { get; set; } = string.Empty;
     }
 
-    private readonly List<User> _users = new()
-    {
-        new User { Username = "admin", Password = "password", Role = "Admin", Email = "admin@skyneterp.com" },
-        new User { Username = "hrmanager", Password = "hr123", Role = "HRManager", Email = "hr@skyneterp.com" },
-        new User { Username = "staff", Password = "staff123", Role = "Staff", Email = "staff@skyneterp.com" }
-    };
+    private readonly ApplicationDbContext _context;
 
-    public User? ValidateUser(string username, string password)
+    public UserService(ApplicationDbContext context)
     {
-        return _users.FirstOrDefault(u => u.Username == username && u.Password == password);
+        _context = context;
     }
 
-    public ClaimsPrincipal CreateClaimsPrincipal(User user)
+    public UserDto? ValidateUser(string email, string password)
+    {
+        var user = _context.Users.FirstOrDefault(u => u.Email == email);
+        
+        if (user == null)
+        {
+            // Fallback to hardcoded users for backward compatibility
+            return ValidateHardcodedUser(email, password);
+        }
+
+        // Hash the provided password and compare
+        var hashedPassword = HashPassword(password);
+        if (user.Password == hashedPassword)
+        {
+            return new UserDto
+            {
+                Username = user.Username,
+                Password = user.Password,
+                Role = user.Role,
+                Email = user.Email
+            };
+        }
+
+        return null;
+    }
+
+    private UserDto? ValidateHardcodedUser(string email, string password)
+    {
+        var hardcodedUsers = new List<UserDto>
+        {
+            new UserDto { Username = "admin", Password = "password", Role = "Admin", Email = "admin@erp.com" },
+            new UserDto { Username = "hr", Password = "hr123", Role = "HR", Email = "hr@erp.com" },
+            new UserDto { Username = "vendor", Password = "vendor123", Role = "Vendor", Email = "vendor@erp.com" },
+            new UserDto { Username = "user", Password = "user123", Role = "User", Email = "user@erp.com" }
+        };
+
+        return hardcodedUsers.FirstOrDefault(u => u.Email == email && u.Password == password);
+    }
+
+    private string HashPassword(string password)
+    {
+        // Simple SHA256 hashing - matches the registration hashing
+        using (var sha256 = SHA256.Create())
+        {
+            var hashedBytes = sha256.ComputeHash(Encoding.UTF8.GetBytes(password));
+            return Convert.ToBase64String(hashedBytes);
+        }
+    }
+
+    public ClaimsPrincipal CreateClaimsPrincipal(UserDto user)
     {
         var claims = new List<Claim>
         {
@@ -41,6 +90,6 @@ public class UserService
 
     public bool CanViewSalary(string? role)
     {
-        return role == "Admin" || role == "HRManager";
+        return role == "Admin" || role == "HR";
     }
 }

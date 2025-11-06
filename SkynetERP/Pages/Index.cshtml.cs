@@ -26,10 +26,10 @@ public class IndexModel : PageModel
 
     public IActionResult OnGet()
     {
-        // If user is already authenticated, redirect to HRM
+        // If user is already authenticated, redirect based on role
         if (User.Identity?.IsAuthenticated == true)
         {
-            return RedirectToPage("/HRM");
+            return RedirectToRoleBasedPage();
         }
 
         // Clear any existing error messages
@@ -44,11 +44,11 @@ public class IndexModel : PageModel
             return Page();
         }
 
-        var user = _userService.ValidateUser(Login.Username, Login.Password);
+        var user = _userService.ValidateUser(Login.Email, Login.Password);
         
         if (user == null)
         {
-            ErrorMessage = "Invalid username or password.";
+            ErrorMessage = "Invalid email or password.";
             return Page();
         }
 
@@ -56,17 +56,32 @@ public class IndexModel : PageModel
         
         await HttpContext.SignInAsync(CookieAuthenticationDefaults.AuthenticationScheme, claimsPrincipal);
         
-        _logger.LogInformation("User {Username} with role {Role} logged in successfully", user.Username, user.Role);
+        _logger.LogInformation("User {Email} with role {Role} logged in successfully", user.Email, user.Role);
         
-        return RedirectToPage("/HRM");
+        return RedirectToRoleBasedPage(user.Role);
+    }
+
+    private IActionResult RedirectToRoleBasedPage(string? role = null)
+    {
+        role ??= User.FindFirst("Role")?.Value ?? User.FindFirst(ClaimTypes.Role)?.Value;
+
+        return role switch
+        {
+            "Admin" => RedirectToPage("/HRM"), // Admin can access all, default to HRM
+            "HR" => RedirectToPage("/HRM"),
+            "Vendor" => RedirectToPage("/VendorManagement"),
+            "User" => RedirectToPage("/Privacy"),
+            _ => RedirectToPage("/Privacy") // Default fallback
+        };
     }
 }
 
 public class LoginModel
 {
-    [Required(ErrorMessage = "Username is required")]
-    [Display(Name = "Username")]
-    public string Username { get; set; } = string.Empty;
+    [Required(ErrorMessage = "Email is required")]
+    [EmailAddress(ErrorMessage = "Invalid email address")]
+    [Display(Name = "Email")]
+    public string Email { get; set; } = string.Empty;
 
     [Required(ErrorMessage = "Password is required")]
     [DataType(DataType.Password)]

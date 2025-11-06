@@ -7,7 +7,7 @@ using System.Security.Claims;
 
 namespace SkynetERP.Pages;
 
-[Authorize]
+[Authorize(Roles = "Admin,Vendor")]
 public class VendorManagementModel : PageModel
 {
     private readonly ILogger<VendorManagementModel> _logger;
