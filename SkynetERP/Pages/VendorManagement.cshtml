@@ -1,0 +1,925 @@
+@page
+@model SkynetERP.Pages.VendorManagementModel
+@{
+    ViewData["Title"] = "Vendor Management";
+}
+
+@Html.AntiForgeryToken()
+
+<div class="container-fluid hrm-page">
+    <!-- Page Header -->
+    <div class="row mb-4">
+        <div class="col-12">
+            <h1 class="display-4 fw-bold text-primary mb-0">Vendor Management</h1>
+            <p class="text-muted">Manage your vendor relationships efficiently and effectively</p>
+        </div>
+    </div>
+
+    <!-- Section Cards -->
+    <div class="row mb-5">
+        <div class="col-12">
+            <h2 class="h4 fw-bold mb-3 text-dark">Quick Access</h2>
+            <div class="row g-4">
+                <div class="col-lg-3 col-md-6">
+                    <div class="card h-100 shadow-sm border-0 hrm-card" role="button" tabindex="0" aria-label="Vendor Onboarding">
+                        <div class="card-body text-center p-4">
+                            <div class="hrm-icon mb-3">
+                                <i class="fas fa-building fa-3x text-primary"></i>
+                            </div>
+                            <h5 class="card-title fw-bold">Onboarding</h5>
+                            <p class="card-text text-muted">Manage new vendor onboarding process</p>
+                        </div>
+                    </div>
+                </div>
+                <div class="col-lg-3 col-md-6">
+                    <div class="card h-100 shadow-sm border-0 hrm-card" role="button" tabindex="0" aria-label="Contract Management">
+                        <div class="card-body text-center p-4">
+                            <div class="hrm-icon mb-3">
+                                <i class="fas fa-file-contract fa-3x text-success"></i>
+                            </div>
+                            <h5 class="card-title fw-bold">Contracts</h5>
+                            <p class="card-text text-muted">Track and manage vendor contracts</p>
+                        </div>
+                    </div>
+                </div>
+                <div class="col-lg-3 col-md-6">
+                    <div class="card h-100 shadow-sm border-0 hrm-card" role="button" tabindex="0" aria-label="Performance Evaluation">
+                        <div class="card-body text-center p-4">
+                            <div class="hrm-icon mb-3">
+                                <i class="fas fa-star fa-3x text-warning"></i>
+                            </div>
+                            <h5 class="card-title fw-bold">Performance</h5>
+                            <p class="card-text text-muted">Evaluate vendor performance and ratings</p>
+                        </div>
+                    </div>
+                </div>
+                <div class="col-lg-3 col-md-6">
+                    <div class="card h-100 shadow-sm border-0 hrm-card" role="button" tabindex="0" aria-label="Reports and Analytics">
+                        <div class="card-body text-center p-4">
+                            <div class="hrm-icon mb-3">
+                                <i class="fas fa-chart-bar fa-3x text-info"></i>
+                            </div>
+                            <h5 class="card-title fw-bold">Reports</h5>
+                            <p class="card-text text-muted">Generate vendor reports and analytics</p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Vendor Directory Section -->
+    <div class="row">
+        <div class="col-12">
+            <div class="card shadow-sm border-0">
+                <div class="card-header bg-primary text-white">
+                    <div class="row align-items-center">
+                        <div class="col-md-6">
+                            <h2 class="h4 mb-0 fw-bold">Vendor Directory</h2>
+                        </div>
+                        <div class="col-md-6 text-md-end">
+                            <button class="btn btn-light btn-sm me-2" data-bs-toggle="modal" data-bs-target="#addVendorModal" aria-label="Add New Vendor">
+                                <i class="fas fa-plus me-1"></i>Add Vendor
+                            </button>
+                            <button class="btn btn-outline-light btn-sm" id="exportBtn" aria-label="Export Vendor Data">
+                                <i class="fas fa-download me-1"></i>Export
+                            </button>
+                        </div>
+                    </div>
+                </div>
+                <div class="card-body p-0">
+                    <!-- Search and Filter Bar -->
+                    <div class="p-3 bg-light border-bottom">
+                        <div class="row g-3">
+                            <div class="col-md-4">
+                                <label for="searchInput" class="form-label fw-semibold">Search Vendors</label>
+                                <input type="text" class="form-control form-control-hrm" id="searchInput" placeholder="Search by company name, category, or contact..." aria-label="Search vendors">
+                            </div>
+                            <div class="col-md-3">
+                                <label for="categoryFilter" class="form-label fw-semibold">Category</label>
+                                <select class="form-select form-control-hrm" id="categoryFilter" aria-label="Filter by category">
+                                    <option value="">All Categories</option>
+                                    <option value="IT Services">IT Services</option>
+                                    <option value="Office Supplies">Office Supplies</option>
+                                    <option value="Manufacturing">Manufacturing</option>
+                                    <option value="Logistics">Logistics</option>
+                                    <option value="Consulting">Consulting</option>
+                                </select>
+                            </div>
+                            <div class="col-md-3">
+                                <label for="contactFilter" class="form-label fw-semibold">Contact Person</label>
+                                <input type="text" class="form-control form-control-hrm" id="contactFilter" placeholder="Filter by contact..." aria-label="Filter by contact person">
+                            </div>
+                            <div class="col-md-2 d-flex align-items-end">
+                                <button class="btn btn-outline-secondary w-100" id="clearFilters" aria-label="Clear all filters">
+                                    <i class="fas fa-times me-1"></i>Clear
+                                </button>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Vendor Table -->
+                    <div class="table-responsive">
+                        <table class="table table-hover table-hrm mb-0" id="vendorTable" role="table" aria-label="Vendor Directory">
+                            <thead class="table-primary">
+                                <tr>
+                                    <th scope="col" class="fw-bold">Company Name</th>
+                                    <th scope="col" class="fw-bold">Category</th>
+                                    <th scope="col" class="fw-bold">Contact Person</th>
+                                    <th scope="col" class="fw-bold">Address</th>
+                                    <th scope="col" class="fw-bold">Phone</th>
+                                    @if (Model.CanViewSpend)
+                                    {
+                                        <th scope="col" class="fw-bold">Annual Spend</th>
+                                    }
+                                    <th scope="col" class="fw-bold text-center">Actions</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                @if (Model.Vendors != null && Model.Vendors.Any())
+                                {
+                                    @foreach (var vendor in Model.Vendors)
+                                    {
+                                        var badgeClass = vendor.Category switch
+                                        {
+                                            "IT Services" => "bg-primary",
+                                            "Office Supplies" => "bg-success",
+                                            "Manufacturing" => "bg-warning",
+                                            "Logistics" => "bg-info",
+                                            "Consulting" => "bg-secondary",
+                                            _ => "bg-dark"
+                                        };
+                                        <tr data-vendor-id="@vendor.Id">
+                                            <td class="fw-semibold">@vendor.CompanyName</td>
+                                            <td><span class="badge badge-hrm @badgeClass">@vendor.Category</span></td>
+                                            <td>@vendor.ContactPerson</td>
+                                            <td>@vendor.Address</td>
+                                            <td>@vendor.Phone</td>
+                                            @if (Model.CanViewSpend)
+                                            {
+                                                <td class="text-success fw-bold">$@vendor.AnnualSpend.ToString("N0")</td>
+                                            }
+                                            <td class="text-center">
+                                                <div class="btn-group btn-group-hrm" role="group" aria-label="Vendor actions">
+                                                    <button class="btn btn-sm btn-outline-warning edit-vendor-btn" 
+                                                            data-vendor-id="@vendor.Id"
+                                                            data-vendor-companyname="@vendor.CompanyName"
+                                                            data-vendor-category="@vendor.Category"
+                                                            data-vendor-contactperson="@vendor.ContactPerson"
+                                                            data-vendor-address="@vendor.Address"
+                                                            data-vendor-phone="@vendor.Phone"
+                                                            data-vendor-annualspend="@vendor.AnnualSpend"
+                                                            title="Edit Vendor" 
+                                                            aria-label="Edit vendor">
+                                                        <i class="fas fa-edit"></i>
+                                                    </button>
+                                                    <button class="btn btn-sm btn-outline-danger delete-vendor-btn" 
+                                                            data-vendor-id="@vendor.Id" 
+                                                            data-vendor-name="@vendor.CompanyName"
+                                                            title="Delete Vendor" 
+                                                            aria-label="Delete vendor">
+                                                        <i class="fas fa-trash"></i>
+                                                    </button>
+                                                </div>
+                                            </td>
+                                        </tr>
+                                    }
+                                }
+                                else
+                                {
+                                    <tr>
+                                        <td colspan="@(Model.CanViewSpend ? 7 : 6)" class="text-center text-muted py-4">
+                                            No vendors found. Click "Add Vendor" to get started.
+                                        </td>
+                                    </tr>
+                                }
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- Add Vendor Modal -->
+<div class="modal fade modal-hrm" id="addVendorModal" tabindex="-1" aria-labelledby="addVendorModalLabel" aria-hidden="true">
+    <div class="modal-dialog modal-lg">
+        <div class="modal-content">
+            <div class="modal-header bg-primary text-white">
+                <h5 class="modal-title fw-bold" id="addVendorModalLabel">Add New Vendor</h5>
+                <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal" aria-label="Close"></button>
+            </div>
+            <div class="modal-body">
+                <form id="addVendorForm" novalidate>
+                    <div class="row g-3">
+                        <div class="col-12">
+                            <label for="companyName" class="form-label fw-semibold">Company Name *</label>
+                            <input type="text" class="form-control form-control-hrm" id="companyName" required aria-describedby="companyNameHelp">
+                            <div class="invalid-feedback">Please provide a valid company name.</div>
+                        </div>
+                        <div class="col-md-6">
+                            <label for="category" class="form-label fw-semibold">Category *</label>
+                            <select class="form-select form-control-hrm" id="category" required>
+                                <option value="">Select Category</option>
+                                <option value="IT Services">IT Services</option>
+                                <option value="Office Supplies">Office Supplies</option>
+                                <option value="Manufacturing">Manufacturing</option>
+                                <option value="Logistics">Logistics</option>
+                                <option value="Consulting">Consulting</option>
+                            </select>
+                            <div class="invalid-feedback">Please select a category.</div>
+                        </div>
+                        <div class="col-md-6">
+                            <label for="contactPerson" class="form-label fw-semibold">Contact Person *</label>
+                            <input type="text" class="form-control form-control-hrm" id="contactPerson" required>
+                            <div class="invalid-feedback">Please provide a valid contact person.</div>
+                        </div>
+                        <div class="col-12">
+                            <label for="address" class="form-label fw-semibold">Address *</label>
+                            <textarea class="form-control form-control-hrm" id="address" rows="2" required></textarea>
+                            <div class="invalid-feedback">Please provide a valid address.</div>
+                        </div>
+                        <div class="col-md-6">
+                            <label for="phone" class="form-label fw-semibold">Phone Number *</label>
+                            <input type="tel" class="form-control form-control-hrm" id="phone" required pattern="\(\d{3}\)-\d{3}-\d{4}" placeholder="(555)-123-4567" maxlength="14">
+                            <div class="invalid-feedback">Please provide a valid 10-digit phone number (555)-123-4567.</div>
+                        </div>
+                        <div class="col-md-6">
+                            <label for="annualSpend" class="form-label fw-semibold">Annual Spend *</label>
+                            <div class="input-group">
+                                <span class="input-group-text">$</span>
+                                <input type="number" class="form-control form-control-hrm" id="annualSpend" required min="0" max="100000000" step="1">
+                                <div class="invalid-feedback">Please provide a valid annual spend between 0 and 100,000,000.</div>
+                            </div>
+                        </div>
+                    </div>
+                </form>
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cancel</button>
+                <button type="button" class="btn btn-primary" id="saveVendor">Save Vendor</button>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- Edit Vendor Modal -->
+<div class="modal fade modal-hrm" id="editVendorModal" tabindex="-1" aria-labelledby="editVendorModalLabel" aria-hidden="true">
+    <div class="modal-dialog modal-lg">
+        <div class="modal-content">
+            <div class="modal-header bg-warning text-dark">
+                <h5 class="modal-title fw-bold" id="editVendorModalLabel">Edit Vendor</h5>
+                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+            </div>
+            <div class="modal-body">
+                <form id="editVendorForm" novalidate>
+                    <input type="hidden" id="editVendorId" />
+                    <div class="row g-3">
+                        <div class="col-12">
+                            <label for="editCompanyName" class="form-label fw-semibold">Company Name *</label>
+                            <input type="text" class="form-control form-control-hrm" id="editCompanyName" required>
+                            <div class="invalid-feedback">Please provide a valid company name.</div>
+                        </div>
+                        <div class="col-md-6">
+                            <label for="editCategory" class="form-label fw-semibold">Category *</label>
+                            <select class="form-select form-control-hrm" id="editCategory" required>
+                                <option value="">Select Category</option>
+                                <option value="IT Services">IT Services</option>
+                                <option value="Office Supplies">Office Supplies</option>
+                                <option value="Manufacturing">Manufacturing</option>
+                                <option value="Logistics">Logistics</option>
+                                <option value="Consulting">Consulting</option>
+                            </select>
+                            <div class="invalid-feedback">Please select a category.</div>
+                        </div>
+                        <div class="col-md-6">
+                            <label for="editContactPerson" class="form-label fw-semibold">Contact Person *</label>
+                            <input type="text" class="form-control form-control-hrm" id="editContactPerson" required>
+                            <div class="invalid-feedback">Please provide a valid contact person.</div>
+                        </div>
+                        <div class="col-12">
+                            <label for="editAddress" class="form-label fw-semibold">Address *</label>
+                            <textarea class="form-control form-control-hrm" id="editAddress" rows="2" required></textarea>
+                            <div class="invalid-feedback">Please provide a valid address.</div>
+                        </div>
+                        <div class="col-md-6">
+                            <label for="editPhone" class="form-label fw-semibold">Phone Number *</label>
+                            <input type="tel" class="form-control form-control-hrm" id="editPhone" required pattern="\(\d{3}\)-\d{3}-\d{4}" placeholder="(555)-123-4567" maxlength="14">
+                            <div class="invalid-feedback">Please provide a valid 10-digit phone number (555)-123-4567.</div>
+                        </div>
+                        <div class="col-md-6">
+                            <label for="editAnnualSpend" class="form-label fw-semibold">Annual Spend *</label>
+                            <div class="input-group">
+                                <span class="input-group-text">$</span>
+                                <input type="number" class="form-control form-control-hrm" id="editAnnualSpend" required min="0" max="100000000" step="1">
+                                <div class="invalid-feedback">Please provide a valid annual spend between 0 and 100,000,000.</div>
+                            </div>
+                        </div>
+                    </div>
+                </form>
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cancel</button>
+                <button type="button" class="btn btn-warning" id="updateVendor">Update Vendor</button>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- Export Confirmation Modal -->
+<div class="modal fade" id="exportConfirmModal" tabindex="-1" aria-labelledby="exportConfirmModalLabel" aria-hidden="true">
+    <div class="modal-dialog modal-dialog-centered">
+        <div class="modal-content">
+            <div class="modal-header bg-info text-white">
+                <h5 class="modal-title fw-bold" id="exportConfirmModalLabel">
+                    <i class="fas fa-file-csv me-2"></i>Export Vendor Data
+                </h5>
+                <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal" aria-label="Close"></button>
+            </div>
+            <div class="modal-body">
+                <p class="mb-3">Are you sure you want to export the vendor directory as a CSV file?</p>
+                <div class="alert alert-info mb-0">
+                    <i class="fas fa-info-circle me-2"></i>
+                    <strong>File Format:</strong> CSV (Comma-Separated Values)
+                    <br>
+                    <small id="exportDescription">The export will include all vendor information: Company Name, Category, Contact Person, Address, Phone@(Model.CanViewSpend ? ", and Annual Spend" : "").</small>
+                </div>
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">
+                    <i class="fas fa-times me-1"></i>Cancel
+                </button>
+                <button type="button" class="btn btn-info" id="confirmExportBtn">
+                    <i class="fas fa-download me-1"></i>Download CSV
+                </button>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- Delete Confirmation Modal -->
+<div class="modal fade" id="deleteConfirmModal" tabindex="-1" aria-labelledby="deleteConfirmModalLabel" aria-hidden="true">
+    <div class="modal-dialog modal-dialog-centered">
+        <div class="modal-content">
+            <div class="modal-header bg-danger text-white">
+                <h5 class="modal-title fw-bold" id="deleteConfirmModalLabel">
+                    <i class="fas fa-exclamation-triangle me-2"></i>Confirm Deletion
+                </h5>
+                <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal" aria-label="Close"></button>
+            </div>
+            <div class="modal-body">
+                <p class="mb-3">Are you sure you want to delete this vendor?</p>
+                <div class="alert alert-warning mb-0">
+                    <strong id="vendorNameToDelete"></strong>
+                </div>
+                <p class="text-muted mt-3 mb-0">
+                    <small>This action cannot be undone. All vendor information will be permanently deleted.</small>
+                </p>
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">
+                    <i class="fas fa-times me-1"></i>Cancel
+                </button>
+                <button type="button" class="btn btn-danger" id="confirmDeleteBtn">
+                    <i class="fas fa-trash me-1"></i>Yes, Delete Vendor
+                </button>
+            </div>
+        </div>
+    </div>
+</div>
+
+
+@section Scripts {
+    <script>
+        // Search functionality
+        document.getElementById('searchInput').addEventListener('input', function() {
+            filterTable();
+        });
+
+        // Filter functionality
+        document.getElementById('categoryFilter').addEventListener('change', function() {
+            filterTable();
+        });
+
+        document.getElementById('contactFilter').addEventListener('input', function() {
+            filterTable();
+        });
+
+        // Clear filters
+        document.getElementById('clearFilters').addEventListener('click', function() {
+            document.getElementById('searchInput').value = '';
+            document.getElementById('categoryFilter').value = '';
+            document.getElementById('contactFilter').value = '';
+            filterTable();
+        });
+
+        function filterTable() {
+            const searchTerm = document.getElementById('searchInput').value.toLowerCase();
+            const categoryFilter = document.getElementById('categoryFilter').value;
+            const contactFilter = document.getElementById('contactFilter').value.toLowerCase();
+            const table = document.getElementById('vendorTable');
+            const rows = table.getElementsByTagName('tbody')[0].getElementsByTagName('tr');
+
+            for (let i = 0; i < rows.length; i++) {
+                const row = rows[i];
+                const companyName = row.cells[0].textContent.toLowerCase();
+                const category = row.cells[1].textContent;
+                const contactPerson = row.cells[2].textContent.toLowerCase();
+
+                const matchesSearch = companyName.includes(searchTerm) || contactPerson.includes(searchTerm);
+                const matchesCategory = !categoryFilter || category.includes(categoryFilter);
+                const matchesContact = !contactFilter || contactPerson.includes(contactFilter);
+
+                if (matchesSearch && matchesCategory && matchesContact) {
+                    row.style.display = '';
+                } else {
+                    row.style.display = 'none';
+                }
+            }
+        }
+
+        // Form validation
+        document.getElementById('addVendorForm').addEventListener('submit', async function(event) {
+            event.preventDefault();
+            event.stopPropagation();
+            
+            const form = event.currentTarget;
+            if (form.checkValidity()) {
+                await submitNewVendor();
+            } else {
+                form.classList.add('was-validated');
+            }
+        });
+
+        async function submitNewVendor() {
+            const btn = document.getElementById('saveVendor');
+            const originalText = btn.innerHTML;
+            
+            // Disable button and show loading state
+            btn.disabled = true;
+            btn.innerHTML = '<span class="spinner-border spinner-border-sm me-1"></span>Saving...';
+
+            try {
+                const formData = new FormData();
+                formData.append('CompanyName', document.getElementById('companyName').value);
+                formData.append('Category', document.getElementById('category').value);
+                formData.append('ContactPerson', document.getElementById('contactPerson').value);
+                formData.append('Address', document.getElementById('address').value);
+                formData.append('Phone', document.getElementById('phone').value);
+                formData.append('AnnualSpend', document.getElementById('annualSpend').value);
+                
+                // Get antiforgery token
+                const tokenInput = document.querySelector('input[name="__RequestVerificationToken"]');
+                if (tokenInput) {
+                    formData.append('__RequestVerificationToken', tokenInput.value);
+                }
+
+                const currentUrl = window.location.pathname;
+                const handlerUrl = currentUrl + '?handler=AddVendor';
+
+                const response = await fetch(handlerUrl, {
+                    method: 'POST',
+                    body: formData,
+                    redirect: 'follow'
+                });
+
+                // Check if response is successful (200 OK or redirect)
+                if (response.ok || response.status === 302 || response.redirected) {
+                    // Success - hide modal and reload page to show new vendor
+                    const modal = bootstrap.Modal.getInstance(document.getElementById('addVendorModal'));
+                    if (modal) {
+                        modal.hide();
+                    }
+                    showNotification('Vendor added successfully!', 'success');
+                    // Reload page to show new vendor
+                    setTimeout(() => {
+                        window.location.reload();
+                    }, 500);
+                } else {
+                    // Handle error response
+                    let errorMessage = 'Failed to add vendor. Please try again.';
+                    try {
+                        const contentType = response.headers.get("content-type");
+                        if (contentType && contentType.includes("application/json")) {
+                            const result = await response.json();
+                            errorMessage = result.message || errorMessage;
+                        } else {
+                            const errorText = await response.text();
+                            console.error('Error response:', errorText);
+                        }
+                    } catch (e) {
+                        console.error('Error parsing response:', e);
+                    }
+                    showNotification(errorMessage, 'error');
+                    btn.disabled = false;
+                    btn.innerHTML = originalText;
+                }
+            } catch (error) {
+                console.error('Error adding vendor:', error);
+                showNotification('An error occurred while adding the vendor: ' + error.message, 'error');
+                btn.disabled = false;
+                btn.innerHTML = originalText;
+            }
+        }
+
+        // Phone number formatting function
+        function formatPhoneNumber(input) {
+            // Remove all non-digit characters
+            let value = input.value.replace(/\D/g, '');
+            
+            // Limit to 10 digits
+            if (value.length > 10) {
+                value = value.substring(0, 10);
+            }
+            
+            // Format as (xxx)-xxx-xxxx
+            if (value.length >= 6) {
+                value = `(${value.substring(0, 3)})-${value.substring(3, 6)}-${value.substring(6)}`;
+            } else if (value.length >= 3) {
+                value = `(${value.substring(0, 3)})${value.substring(3)}`;
+            } else if (value.length > 0) {
+                value = `(${value}`;
+            }
+            
+            input.value = value;
+        }
+
+        // Auto-format phone number on input
+        document.getElementById('phone').addEventListener('input', function() {
+            formatPhoneNumber(this);
+        });
+
+        document.getElementById('editPhone').addEventListener('input', function() {
+            formatPhoneNumber(this);
+        });
+
+        // Save vendor button
+        document.getElementById('saveVendor').addEventListener('click', function() {
+            const form = document.getElementById('addVendorForm');
+            if (form.checkValidity()) {
+                form.dispatchEvent(new Event('submit'));
+            } else {
+                form.classList.add('was-validated');
+            }
+        });
+
+        // Reset add vendor modal when closed
+        document.getElementById('addVendorModal').addEventListener('hidden.bs.modal', function() {
+            const form = document.getElementById('addVendorForm');
+            form.reset();
+            form.classList.remove('was-validated');
+            const btn = document.getElementById('saveVendor');
+            btn.disabled = false;
+            btn.innerHTML = 'Save Vendor';
+        });
+
+        // Export functionality
+        const exportModal = new bootstrap.Modal(document.getElementById('exportConfirmModal'));
+        
+        document.getElementById('exportBtn').addEventListener('click', function() {
+            exportModal.show();
+        });
+
+        document.getElementById('confirmExportBtn').addEventListener('click', function() {
+            const btn = this;
+            const originalText = btn.innerHTML;
+            
+            // Disable button and show loading state
+            btn.disabled = true;
+            btn.innerHTML = '<span class="spinner-border spinner-border-sm me-1"></span>Downloading...';
+
+            try {
+                // Get current URL and add handler
+                const currentUrl = window.location.pathname;
+                const exportUrl = currentUrl + '?handler=ExportVendors';
+                
+                // Create a temporary link to trigger download
+                const link = document.createElement('a');
+                link.href = exportUrl;
+                link.download = '';
+                link.style.display = 'none';
+                document.body.appendChild(link);
+                link.click();
+                document.body.removeChild(link);
+                
+                // Hide modal and show success message
+                setTimeout(() => {
+                    exportModal.hide();
+                    showNotification('Vendor data exported successfully!', 'success');
+                    btn.disabled = false;
+                    btn.innerHTML = originalText;
+                }, 500);
+            } catch (error) {
+                console.error('Error exporting vendors:', error);
+                showNotification('An error occurred while exporting the data: ' + error.message, 'error');
+                btn.disabled = false;
+                btn.innerHTML = originalText;
+            }
+        });
+
+        // Card click handlers
+        document.querySelectorAll('.hrm-card').forEach(card => {
+            card.addEventListener('click', function() {
+                const title = this.querySelector('.card-title').textContent;
+                alert(`Navigating to ${title} section...`);
+            });
+        });
+
+        // Edit vendor functionality
+        const editModal = new bootstrap.Modal(document.getElementById('editVendorModal'));
+        
+        function attachEditHandlers() {
+            document.querySelectorAll('.edit-vendor-btn').forEach(btn => {
+                // Remove existing listeners to avoid duplicates
+                const newBtn = btn.cloneNode(true);
+                btn.parentNode.replaceChild(newBtn, btn);
+                
+                newBtn.addEventListener('click', function() {
+                    const vendorId = parseInt(this.getAttribute('data-vendor-id'));
+                    const companyName = this.getAttribute('data-vendor-companyname');
+                    const category = this.getAttribute('data-vendor-category');
+                    const contactPerson = this.getAttribute('data-vendor-contactperson');
+                    const address = this.getAttribute('data-vendor-address');
+                    let phone = this.getAttribute('data-vendor-phone');
+                    const annualSpend = this.getAttribute('data-vendor-annualspend');
+                    
+                    // Convert phone format to (xxx)-xxx-xxxx
+                    if (phone) {
+                        // Remove all non-digit characters
+                        const digits = phone.replace(/\D/g, '');
+                        if (digits.length === 10) {
+                            // Format as (xxx)-xxx-xxxx
+                            phone = `(${digits.substring(0, 3)})-${digits.substring(3, 6)}-${digits.substring(6)}`;
+                        }
+                    }
+                    
+                    // Populate edit form
+                    document.getElementById('editVendorId').value = vendorId;
+                    document.getElementById('editCompanyName').value = companyName;
+                    document.getElementById('editCategory').value = category;
+                    document.getElementById('editContactPerson').value = contactPerson;
+                    document.getElementById('editAddress').value = address;
+                    document.getElementById('editPhone').value = phone;
+                    document.getElementById('editAnnualSpend').value = annualSpend;
+                    
+                    // Reset validation
+                    const form = document.getElementById('editVendorForm');
+                    form.classList.remove('was-validated');
+                    
+                    // Show modal
+                    editModal.show();
+                });
+            });
+        }
+
+        // Attach edit handlers on page load
+        attachEditHandlers();
+
+        // Handle edit form submission
+        document.getElementById('editVendorForm').addEventListener('submit', function(event) {
+            event.preventDefault();
+            event.stopPropagation();
+            
+            const form = event.currentTarget;
+            if (form.checkValidity()) {
+                submitVendorUpdate();
+            } else {
+                form.classList.add('was-validated');
+            }
+        });
+
+        // Update vendor button
+        document.getElementById('updateVendor').addEventListener('click', function() {
+            document.getElementById('editVendorForm').dispatchEvent(new Event('submit'));
+        });
+
+        async function submitVendorUpdate() {
+            const btn = document.getElementById('updateVendor');
+            const originalText = btn.innerHTML;
+            
+            // Disable button and show loading state
+            btn.disabled = true;
+            btn.innerHTML = '<span class="spinner-border spinner-border-sm me-1"></span>Updating...';
+
+            try {
+                const formData = new FormData();
+                formData.append('Id', document.getElementById('editVendorId').value);
+                formData.append('CompanyName', document.getElementById('editCompanyName').value);
+                formData.append('Category', document.getElementById('editCategory').value);
+                formData.append('ContactPerson', document.getElementById('editContactPerson').value);
+                formData.append('Address', document.getElementById('editAddress').value);
+                formData.append('Phone', document.getElementById('editPhone').value);
+                formData.append('AnnualSpend', document.getElementById('editAnnualSpend').value);
+                
+                // Get antiforgery token
+                const tokenInput = document.querySelector('input[name="__RequestVerificationToken"]');
+                if (tokenInput) {
+                    formData.append('__RequestVerificationToken', tokenInput.value);
+                }
+
+                const currentUrl = window.location.pathname;
+                const handlerUrl = currentUrl + '?handler=UpdateVendor';
+
+                const response = await fetch(handlerUrl, {
+                    method: 'POST',
+                    body: formData
+                });
+
+                if (!response.ok) {
+                    throw new Error(`HTTP error! status: ${response.status}`);
+                }
+
+                const contentType = response.headers.get("content-type");
+                if (!contentType || !contentType.includes("application/json")) {
+                    const text = await response.text();
+                    throw new Error('Server returned non-JSON response');
+                }
+
+                const result = await response.json();
+
+                if (result.success) {
+                    // Hide modal
+                    editModal.hide();
+                    
+                    // Show success message
+                    showNotification('Vendor updated successfully', 'success');
+                    
+                    // Reload page to refresh table
+                    setTimeout(() => {
+                        window.location.reload();
+                    }, 1000);
+                } else {
+                    showNotification(result.message || 'Failed to update vendor', 'error');
+                    btn.disabled = false;
+                    btn.innerHTML = originalText;
+                }
+            } catch (error) {
+                console.error('Error updating vendor:', error);
+                showNotification('An error occurred while updating the vendor: ' + error.message, 'error');
+                btn.disabled = false;
+                btn.innerHTML = originalText;
+            }
+        }
+
+        // Reset edit modal when closed
+        document.getElementById('editVendorModal').addEventListener('hidden.bs.modal', function() {
+            document.getElementById('editVendorForm').reset();
+            document.getElementById('editVendorForm').classList.remove('was-validated');
+            document.getElementById('updateVendor').disabled = false;
+            document.getElementById('updateVendor').innerHTML = 'Update Vendor';
+        });
+
+        // Delete vendor functionality
+        let vendorIdToDelete = null;
+        const deleteModal = new bootstrap.Modal(document.getElementById('deleteConfirmModal'));
+
+        // Function to attach delete handlers (for dynamic content)
+        function attachDeleteHandlers() {
+            document.querySelectorAll('.delete-vendor-btn').forEach(btn => {
+                // Remove existing listeners to avoid duplicates
+                const newBtn = btn.cloneNode(true);
+                btn.parentNode.replaceChild(newBtn, btn);
+                
+                newBtn.addEventListener('click', function() {
+                    vendorIdToDelete = parseInt(this.getAttribute('data-vendor-id'));
+                    const vendorName = this.getAttribute('data-vendor-name');
+                    
+                    // Update modal with vendor name
+                    document.getElementById('vendorNameToDelete').textContent = vendorName;
+                    
+                    // Show confirmation modal
+                    deleteModal.show();
+                });
+            });
+        }
+
+        // Attach handlers on page load
+        attachDeleteHandlers();
+
+        // Handle confirm delete button
+        document.getElementById('confirmDeleteBtn').addEventListener('click', async function() {
+            if (!vendorIdToDelete) return;
+
+            const btn = this;
+            const originalText = btn.innerHTML;
+            
+            // Disable button and show loading state
+            btn.disabled = true;
+            btn.innerHTML = '<span class="spinner-border spinner-border-sm me-1"></span>Deleting...';
+
+            try {
+                // Make POST request to delete vendor
+                const formData = new FormData();
+                formData.append('id', vendorIdToDelete.toString());
+                
+                // Get antiforgery token
+                const tokenInput = document.querySelector('input[name="__RequestVerificationToken"]');
+                if (tokenInput) {
+                    formData.append('__RequestVerificationToken', tokenInput.value);
+                }
+
+                // Get the current page URL
+                const currentUrl = window.location.pathname;
+                const handlerUrl = currentUrl + '?handler=DeleteVendor';
+
+                console.log('Deleting vendor with ID:', vendorIdToDelete);
+                console.log('Request URL:', handlerUrl);
+
+                const response = await fetch(handlerUrl, {
+                    method: 'POST',
+                    body: formData,
+                    headers: {
+                        'RequestVerificationToken': tokenInput ? tokenInput.value : ''
+                    }
+                });
+
+                console.log('Response status:', response.status);
+                console.log('Response headers:', [...response.headers.entries()]);
+
+                // Check if response is OK
+                if (!response.ok) {
+                    const errorText = await response.text();
+                    console.error('Error response:', errorText);
+                    throw new Error(`HTTP error! status: ${response.status}`);
+                }
+
+                // Check content type
+                const contentType = response.headers.get("content-type");
+                console.log('Content type:', contentType);
+                
+                if (!contentType || !contentType.includes("application/json")) {
+                    const text = await response.text();
+                    console.error('Non-JSON response:', text);
+                    throw new Error('Server returned non-JSON response: ' + text.substring(0, 100));
+                }
+
+                const result = await response.json();
+                console.log('Delete result:', result);
+
+                if (result.success) {
+                    // Hide modal
+                    deleteModal.hide();
+                    
+                    // Remove the row from the table
+                    const row = document.querySelector(`tr[data-vendor-id="${vendorIdToDelete}"]`);
+                    if (row) {
+                        row.style.transition = 'opacity 0.3s';
+                        row.style.opacity = '0';
+                        setTimeout(() => {
+                            row.remove();
+                            
+                            // Check if table is empty and show message
+                            const tbody = document.querySelector('#vendorTable tbody');
+                            if (tbody && tbody.children.length === 0) {
+                                const colspan = @(Model.CanViewSpend ? 7 : 6);
+                                tbody.innerHTML = `<tr><td colspan="${colspan}" class="text-center text-muted py-4">No vendors found. Click "Add Vendor" to get started.</td></tr>`;
+                            }
+                        }, 300);
+                    }
+                    
+                    // Show success message
+                    showNotification('Vendor deleted successfully', 'success');
+                } else {
+                    showNotification(result.message || 'Failed to delete vendor', 'error');
+                    btn.disabled = false;
+                    btn.innerHTML = originalText;
+                }
+            } catch (error) {
+                console.error('Error deleting vendor:', error);
+                showNotification('An error occurred while deleting the vendor: ' + error.message, 'error');
+                btn.disabled = false;
+                btn.innerHTML = originalText;
+            } finally {
+                vendorIdToDelete = null;
+            }
+        });
+
+        // Reset modal when closed
+        document.getElementById('deleteConfirmModal').addEventListener('hidden.bs.modal', function() {
+            vendorIdToDelete = null;
+            document.getElementById('confirmDeleteBtn').disabled = false;
+            document.getElementById('confirmDeleteBtn').innerHTML = '<i class="fas fa-trash me-1"></i>Yes, Delete Vendor';
+        });
+
+        // Simple notification function
+        function showNotification(message, type) {
+            // Create notification element
+            const notification = document.createElement('div');
+            notification.className = `alert alert-${type === 'success' ? 'success' : 'danger'} alert-dismissible fade show position-fixed`;
+            notification.style.cssText = 'top: 20px; right: 20px; z-index: 9999; min-width: 300px;';
+            notification.innerHTML = `
+                ${message}
+                <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+            `;
+            
+            document.body.appendChild(notification);
+            
+            // Auto-remove after 3 seconds
+            setTimeout(() => {
+                notification.remove();
+            }, 3000);
+        }
+    </script>
+}
+

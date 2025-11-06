@@ -20,6 +20,7 @@ builder.Services.AddDbContext<ApplicationDbContext>(options =>
 // Register custom services
 builder.Services.AddScoped<UserService>();
 builder.Services.AddScoped<EmployeeService>();
+builder.Services.AddScoped<VendorService>();
 
 // Add authentication services
 builder.Services.AddAuthentication(CookieAuthenticationDefaults.AuthenticationScheme)

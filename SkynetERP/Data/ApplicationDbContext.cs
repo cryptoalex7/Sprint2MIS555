@@ -11,6 +11,7 @@ public class ApplicationDbContext : DbContext
     }
 
     public DbSet<Employee> Employees { get; set; }
+    public DbSet<Vendor> Vendors { get; set; }
 
     protected override void OnModelCreating(ModelBuilder modelBuilder)
     {
@@ -48,6 +49,38 @@ public class ApplicationDbContext : DbContext
                 .HasMaxLength(20);
             
             entity.Property(e => e.Salary)
+                .IsRequired()
+                .HasColumnType("decimal(18,2)");
+        });
+
+        // Configure Vendor entity
+        modelBuilder.Entity<Vendor>(entity =>
+        {
+            entity.ToTable("Vendors");
+            
+            entity.HasKey(v => v.Id);
+            
+            entity.Property(v => v.CompanyName)
+                .IsRequired()
+                .HasMaxLength(100);
+            
+            entity.Property(v => v.Category)
+                .IsRequired()
+                .HasMaxLength(50);
+            
+            entity.Property(v => v.ContactPerson)
+                .IsRequired()
+                .HasMaxLength(100);
+            
+            entity.Property(v => v.Address)
+                .IsRequired()
+                .HasMaxLength(200);
+            
+            entity.Property(v => v.Phone)
+                .IsRequired()
+                .HasMaxLength(20);
+            
+            entity.Property(v => v.AnnualSpend)
                 .IsRequired()
                 .HasColumnType("decimal(18,2)");
         });
