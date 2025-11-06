@@ -13,18 +13,27 @@ public class VendorManagementModel : PageModel
     private readonly ILogger<VendorManagementModel> _logger;
     private readonly UserService _userService;
     private readonly VendorService _vendorService;
+    private readonly DeliveryService _deliveryService;
+    private readonly IWebHostEnvironment _environment;
 
-    public VendorManagementModel(ILogger<VendorManagementModel> logger, UserService userService, VendorService vendorService)
+    public VendorManagementModel(ILogger<VendorManagementModel> logger, UserService userService, VendorService vendorService, DeliveryService deliveryService, IWebHostEnvironment environment)
     {
         _logger = logger;
         _userService = userService;
         _vendorService = vendorService;
+        _deliveryService = deliveryService;
+        _environment = environment;
     }
 
     public bool CanViewSpend { get; set; }
     public string? UserRole { get; set; }
     public string? Username { get; set; }
     public List<VendorModel> Vendors { get; set; } = new();
+    public List<DeliveryModel> Deliveries { get; set; } = new();
+    public int TotalVendors { get; set; }
+    public int TotalCategories { get; set; }
+    public decimal AverageAnnualSpend { get; set; }
+    public decimal TotalAnnualSpend { get; set; }
 
     public void OnGet()
     {
@@ -37,6 +46,30 @@ public class VendorManagementModel : PageModel
         
         // Load vendors
         Vendors = _vendorService.GetAllVendors();
+        
+        // Load deliveries
+        Deliveries = _deliveryService.GetAllDeliveries();
+        
+        // Calculate statistics
+        TotalVendors = Vendors.Count;
+        TotalCategories = Vendors.Select(v => v.Category).Distinct().Count();
+        
+        if (Vendors.Any() && CanViewSpend)
+        {
+            AverageAnnualSpend = Vendors.Average(v => v.AnnualSpend);
+            TotalAnnualSpend = Vendors.Sum(v => v.AnnualSpend);
+        }
+        else if (Vendors.Any())
+        {
+            // If user can't view spend, show 0
+            AverageAnnualSpend = 0;
+            TotalAnnualSpend = 0;
+        }
+        else
+        {
+            AverageAnnualSpend = 0;
+            TotalAnnualSpend = 0;
+        }
     }
 
     public IActionResult OnGetExportVendors()
@@ -155,6 +188,77 @@ public class VendorManagementModel : PageModel
             return new JsonResult(new { success = false, message = "An error occurred: " + ex.Message });
         }
     }
+
+    public async Task<IActionResult> OnPostConfirmDelivery([FromForm] DeliveryModel delivery, IFormFile? deliveryPhoto)
+    {
+        try
+        {
+            if (!ModelState.IsValid)
+            {
+                Response.ContentType = "application/json";
+                return new JsonResult(new { success = false, message = "Invalid delivery data" });
+            }
+
+            string? photoPath = null;
+
+            // Handle file upload
+            if (deliveryPhoto != null && deliveryPhoto.Length > 0)
+            {
+                // Validate file type
+                var allowedExtensions = new[] { ".jpg", ".jpeg", ".png", ".gif", ".pdf" };
+                var fileExtension = Path.GetExtension(deliveryPhoto.FileName).ToLowerInvariant();
+                
+                if (!allowedExtensions.Contains(fileExtension))
+                {
+                    Response.ContentType = "application/json";
+                    return new JsonResult(new { success = false, message = "Invalid file type. Only JPG, PNG, GIF, and PDF files are allowed." });
+                }
+
+                // Validate file size (max 10MB)
+                if (deliveryPhoto.Length > 10 * 1024 * 1024)
+                {
+                    Response.ContentType = "application/json";
+                    return new JsonResult(new { success = false, message = "File size exceeds 10MB limit." });
+                }
+
+                // Create uploads directory if it doesn't exist
+                var uploadsDir = Path.Combine(_environment.WebRootPath, "uploads", "deliveries");
+                if (!Directory.Exists(uploadsDir))
+                {
+                    Directory.CreateDirectory(uploadsDir);
+                }
+
+                // Generate unique filename
+                var fileName = $"{Guid.NewGuid()}{fileExtension}";
+                var filePath = Path.Combine(uploadsDir, fileName);
+                
+                // Save file
+                using (var stream = new FileStream(filePath, FileMode.Create))
+                {
+                    await deliveryPhoto.CopyToAsync(stream);
+                }
+
+                // Store relative path
+                photoPath = $"/uploads/deliveries/{fileName}";
+            }
+
+            // Set created by
+            delivery.CreatedBy = User.FindFirst(ClaimTypes.Name)?.Value ?? "Unknown";
+
+            // Add delivery
+            _deliveryService.AddDelivery(delivery, photoPath);
+            _logger.LogInformation("Delivery confirmed: {DeliveryNumber} for vendor {VendorId}", delivery.DeliveryNumber, delivery.VendorId);
+
+            Response.ContentType = "application/json";
+            return new JsonResult(new { success = true, message = "Delivery confirmed successfully" });
+        }
+        catch (Exception ex)
+        {
+            _logger.LogError(ex, "Error confirming delivery");
+            Response.ContentType = "application/json";
+            return new JsonResult(new { success = false, message = "An error occurred: " + ex.Message });
+        }
+    }
 }
 
 // Vendor model for form binding
@@ -184,5 +288,35 @@ public class VendorModel
     [Required(ErrorMessage = "Annual spend is required")]
     [Range(0, 100000000, ErrorMessage = "Annual spend must be between 0 and 100,000,000")]
     public decimal AnnualSpend { get; set; }
+}
+
+// Delivery model for form binding
+public class DeliveryModel
+{
+    public int Id { get; set; }
+
+    [Required(ErrorMessage = "Vendor is required")]
+    public int VendorId { get; set; }
+
+    public string VendorName { get; set; } = string.Empty;
+
+    [Required(ErrorMessage = "Delivery number is required")]
+    [StringLength(200, ErrorMessage = "Delivery number cannot exceed 200 characters")]
+    public string DeliveryNumber { get; set; } = string.Empty;
+
+    [Required(ErrorMessage = "Delivery date is required")]
+    public DateTime DeliveryDate { get; set; } = DateTime.Now;
+
+    [StringLength(500, ErrorMessage = "Description cannot exceed 500 characters")]
+    public string Description { get; set; } = string.Empty;
+
+    [StringLength(100)]
+    public string Status { get; set; } = "Pending";
+
+    public string PhotoPath { get; set; } = string.Empty;
+
+    public DateTime CreatedAt { get; set; } = DateTime.Now;
+
+    public string CreatedBy { get; set; } = string.Empty;
 }
 

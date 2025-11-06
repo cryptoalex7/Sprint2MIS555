@@ -15,52 +15,86 @@
         </div>
     </div>
 
-    <!-- Section Cards -->
+    <!-- Statistics Cards -->
     <div class="row mb-5">
         <div class="col-12">
-            <h2 class="h4 fw-bold mb-3 text-dark">Quick Access</h2>
+            <h2 class="h4 fw-bold mb-4 text-dark">Vendor Statistics</h2>
             <div class="row g-4">
                 <div class="col-lg-3 col-md-6">
-                    <div class="card h-100 shadow-sm border-0 hrm-card" role="button" tabindex="0" aria-label="Vendor Onboarding">
+                    <div class="card h-100 shadow-sm border-0 hrm-card">
                         <div class="card-body text-center p-4">
                             <div class="hrm-icon mb-3">
                                 <i class="fas fa-building fa-3x text-primary"></i>
                             </div>
-                            <h5 class="card-title fw-bold">Onboarding</h5>
-                            <p class="card-text text-muted">Manage new vendor onboarding process</p>
+                            <h5 class="card-title fw-bold">Vendors</h5>
+                            <p class="card-text">
+                                <span class="display-6 fw-bold text-primary">@Model.TotalVendors</span>
+                                <br>
+                                <small class="text-muted">Total Vendors</small>
+                            </p>
                         </div>
                     </div>
                 </div>
                 <div class="col-lg-3 col-md-6">
-                    <div class="card h-100 shadow-sm border-0 hrm-card" role="button" tabindex="0" aria-label="Contract Management">
+                    <div class="card h-100 shadow-sm border-0 hrm-card">
                         <div class="card-body text-center p-4">
                             <div class="hrm-icon mb-3">
-                                <i class="fas fa-file-contract fa-3x text-success"></i>
+                                <i class="fas fa-tags fa-3x text-success"></i>
                             </div>
-                            <h5 class="card-title fw-bold">Contracts</h5>
-                            <p class="card-text text-muted">Track and manage vendor contracts</p>
+                            <h5 class="card-title fw-bold">Categories</h5>
+                            <p class="card-text">
+                                <span class="display-6 fw-bold text-success">@Model.TotalCategories</span>
+                                <br>
+                                <small class="text-muted">Total Categories</small>
+                            </p>
                         </div>
                     </div>
                 </div>
                 <div class="col-lg-3 col-md-6">
-                    <div class="card h-100 shadow-sm border-0 hrm-card" role="button" tabindex="0" aria-label="Performance Evaluation">
+                    <div class="card h-100 shadow-sm border-0 hrm-card">
                         <div class="card-body text-center p-4">
                             <div class="hrm-icon mb-3">
-                                <i class="fas fa-star fa-3x text-warning"></i>
+                                <i class="fas fa-dollar-sign fa-3x text-warning"></i>
                             </div>
-                            <h5 class="card-title fw-bold">Performance</h5>
-                            <p class="card-text text-muted">Evaluate vendor performance and ratings</p>
+                            <h5 class="card-title fw-bold">Average Annual Spend</h5>
+                            <p class="card-text">
+                                @if (Model.CanViewSpend && Model.AverageAnnualSpend > 0)
+                                {
+                                    <span class="display-6 fw-bold text-warning">$@Model.AverageAnnualSpend.ToString("N0")</span>
+                                    <br>
+                                    <small class="text-muted">Per Vendor</small>
+                                }
+                                else
+                                {
+                                    <span class="display-6 fw-bold text-muted">N/A</span>
+                                    <br>
+                                    <small class="text-muted">Access Restricted</small>
+                                }
+                            </p>
                         </div>
                     </div>
                 </div>
                 <div class="col-lg-3 col-md-6">
-                    <div class="card h-100 shadow-sm border-0 hrm-card" role="button" tabindex="0" aria-label="Reports and Analytics">
+                    <div class="card h-100 shadow-sm border-0 hrm-card">
                         <div class="card-body text-center p-4">
                             <div class="hrm-icon mb-3">
-                                <i class="fas fa-chart-bar fa-3x text-info"></i>
+                                <i class="fas fa-money-bill-wave fa-3x text-info"></i>
                             </div>
-                            <h5 class="card-title fw-bold">Reports</h5>
-                            <p class="card-text text-muted">Generate vendor reports and analytics</p>
+                            <h5 class="card-title fw-bold">Total Annual Spend</h5>
+                            <p class="card-text">
+                                @if (Model.CanViewSpend && Model.TotalAnnualSpend > 0)
+                                {
+                                    <span class="display-6 fw-bold text-info">$@Model.TotalAnnualSpend.ToString("N0")</span>
+                                    <br>
+                                    <small class="text-muted">Annual Total</small>
+                                }
+                                else
+                                {
+                                    <span class="display-6 fw-bold text-muted">N/A</span>
+                                    <br>
+                                    <small class="text-muted">Access Restricted</small>
+                                }
+                            </p>
                         </div>
                     </div>
                 </div>
@@ -89,7 +123,7 @@
                 </div>
                 <div class="card-body p-0">
                     <!-- Search and Filter Bar -->
-                    <div class="p-3 bg-light border-bottom">
+                    <div class="p-4 bg-light border-bottom">
                         <div class="row g-3">
                             <div class="col-md-4">
                                 <label for="searchInput" class="form-label fw-semibold">Search Vendors</label>
@@ -197,6 +231,145 @@
                         </table>
                     </div>
                 </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Delivery Confirmation Section -->
+    <div class="row mt-4">
+        <div class="col-12">
+            <div class="card shadow-sm border-0">
+                <div class="card-header bg-success text-white">
+                    <div class="row align-items-center">
+                        <div class="col-md-6">
+                            <h2 class="h4 mb-0 fw-bold">Delivery Confirmations</h2>
+                        </div>
+                        <div class="col-md-6 text-md-end">
+                            <button class="btn btn-light btn-sm" data-bs-toggle="modal" data-bs-target="#confirmDeliveryModal" aria-label="Confirm Delivery">
+                                <i class="fas fa-truck me-1"></i>Confirm Delivery
+                            </button>
+                        </div>
+                    </div>
+                </div>
+                <div class="card-body p-0">
+                    <div class="table-responsive">
+                        <table class="table table-hover table-hrm mb-0" id="deliveryTable" role="table" aria-label="Delivery Confirmations">
+                            <thead class="table-success">
+                                <tr>
+                                    <th scope="col" class="fw-bold">Delivery #</th>
+                                    <th scope="col" class="fw-bold">Vendor</th>
+                                    <th scope="col" class="fw-bold">Date</th>
+                                    <th scope="col" class="fw-bold">Description</th>
+                                    <th scope="col" class="fw-bold">Status</th>
+                                    <th scope="col" class="fw-bold">Photo</th>
+                                    <th scope="col" class="fw-bold">Confirmed By</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                @if (Model.Deliveries != null && Model.Deliveries.Any())
+                                {
+                                    @foreach (var delivery in Model.Deliveries)
+                                    {
+                                        var statusBadge = delivery.Status switch
+                                        {
+                                            "Confirmed" => "bg-success",
+                                            "Completed" => "bg-primary",
+                                            _ => "bg-warning"
+                                        };
+                                        <tr>
+                                            <td class="fw-semibold">@delivery.DeliveryNumber</td>
+                                            <td>@delivery.VendorName</td>
+                                            <td>@delivery.DeliveryDate.ToString("MM/dd/yyyy")</td>
+                                            <td>@(string.IsNullOrEmpty(delivery.Description) ? "N/A" : delivery.Description)</td>
+                                            <td><span class="badge badge-hrm @statusBadge">@delivery.Status</span></td>
+                                            <td>
+                                                @if (!string.IsNullOrEmpty(delivery.PhotoPath))
+                                                {
+                                                    <a href="@delivery.PhotoPath" target="_blank" class="btn btn-sm btn-outline-primary" title="View Photo">
+                                                        <i class="fas fa-image"></i> View
+                                                    </a>
+                                                }
+                                                else
+                                                {
+                                                    <span class="text-muted">No photo</span>
+                                                }
+                                            </td>
+                                            <td>@delivery.CreatedBy</td>
+                                        </tr>
+                                    }
+                                }
+                                else
+                                {
+                                    <tr>
+                                        <td colspan="7" class="text-center text-muted py-4">
+                                            No deliveries confirmed yet. Click "Confirm Delivery" to get started.
+                                        </td>
+                                    </tr>
+                                }
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- Confirm Delivery Modal -->
+<div class="modal fade modal-hrm" id="confirmDeliveryModal" tabindex="-1" aria-labelledby="confirmDeliveryModalLabel" aria-hidden="true">
+    <div class="modal-dialog modal-lg">
+        <div class="modal-content">
+            <div class="modal-header bg-success text-white">
+                <h5 class="modal-title fw-bold" id="confirmDeliveryModalLabel">Confirm Delivery</h5>
+                <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal" aria-label="Close"></button>
+            </div>
+            <div class="modal-body">
+                <form id="confirmDeliveryForm" enctype="multipart/form-data" novalidate>
+                    <div class="row g-3">
+                        <div class="col-12">
+                            <label for="deliveryVendor" class="form-label fw-semibold">Vendor *</label>
+                            <select class="form-select form-control-hrm" id="deliveryVendor" required>
+                                <option value="">Select Vendor</option>
+                                @if (Model.Vendors != null)
+                                {
+                                    @foreach (var vendor in Model.Vendors)
+                                    {
+                                        <option value="@vendor.Id">@vendor.CompanyName</option>
+                                    }
+                                }
+                            </select>
+                            <div class="invalid-feedback">Please select a vendor.</div>
+                        </div>
+                        <div class="col-md-6">
+                            <label for="deliveryNumber" class="form-label fw-semibold">Delivery Number *</label>
+                            <input type="text" class="form-control form-control-hrm" id="deliveryNumber" required placeholder="e.g., DEL-2024-001">
+                            <div class="invalid-feedback">Please provide a delivery number.</div>
+                        </div>
+                        <div class="col-md-6">
+                            <label for="deliveryDate" class="form-label fw-semibold">Delivery Date *</label>
+                            <input type="date" class="form-control form-control-hrm" id="deliveryDate" required>
+                            <div class="invalid-feedback">Please select a delivery date.</div>
+                        </div>
+                        <div class="col-12">
+                            <label for="deliveryDescription" class="form-label fw-semibold">Description</label>
+                            <textarea class="form-control form-control-hrm" id="deliveryDescription" rows="3" placeholder="Optional description of the delivery"></textarea>
+                        </div>
+                        <div class="col-12">
+                            <label for="deliveryPhoto" class="form-label fw-semibold">Upload Delivery Photo/Receipt</label>
+                            <input type="file" class="form-control form-control-hrm" id="deliveryPhoto" accept="image/*,.pdf">
+                            <small class="form-text text-muted">Accepted formats: JPG, PNG, GIF, PDF (Max 10MB)</small>
+                            <div id="photoPreview" class="mt-2" style="display: none;">
+                                <img id="previewImage" src="" alt="Preview" class="img-thumbnail" style="max-height: 200px;">
+                            </div>
+                        </div>
+                    </div>
+                </form>
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cancel</button>
+                <button type="button" class="btn btn-success" id="confirmDeliveryBtn">
+                    <i class="fas fa-check me-1"></i>Confirm Delivery
+                </button>
             </div>
         </div>
     </div>
@@ -900,6 +1073,127 @@
             vendorIdToDelete = null;
             document.getElementById('confirmDeleteBtn').disabled = false;
             document.getElementById('confirmDeleteBtn').innerHTML = '<i class="fas fa-trash me-1"></i>Yes, Delete Vendor';
+        });
+
+        // Delivery confirmation functionality
+        const confirmDeliveryModal = new bootstrap.Modal(document.getElementById('confirmDeliveryModal'));
+        
+        // Photo preview functionality
+        document.getElementById('deliveryPhoto').addEventListener('change', function(e) {
+            const file = e.target.files[0];
+            const preview = document.getElementById('photoPreview');
+            const previewImage = document.getElementById('previewImage');
+            
+            if (file && file.type.startsWith('image/')) {
+                const reader = new FileReader();
+                reader.onload = function(e) {
+                    previewImage.src = e.target.result;
+                    preview.style.display = 'block';
+                };
+                reader.readAsDataURL(file);
+            } else {
+                preview.style.display = 'none';
+            }
+        });
+
+        // Set today's date as default
+        document.getElementById('deliveryDate').valueAsDate = new Date();
+
+        // Confirm delivery form submission
+        document.getElementById('confirmDeliveryBtn').addEventListener('click', async function() {
+            const form = document.getElementById('confirmDeliveryForm');
+            if (!form.checkValidity()) {
+                form.classList.add('was-validated');
+                return;
+            }
+
+            const btn = this;
+            const originalText = btn.innerHTML;
+            
+            // Disable button and show loading state
+            btn.disabled = true;
+            btn.innerHTML = '<span class="spinner-border spinner-border-sm me-1"></span>Confirming...';
+
+            try {
+                const formData = new FormData();
+                formData.append('Delivery.VendorId', document.getElementById('deliveryVendor').value);
+                formData.append('Delivery.DeliveryNumber', document.getElementById('deliveryNumber').value);
+                formData.append('Delivery.DeliveryDate', document.getElementById('deliveryDate').value);
+                formData.append('Delivery.Description', document.getElementById('deliveryDescription').value);
+                formData.append('Delivery.Status', 'Confirmed');
+                
+                // Add photo if selected
+                const photoFile = document.getElementById('deliveryPhoto').files[0];
+                if (photoFile) {
+                    formData.append('DeliveryPhoto', photoFile);
+                }
+                
+                // Get antiforgery token
+                const tokenInput = document.querySelector('input[name="__RequestVerificationToken"]');
+                if (tokenInput) {
+                    formData.append('__RequestVerificationToken', tokenInput.value);
+                }
+
+                const currentUrl = window.location.pathname;
+                const handlerUrl = currentUrl + '?handler=ConfirmDelivery';
+
+                const response = await fetch(handlerUrl, {
+                    method: 'POST',
+                    body: formData
+                });
+
+                if (!response.ok) {
+                    const errorText = await response.text();
+                    throw new Error(`HTTP error! status: ${response.status}`);
+                }
+
+                const contentType = response.headers.get("content-type");
+                if (!contentType || !contentType.includes("application/json")) {
+                    const text = await response.text();
+                    throw new Error('Server returned non-JSON response');
+                }
+
+                const result = await response.json();
+
+                if (result.success) {
+                    // Hide modal
+                    confirmDeliveryModal.hide();
+                    
+                    // Reset form
+                    form.reset();
+                    form.classList.remove('was-validated');
+                    document.getElementById('photoPreview').style.display = 'none';
+                    
+                    // Show success message
+                    showNotification('Delivery confirmed successfully!', 'success');
+                    
+                    // Reload page to refresh table
+                    setTimeout(() => {
+                        window.location.reload();
+                    }, 1000);
+                } else {
+                    showNotification(result.message || 'Failed to confirm delivery', 'error');
+                    btn.disabled = false;
+                    btn.innerHTML = originalText;
+                }
+            } catch (error) {
+                console.error('Error confirming delivery:', error);
+                showNotification('An error occurred while confirming the delivery: ' + error.message, 'error');
+                btn.disabled = false;
+                btn.innerHTML = originalText;
+            }
+        });
+
+        // Reset delivery modal when closed
+        document.getElementById('confirmDeliveryModal').addEventListener('hidden.bs.modal', function() {
+            const form = document.getElementById('confirmDeliveryForm');
+            form.reset();
+            form.classList.remove('was-validated');
+            document.getElementById('photoPreview').style.display = 'none';
+            document.getElementById('deliveryDate').valueAsDate = new Date();
+            const btn = document.getElementById('confirmDeliveryBtn');
+            btn.disabled = false;
+            btn.innerHTML = '<i class="fas fa-check me-1"></i>Confirm Delivery';
         });
 
         // Simple notification function

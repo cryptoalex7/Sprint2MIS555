@@ -1,20 +1,20 @@
 {
   "format": 1,
   "restore": {
-    "C:\\Users\\amtri\\OneDrive - Kansas State University\\MIS 555 - Cloud Computing and App Programming\\Sprint2MIS555\\SkynetERP\\SkynetERP.csproj": {}
+    "/Users/alex/Desktop/Sprint2MIS555-3/SkynetERP/SkynetERP.csproj": {}
   },
   "projects": {
-    "C:\\Users\\amtri\\OneDrive - Kansas State University\\MIS 555 - Cloud Computing and App Programming\\Sprint2MIS555\\SkynetERP\\SkynetERP.csproj": {
+    "/Users/alex/Desktop/Sprint2MIS555-3/SkynetERP/SkynetERP.csproj": {
       "version": "1.0.0",
       "restore": {
-        "projectUniqueName": "C:\\Users\\amtri\\OneDrive - Kansas State University\\MIS 555 - Cloud Computing and App Programming\\Sprint2MIS555\\SkynetERP\\SkynetERP.csproj",
+        "projectUniqueName": "/Users/alex/Desktop/Sprint2MIS555-3/SkynetERP/SkynetERP.csproj",
         "projectName": "SkynetERP",
-        "projectPath": "C:\\Users\\amtri\\OneDrive - Kansas State University\\MIS 555 - Cloud Computing and App Programming\\Sprint2MIS555\\SkynetERP\\SkynetERP.csproj",
-        "packagesPath": "C:\\Users\\amtri\\.nuget\\packages\\",
-        "outputPath": "C:\\Users\\amtri\\OneDrive - Kansas State University\\MIS 555 - Cloud Computing and App Programming\\Sprint2MIS555\\SkynetERP\\obj\\",
+        "projectPath": "/Users/alex/Desktop/Sprint2MIS555-3/SkynetERP/SkynetERP.csproj",
+        "packagesPath": "/Users/alex/.nuget/packages/",
+        "outputPath": "/Users/alex/Desktop/Sprint2MIS555-3/SkynetERP/obj/",
         "projectStyle": "PackageReference",
         "configFilePaths": [
-          "C:\\Users\\amtri\\AppData\\Roaming\\NuGet\\NuGet.Config"
+          "/Users/alex/.nuget/NuGet/NuGet.Config"
         ],
         "originalTargetFrameworks": [
           "net9.0"
@@ -78,7 +78,7 @@
               "privateAssets": "all"
             }
           },
-          "runtimeIdentifierGraphPath": "C:\\Program Files\\dotnet\\sdk\\9.0.305/PortableRuntimeIdentifierGraph.json"
+          "runtimeIdentifierGraphPath": "/usr/local/share/dotnet/sdk/9.0.304/PortableRuntimeIdentifierGraph.json"
         }
       }
     }

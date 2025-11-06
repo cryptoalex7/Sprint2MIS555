@@ -218,16 +218,37 @@ body {
 .hrm-card:nth-child(3) { animation-delay: 0.3s; }
 .hrm-card:nth-child(4) { animation-delay: 0.4s; }
 
-/* HRM Page Specific Styles */
+/* HRM Page Specific Styles - Enhanced */
 .hrm-card {
-    transition: all 0.3s ease;
-    cursor: pointer;
-    border-radius: 12px;
+    transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+    cursor: default;
+    border-radius: 16px;
+    border: 1px solid rgba(0,0,0,0.08);
+    background: linear-gradient(135deg, #ffffff 0%, #f8f9fa 100%);
+    position: relative;
+    overflow: hidden;
+}
+
+.hrm-card::before {
+    content: '';
+    position: absolute;
+    top: 0;
+    left: 0;
+    right: 0;
+    height: 4px;
+    background: linear-gradient(90deg, #0d6efd, #0b5ed7);
+    opacity: 0;
+    transition: opacity 0.3s ease;
+}
+
+.hrm-card:hover::before {
+    opacity: 1;
 }
 
 .hrm-card:hover {
-    transform: translateY(-5px);
-    box-shadow: 0 8px 25px rgba(0,0,0,0.15) !important;
+    transform: translateY(-8px);
+    box-shadow: 0 12px 40px rgba(13, 110, 253, 0.15) !important;
+    border-color: rgba(13, 110, 253, 0.2);
 }
 
 .hrm-card:focus {
@@ -236,40 +257,207 @@ body {
 }
 
 .hrm-icon {
-    transition: transform 0.3s ease;
+    transition: all 0.4s cubic-bezier(0.4, 0, 0.2, 1);
+    filter: drop-shadow(0 2px 4px rgba(0,0,0,0.1));
 }
 
 .hrm-card:hover .hrm-icon {
-    transform: scale(1.1);
+    transform: scale(1.15) translateY(-5px);
+    filter: drop-shadow(0 4px 8px rgba(0,0,0,0.15));
 }
 
+/* Enhanced Statistics Card Values */
+.hrm-card .display-6 {
+    background: linear-gradient(135deg, currentColor 0%, currentColor 100%);
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
+    background-clip: text;
+    font-weight: 700;
+    letter-spacing: -0.5px;
+}
+
+/* Table Enhancements */
 .table th {
     border-top: none;
-    font-size: 0.9rem;
+    font-size: 0.875rem;
     letter-spacing: 0.5px;
+    font-weight: 600;
+    padding: 1.25rem 1rem;
 }
 
 .table td {
     vertical-align: middle;
     font-size: 0.9rem;
+    padding: 1.25rem 1rem;
+    border-top: 1px solid rgba(0,0,0,0.05);
 }
 
-.badge {
+/* Alternating row colors for better readability */
+.table-hrm tbody tr:nth-child(even) {
+    background-color: rgba(248, 249, 250, 0.5);
+}
+
+.table-hrm tbody tr:nth-child(odd) {
+    background-color: #ffffff;
+}
+
+.table-hrm tbody tr:hover {
+    background-color: rgba(13, 110, 253, 0.08) !important;
+    transform: scale(1.002);
+    box-shadow: 0 2px 8px rgba(13, 110, 253, 0.1);
+}
+
+/* Enhanced Badge Styling */
+.badge-hrm {
     font-size: 0.75rem;
-    padding: 0.5em 0.75em;
+    padding: 0.5em 1em;
+    border-radius: 12px;
+    font-weight: 600;
+    letter-spacing: 0.3px;
+    box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+    transition: all 0.2s ease;
+}
+
+.badge-hrm:hover {
+    transform: translateY(-1px);
+    box-shadow: 0 4px 8px rgba(0,0,0,0.15);
+}
+
+/* Card Header Enhancements */
+.card-header {
+    padding: 1.25rem 1.5rem;
+    font-weight: 600;
+    border-bottom: 2px solid rgba(255,255,255,0.2);
+}
+
+.card-header.bg-primary {
+    background: linear-gradient(135deg, #0d6efd 0%, #0b5ed7 100%) !important;
+}
+
+.card-header.bg-success {
+    background: linear-gradient(135deg, #198754 0%, #157347 100%) !important;
+}
+
+/* Button Enhancements */
+.btn {
+    border-radius: 8px;
+    font-weight: 500;
+    transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+    padding: 0.5rem 1rem;
+}
+
+.btn:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 4px 12px rgba(0,0,0,0.15);
+}
+
+.btn:active {
+    transform: translateY(0);
 }
 
 .btn-group .btn {
-    margin: 0 1px;
+    margin: 0 2px;
+    border-radius: 6px;
+}
+
+.btn-group-hrm .btn {
+    border-radius: 6px;
+    margin: 0 3px;
+    padding: 0.4rem 0.8rem;
+    transition: all 0.2s ease;
+}
+
+.btn-group-hrm .btn:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 4px 12px rgba(0,0,0,0.2);
+    z-index: 1;
 }
 
 /* Animation for table rows */
 .table tbody tr {
-    transition: background-color 0.2s ease;
+    transition: all 0.2s cubic-bezier(0.4, 0, 0.2, 1);
 }
 
-.table tbody tr:hover {
-    background-color: rgba(13, 110, 253, 0.05);
+/* Section Spacing */
+.hrm-page .row.mb-5 {
+    margin-bottom: 3rem !important;
+}
+
+.hrm-page .row.mt-4 {
+    margin-top: 2.5rem !important;
+}
+
+/* Search/Filter Bar Enhancements */
+.bg-light {
+    background: linear-gradient(135deg, #f8f9fa 0%, #e9ecef 100%) !important;
+    border-bottom: 2px solid rgba(0,0,0,0.05);
+    padding: 1.5rem !important;
+}
+
+/* Page Title Enhancements */
+.display-4 {
+    background: linear-gradient(135deg, #0d6efd 0%, #0b5ed7 100%);
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
+    background-clip: text;
+    font-weight: 800;
+    letter-spacing: -1px;
+}
+
+/* Statistics Section Title */
+.h4.fw-bold.mb-3 {
+    color: #2c3e50;
+    font-weight: 700;
+    letter-spacing: -0.3px;
+    margin-bottom: 1.5rem !important;
+}
+
+/* Card Body Padding */
+.hrm-card .card-body {
+    padding: 2rem 1.5rem !important;
+}
+
+/* Value Display in Cards */
+.hrm-card .display-6 {
+    line-height: 1.2;
+    margin-bottom: 0.5rem;
+}
+
+.hrm-card small.text-muted {
+    font-size: 0.85rem;
+    font-weight: 500;
+    color: #6c757d !important;
+    letter-spacing: 0.3px;
+}
+
+/* Table Container Enhancements */
+.card.shadow-sm {
+    border-radius: 16px;
+    border: 1px solid rgba(0,0,0,0.08);
+    overflow: hidden;
+    box-shadow: 0 4px 20px rgba(0,0,0,0.08) !important;
+}
+
+/* Delivery Table Specific */
+.table-success thead th {
+    background: linear-gradient(135deg, #198754 0%, #157347 100%) !important;
+}
+
+/* Improved Input Focus States */
+.form-control-hrm:focus,
+.form-select-hrm:focus {
+    border-color: #0d6efd;
+    box-shadow: 0 0 0 0.25rem rgba(13, 110, 253, 0.15);
+    transform: translateY(-1px);
+}
+
+/* Better Visual Hierarchy for Numbers */
+.text-primary.fw-bold,
+.text-success.fw-bold,
+.text-warning.fw-bold,
+.text-info.fw-bold {
+    font-weight: 700;
+    letter-spacing: -0.5px;
 }
 
 /* Login Page Styles */

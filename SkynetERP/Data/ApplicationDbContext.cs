@@ -12,6 +12,7 @@ public class ApplicationDbContext : DbContext
 
     public DbSet<Employee> Employees { get; set; }
     public DbSet<Vendor> Vendors { get; set; }
+    public DbSet<Delivery> Deliveries { get; set; }
 
     protected override void OnModelCreating(ModelBuilder modelBuilder)
     {
@@ -83,6 +84,41 @@ public class ApplicationDbContext : DbContext
             entity.Property(v => v.AnnualSpend)
                 .IsRequired()
                 .HasColumnType("decimal(18,2)");
+        });
+
+        // Configure Delivery entity
+        modelBuilder.Entity<Delivery>(entity =>
+        {
+            entity.ToTable("Deliveries");
+            
+            entity.HasKey(d => d.Id);
+            
+            entity.HasOne(d => d.Vendor)
+                .WithMany()
+                .HasForeignKey(d => d.VendorId)
+                .OnDelete(DeleteBehavior.Restrict);
+            
+            entity.Property(d => d.DeliveryNumber)
+                .IsRequired()
+                .HasMaxLength(200);
+            
+            entity.Property(d => d.DeliveryDate)
+                .IsRequired();
+            
+            entity.Property(d => d.Description)
+                .HasMaxLength(500);
+            
+            entity.Property(d => d.Status)
+                .HasMaxLength(100);
+            
+            entity.Property(d => d.PhotoPath)
+                .HasMaxLength(500);
+            
+            entity.Property(d => d.CreatedAt)
+                .IsRequired();
+            
+            entity.Property(d => d.CreatedBy)
+                .HasMaxLength(100);
         });
 
         // Seed initial data

@@ -25,6 +25,10 @@ public class HRMModel : PageModel
     public string? UserRole { get; set; }
     public string? Username { get; set; }
     public List<EmployeeModel> Employees { get; set; } = new();
+    public int TotalEmployees { get; set; }
+    public int TotalDepartments { get; set; }
+    public decimal AverageSalary { get; set; }
+    public decimal MonthlyPayroll { get; set; }
 
     public void OnGet()
     {
@@ -37,6 +41,27 @@ public class HRMModel : PageModel
         
         // Load employees
         Employees = _employeeService.GetAllEmployees();
+        
+        // Calculate statistics
+        TotalEmployees = Employees.Count;
+        TotalDepartments = Employees.Select(e => e.Department).Distinct().Count();
+        
+        if (Employees.Any() && CanViewSalary)
+        {
+            AverageSalary = Employees.Average(e => e.Salary);
+            MonthlyPayroll = Employees.Sum(e => e.Salary) / 12;
+        }
+        else if (Employees.Any())
+        {
+            // If user can't view salary, show N/A or 0
+            AverageSalary = 0;
+            MonthlyPayroll = 0;
+        }
+        else
+        {
+            AverageSalary = 0;
+            MonthlyPayroll = 0;
+        }
     }
 
     public IActionResult OnGetExportEmployees()
