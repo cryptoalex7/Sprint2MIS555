@@ -6,7 +6,27 @@
 
 @Html.AntiForgeryToken()
 
-<div class="container-fluid hrm-page">
+<div class="hrm-page">
+    <!-- Toast Container -->
+    <div class="toast-container position-fixed top-0 end-0 p-3" style="z-index: 1055;">
+        <div id="successToast" class="toast" role="alert" aria-live="assertive" aria-atomic="true" data-bs-autohide="true" data-bs-delay="5000">
+            <div class="toast-header bg-success text-white d-flex align-items-center">
+                <i class="fas fa-check-circle me-2"></i>
+                <strong class="me-auto">Success</strong>
+                <button type="button" class="btn-close btn-close-white" data-bs-dismiss="toast" aria-label="Close"></button>
+            </div>
+            <div class="toast-body bg-white" id="successToastBody"></div>
+        </div>
+        <div id="errorToast" class="toast" role="alert" aria-live="assertive" aria-atomic="true" data-bs-autohide="true" data-bs-delay="5000">
+            <div class="toast-header bg-danger text-white d-flex align-items-center">
+                <i class="fas fa-exclamation-circle me-2"></i>
+                <strong class="me-auto">Error</strong>
+                <button type="button" class="btn-close btn-close-white" data-bs-dismiss="toast" aria-label="Close"></button>
+            </div>
+            <div class="toast-body bg-white" id="errorToastBody"></div>
+        </div>
+    </div>
+
     <!-- Page Header -->
     <div class="row mb-4">
         <div class="col-12">
@@ -112,9 +132,12 @@
                             <h2 class="h4 mb-0 fw-bold">Employee Directory</h2>
                         </div>
                         <div class="col-md-6 text-md-end">
-                            <button class="btn btn-light btn-sm me-2" data-bs-toggle="modal" data-bs-target="#addEmployeeModal" aria-label="Add New Employee">
-                                <i class="fas fa-plus me-1"></i>Add Employee
-                            </button>
+                            @if (Model.CanEditDelete)
+                            {
+                                <button class="btn btn-light btn-sm me-2" data-bs-toggle="modal" data-bs-target="#addEmployeeModal" aria-label="Add New Employee">
+                                    <i class="fas fa-plus me-1"></i>Add Employee
+                                </button>
+                            }
                             <button class="btn btn-outline-light btn-sm" id="exportBtn" aria-label="Export Employee Data">
                                 <i class="fas fa-download me-1"></i>Export
                             </button>
@@ -173,7 +196,10 @@
                                     {
                                         <th scope="col" class="fw-bold">Salary</th>
                                     }
-                                    <th scope="col" class="fw-bold text-center">Actions</th>
+                                    @if (Model.CanEditDelete)
+                                    {
+                                        <th scope="col" class="fw-bold text-center">Actions</th>
+                                    }
                                 </tr>
                             </thead>
                             <tbody>
@@ -200,38 +226,46 @@
                                             {
                                                 <td class="text-success fw-bold">$@employee.Salary.ToString("N0")</td>
                                             }
-                                            <td class="text-center">
-                                                <div class="btn-group btn-group-hrm" role="group" aria-label="Employee actions">
-                                                    <button class="btn btn-sm btn-outline-warning edit-employee-btn" 
-                                                            data-employee-id="@employee.Id"
-                                                            data-employee-firstname="@employee.FirstName"
-                                                            data-employee-lastname="@employee.LastName"
-                                                            data-employee-department="@employee.Department"
-                                                            data-employee-role="@employee.Role"
-                                                            data-employee-address="@employee.Address"
-                                                            data-employee-phone="@employee.Phone"
-                                                            data-employee-salary="@employee.Salary"
-                                                            title="Edit Employee" 
-                                                            aria-label="Edit employee">
-                                                        <i class="fas fa-edit"></i>
-                                                    </button>
-                                                    <button class="btn btn-sm btn-outline-danger delete-employee-btn" 
-                                                            data-employee-id="@employee.Id" 
-                                                            data-employee-name="@employee.FullName"
-                                                            title="Delete Employee" 
-                                                            aria-label="Delete employee">
-                                                        <i class="fas fa-trash"></i>
-                                                    </button>
-                                                </div>
-                                            </td>
+                                            @if (Model.CanEditDelete)
+                                            {
+                                                <td class="text-center">
+                                                    <div class="btn-group btn-group-hrm" role="group" aria-label="Employee actions">
+                                                        <button class="btn btn-sm btn-outline-warning edit-employee-btn" 
+                                                                data-employee-id="@employee.Id"
+                                                                data-employee-firstname="@employee.FirstName"
+                                                                data-employee-lastname="@employee.LastName"
+                                                                data-employee-department="@employee.Department"
+                                                                data-employee-role="@employee.Role"
+                                                                data-employee-address="@employee.Address"
+                                                                data-employee-phone="@employee.Phone"
+                                                                data-employee-salary="@employee.Salary"
+                                                                title="Edit Employee" 
+                                                                aria-label="Edit employee">
+                                                            <i class="fas fa-edit"></i>
+                                                        </button>
+                                                        <button class="btn btn-sm btn-outline-danger delete-employee-btn" 
+                                                                data-employee-id="@employee.Id" 
+                                                                data-employee-name="@employee.FullName"
+                                                                title="Delete Employee" 
+                                                                aria-label="Delete employee">
+                                                            <i class="fas fa-trash"></i>
+                                                        </button>
+                                                    </div>
+                                                </td>
+                                            }
                                         </tr>
                                     }
                                 }
                                 else
                                 {
                                     <tr>
-                                        <td colspan="@(Model.CanViewSalary ? 7 : 6)" class="text-center text-muted py-4">
-                                            No employees found. Click "Add Employee" to get started.
+                                        @{
+                                            var colCount = 5; // Name, Department, Role, Address, Phone
+                                            if (Model.CanViewSalary) colCount++;
+                                            if (Model.CanEditDelete) colCount++;
+                                        }
+                                        <td colspan="@colCount" class="text-center text-muted py-4">
+                                            No employees found.@(Model.CanEditDelete ? " Click \"Add Employee\" to get started." : "")
                                         </td>
                                     </tr>
                                 }
@@ -928,8 +962,18 @@
                             // Check if table is empty and show message
                             const tbody = document.querySelector('#employeeTable tbody');
                             if (tbody && tbody.children.length === 0) {
-                                const colspan = @(Model.CanViewSalary ? 7 : 6);
-                                tbody.innerHTML = `<tr><td colspan="${colspan}" class="text-center text-muted py-4">No employees found. Click "Add Employee" to get started.</td></tr>`;
+                                @{
+                                    var jsColCount = 5; // Name, Department, Role, Address, Phone
+                                    if (Model.CanViewSalary) jsColCount++;
+                                    if (Model.CanEditDelete) jsColCount++;
+                                }
+                                const colspan = @jsColCount;
+                                @{
+                                    var emptyMessage = Model.CanEditDelete 
+                                        ? "No employees found. Click \"Add Employee\" to get started." 
+                                        : "No employees found.";
+                                }
+                                tbody.innerHTML = `<tr><td colspan="${colspan}" class="text-center text-muted py-4">@emptyMessage</td></tr>`;
                             }
                         }, 300);
                     }
@@ -958,23 +1002,18 @@
             document.getElementById('confirmDeleteBtn').innerHTML = '<i class="fas fa-trash me-1"></i>Yes, Delete Employee';
         });
 
-        // Simple notification function
+        // Toast notification function (consistent with other pages)
         function showNotification(message, type) {
-            // Create notification element
-            const notification = document.createElement('div');
-            notification.className = `alert alert-${type === 'success' ? 'success' : 'danger'} alert-dismissible fade show position-fixed`;
-            notification.style.cssText = 'top: 20px; right: 20px; z-index: 9999; min-width: 300px;';
-            notification.innerHTML = `
-                ${message}
-                <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
-            `;
+            const toastId = type === 'success' ? 'successToast' : 'errorToast';
+            const bodyId = type === 'success' ? 'successToastBody' : 'errorToastBody';
+            const toastElement = document.getElementById(toastId);
+            const toastBody = document.getElementById(bodyId);
             
-            document.body.appendChild(notification);
-            
-            // Auto-remove after 3 seconds
-            setTimeout(() => {
-                notification.remove();
-            }, 3000);
+            if (toastElement && toastBody) {
+                toastBody.textContent = message;
+                const toast = new bootstrap.Toast(toastElement, { autohide: true, delay: 5000 });
+                toast.show();
+            }
         }
     </script>
 }

@@ -32,8 +32,16 @@ build_property.EnableCodeStyleSeverity =
 build_metadata.AdditionalFiles.TargetPath = UGFnZXMvQWNjZXNzRGVuaWVkLmNzaHRtbA==
 build_metadata.AdditionalFiles.CssScope = 
 
+[/Users/alex/Desktop/Sprint2MIS555-3/SkynetERP/Pages/Dashboard.cshtml]
+build_metadata.AdditionalFiles.TargetPath = UGFnZXMvRGFzaGJvYXJkLmNzaHRtbA==
+build_metadata.AdditionalFiles.CssScope = 
+
 [/Users/alex/Desktop/Sprint2MIS555-3/SkynetERP/Pages/Error.cshtml]
 build_metadata.AdditionalFiles.TargetPath = UGFnZXMvRXJyb3IuY3NodG1s
+build_metadata.AdditionalFiles.CssScope = 
+
+[/Users/alex/Desktop/Sprint2MIS555-3/SkynetERP/Pages/FinancialManagement.cshtml]
+build_metadata.AdditionalFiles.TargetPath = UGFnZXMvRmluYW5jaWFsTWFuYWdlbWVudC5jc2h0bWw=
 build_metadata.AdditionalFiles.CssScope = 
 
 [/Users/alex/Desktop/Sprint2MIS555-3/SkynetERP/Pages/HRM.cshtml]

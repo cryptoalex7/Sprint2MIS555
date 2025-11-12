@@ -22,6 +22,7 @@ public class HRMModel : PageModel
     }
 
     public bool CanViewSalary { get; set; }
+    public bool CanEditDelete { get; set; }
     public string? UserRole { get; set; }
     public string? Username { get; set; }
     public List<EmployeeModel> Employees { get; set; } = new();
@@ -38,6 +39,9 @@ public class HRMModel : PageModel
         
         // Check if user can view salary
         CanViewSalary = _userService.CanViewSalary(UserRole);
+        
+        // Admin and HR can edit/delete employees (HR's core function)
+        CanEditDelete = UserRole == "Admin" || UserRole == "HR";
         
         // Load employees
         Employees = _employeeService.GetAllEmployees();
@@ -104,12 +108,21 @@ public class HRMModel : PageModel
 
     public IActionResult OnPostAddEmployee(EmployeeModel employee)
     {
+        // Check authorization - Admin and HR can add employees
+        var userRole = User.FindFirst("Role")?.Value;
+        if (userRole != "Admin" && userRole != "HR")
+        {
+            Response.ContentType = "application/json";
+            return new JsonResult(new { success = false, message = "Unauthorized: Only administrators and HR can add employees" });
+        }
+
         if (!ModelState.IsValid)
         {
             Employees = _employeeService.GetAllEmployees();
             UserRole = User.FindFirst("Role")?.Value;
             Username = User.FindFirst(ClaimTypes.Name)?.Value;
             CanViewSalary = _userService.CanViewSalary(UserRole);
+            CanEditDelete = UserRole == "Admin" || UserRole == "HR";
             return Page();
         }
 
@@ -121,6 +134,14 @@ public class HRMModel : PageModel
 
     public IActionResult OnPostUpdateEmployee(EmployeeModel employee)
     {
+        // Check authorization - Admin and HR can edit employees
+        var userRole = User.FindFirst("Role")?.Value;
+        if (userRole != "Admin" && userRole != "HR")
+        {
+            Response.ContentType = "application/json";
+            return new JsonResult(new { success = false, message = "Unauthorized: Only administrators and HR can edit employees" });
+        }
+
         if (!ModelState.IsValid)
         {
             Response.ContentType = "application/json";
@@ -155,6 +176,14 @@ public class HRMModel : PageModel
 
     public IActionResult OnPostDeleteEmployee([FromForm] int id)
     {
+        // Check authorization - Admin and HR can delete employees
+        var userRole = User.FindFirst("Role")?.Value;
+        if (userRole != "Admin" && userRole != "HR")
+        {
+            Response.ContentType = "application/json";
+            return new JsonResult(new { success = false, message = "Unauthorized: Only administrators and HR can delete employees" });
+        }
+
         try
         {
             _logger.LogInformation("Delete request received for employee ID: {EmployeeId}", id);

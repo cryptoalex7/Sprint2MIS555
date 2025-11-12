@@ -120,7 +120,6 @@
 /Users/alex/Desktop/Sprint2MIS555-3/SkynetERP/obj/Debug/net9.0/scopedcss/bundle/SkynetERP.styles.css
 /Users/alex/Desktop/Sprint2MIS555-3/SkynetERP/obj/Debug/net9.0/scopedcss/projectbundle/SkynetERP.bundle.scp.css
 /Users/alex/Desktop/Sprint2MIS555-3/SkynetERP/obj/Debug/net9.0/compressed/mea9bf2f5y-61n19gt1b8.gz
-/Users/alex/Desktop/Sprint2MIS555-3/SkynetERP/obj/Debug/net9.0/compressed/7k7f929zye-xtxxf3hu2r.gz
 /Users/alex/Desktop/Sprint2MIS555-3/SkynetERP/obj/Debug/net9.0/compressed/1ryia2rjem-bqjiyaj88i.gz
 /Users/alex/Desktop/Sprint2MIS555-3/SkynetERP/obj/Debug/net9.0/compressed/v3l1km9hss-c2jlpeoesf.gz
 /Users/alex/Desktop/Sprint2MIS555-3/SkynetERP/obj/Debug/net9.0/compressed/tx9qhxwqrn-erw9l3u2r3.gz
@@ -560,4 +559,5 @@ C:/Users/amtri/OneDrive - Kansas State University/MIS 555 - Cloud Computing and 
 C:/Users/amtri/OneDrive - Kansas State University/MIS 555 - Cloud Computing and App Programming/Sprint2MIS555/SkynetERP/obj/Debug/net9.0/SkynetERP.pdb
 C:/Users/amtri/OneDrive - Kansas State University/MIS 555 - Cloud Computing and App Programming/Sprint2MIS555/SkynetERP/obj/Debug/net9.0/SkynetERP.genruntimeconfig.cache
 C:/Users/amtri/OneDrive - Kansas State University/MIS 555 - Cloud Computing and App Programming/Sprint2MIS555/SkynetERP/obj/Debug/net9.0/ref/SkynetERP.dll
-/Users/alex/Desktop/Sprint2MIS555-3/SkynetERP/obj/Debug/net9.0/compressed/uuphlmmem9-wjnyuksbec.gz
+/Users/alex/Desktop/Sprint2MIS555-3/SkynetERP/obj/Debug/net9.0/compressed/7k7f929zye-mq67ksub5c.gz
+/Users/alex/Desktop/Sprint2MIS555-3/SkynetERP/obj/Debug/net9.0/compressed/uuphlmmem9-epyu08yw57.gz

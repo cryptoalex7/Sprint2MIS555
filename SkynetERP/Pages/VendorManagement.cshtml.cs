@@ -26,6 +26,7 @@ public class VendorManagementModel : PageModel
     }
 
     public bool CanViewSpend { get; set; }
+    public bool CanEditDelete { get; set; }
     public string? UserRole { get; set; }
     public string? Username { get; set; }
     public List<VendorModel> Vendors { get; set; } = new();
@@ -41,8 +42,11 @@ public class VendorManagementModel : PageModel
         UserRole = User.FindFirst("Role")?.Value;
         Username = User.FindFirst(ClaimTypes.Name)?.Value;
         
-        // Check if user can view annual spend (similar to salary check)
-        CanViewSpend = _userService.CanViewSalary(UserRole);
+        // Check if user can view annual spend (Admin only)
+        CanViewSpend = _userService.CanViewSpend(UserRole);
+        
+        // Only Admin can edit/delete vendor records (security/data integrity)
+        CanEditDelete = UserRole == "Admin";
         
         // Load vendors
         Vendors = _vendorService.GetAllVendors();
@@ -76,7 +80,7 @@ public class VendorManagementModel : PageModel
     {
         var vendors = _vendorService.GetAllVendors();
         var userRole = User.FindFirst("Role")?.Value;
-        var canViewSpend = _userService.CanViewSalary(userRole);
+        var canViewSpend = _userService.CanViewSpend(userRole);
         
         // Generate CSV content
         var csv = new System.Text.StringBuilder();
@@ -112,12 +116,21 @@ public class VendorManagementModel : PageModel
 
     public IActionResult OnPostAddVendor(VendorModel vendor)
     {
+        // Check authorization - only Admin can add vendors
+        var userRole = User.FindFirst("Role")?.Value;
+        if (userRole != "Admin")
+        {
+            Response.ContentType = "application/json";
+            return new JsonResult(new { success = false, message = "Unauthorized: Only administrators can add vendors" });
+        }
+
         if (!ModelState.IsValid)
         {
             Vendors = _vendorService.GetAllVendors();
             UserRole = User.FindFirst("Role")?.Value;
             Username = User.FindFirst(ClaimTypes.Name)?.Value;
-            CanViewSpend = _userService.CanViewSalary(UserRole);
+            CanViewSpend = _userService.CanViewSpend(UserRole);
+            CanEditDelete = UserRole == "Admin";
             return Page();
         }
 
@@ -129,6 +142,14 @@ public class VendorManagementModel : PageModel
 
     public IActionResult OnPostUpdateVendor(VendorModel vendor)
     {
+        // Check authorization - only Admin can edit vendors
+        var userRole = User.FindFirst("Role")?.Value;
+        if (userRole != "Admin")
+        {
+            Response.ContentType = "application/json";
+            return new JsonResult(new { success = false, message = "Unauthorized: Only administrators can edit vendors" });
+        }
+
         if (!ModelState.IsValid)
         {
             Response.ContentType = "application/json";
@@ -163,6 +184,14 @@ public class VendorManagementModel : PageModel
 
     public IActionResult OnPostDeleteVendor([FromForm] int id)
     {
+        // Check authorization - only Admin can delete vendors
+        var userRole = User.FindFirst("Role")?.Value;
+        if (userRole != "Admin")
+        {
+            Response.ContentType = "application/json";
+            return new JsonResult(new { success = false, message = "Unauthorized: Only administrators can delete vendors" });
+        }
+
         try
         {
             _logger.LogInformation("Delete request received for vendor ID: {VendorId}", id);

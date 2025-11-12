@@ -1,0 +1,1895 @@
+@page
+@model SkynetERP.Pages.FinancialManagementModel
+@{
+    ViewData["Title"] = "Financial Management";
+}
+
+@Html.AntiForgeryToken()
+
+<div class="hrm-page">
+    <!-- Page Header -->
+    <div class="row mb-4">
+        <div class="col-12">
+            <h1 class="display-4 fw-bold text-primary mb-0">Financial Management</h1>
+            <p class="text-muted">Manage your financial data, transactions, and accounts</p>
+        </div>
+    </div>
+
+    <!-- Overview Cards -->
+    <div class="row mb-5">
+        <div class="col-12">
+            <h2 class="h4 fw-bold mb-3 text-dark">Overview</h2>
+            <div class="row g-3">
+                <!-- Accounts Card -->
+                <div class="col-lg-3 col-md-4 col-sm-6">
+                    <div class="card shadow-sm border-0 overview-card clickable-card" data-section="accounts">
+                        <div class="card-body p-3">
+                            <h6 class="card-title fw-bold mb-2">Accounts</h6>
+                            <div class="display-5 fw-bold text-primary mb-1">@Model.ActiveAccountCount</div>
+                            <small class="text-muted">Active: @Model.ActiveAccountCount</small>
+                        </div>
+                    </div>
+                </div>
+                
+                <!-- Partners Card -->
+                <div class="col-lg-3 col-md-4 col-sm-6">
+                    <div class="card shadow-sm border-0 overview-card clickable-card" data-section="partners">
+                        <div class="card-body p-3">
+                            <h6 class="card-title fw-bold mb-2">Partners</h6>
+                            <div class="display-5 fw-bold text-primary mb-1">@(Model.CustomerCount + Model.VendorCount + Model.BothCount)</div>
+                            <small class="text-muted">Cust: @Model.CustomerCount • Vend: @Model.VendorCount • Both: @Model.BothCount</small>
+                        </div>
+                    </div>
+                </div>
+                
+                <!-- Invoices Card -->
+                <div class="col-lg-3 col-md-4 col-sm-6">
+                    <div class="card shadow-sm border-0 overview-card clickable-card" data-section="invoices">
+                        <div class="card-body p-3">
+                            <h6 class="card-title fw-bold mb-2">Invoices</h6>
+                            <div class="display-5 fw-bold text-primary mb-1">@Model.Invoices.Count</div>
+                            <small class="text-muted">AR: $@Model.TotalAR.ToString("N2") • AP: $@Model.TotalAP.ToString("N2")</small>
+                        </div>
+                    </div>
+                </div>
+                
+                <!-- Open Balances Card -->
+                <div class="col-lg-3 col-md-4 col-sm-6">
+                    <div class="card shadow-sm border-0 overview-card clickable-card" data-section="open-balances">
+                        <div class="card-body p-3">
+                            <h6 class="card-title fw-bold mb-2">Open Balances</h6>
+                            <div class="display-5 fw-bold @(Model.OpenBalances >= 0 ? "text-success" : "text-danger") mb-1">$@Model.OpenBalances.ToString("N2")</div>
+                            <small class="text-muted">Open AP: $@Model.TotalAP.ToString("N2")</small>
+                        </div>
+                    </div>
+                </div>
+                
+                <!-- Payments Card -->
+                <div class="col-lg-3 col-md-4 col-sm-6">
+                    <div class="card shadow-sm border-0 overview-card clickable-card" data-section="payments">
+                        <div class="card-body p-3">
+                            <h6 class="card-title fw-bold mb-2">Payments</h6>
+                            <div class="display-5 fw-bold text-primary mb-1">@Model.Payments.Count</div>
+                            <small class="text-muted">In: $@Model.TotalInflow.ToString("N2") • Out: $@Model.TotalOutflow.ToString("N2")</small>
+                        </div>
+                    </div>
+                </div>
+                
+                <!-- Journal Card -->
+                <div class="col-lg-3 col-md-4 col-sm-6">
+                    <div class="card shadow-sm border-0 overview-card clickable-card" data-section="journal">
+                        <div class="card-body p-3">
+                            <h6 class="card-title fw-bold mb-2">Journal</h6>
+                            <div class="display-5 fw-bold text-primary mb-1">@Model.JournalEntryCount</div>
+                            <small class="text-muted">Lines: @Model.JournalLineCount</small>
+                        </div>
+                    </div>
+                </div>
+                
+                <!-- Tax Rates Card -->
+                <div class="col-lg-3 col-md-4 col-sm-6">
+                    <div class="card shadow-sm border-0 overview-card clickable-card" data-section="tax-rates">
+                        <div class="card-body p-3">
+                            <h6 class="card-title fw-bold mb-2">Tax Rates</h6>
+                            <div class="display-5 fw-bold text-primary mb-1">@Model.TaxRateCount</div>
+                            <small class="text-muted">Configured</small>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Filter Toolbar -->
+    <div class="row mb-4">
+        <div class="col-12">
+            <div class="card shadow-sm border-0">
+                <div class="card-body">
+                    <form method="get" class="row g-3">
+                        <div class="col-md-3">
+                            <label for="partnerTypeFilter" class="form-label fw-semibold">Filter Partners</label>
+                            <select class="form-select" id="partnerTypeFilter" name="PartnerTypeFilter" onchange="this.form.submit()">
+                                <option value="">All Partners</option>
+                                <option value="Customer" selected="@(Model.PartnerTypeFilter == "Customer")">Customers</option>
+                                <option value="Vendor" selected="@(Model.PartnerTypeFilter == "Vendor")">Vendors</option>
+                                <option value="Both" selected="@(Model.PartnerTypeFilter == "Both")">Both</option>
+                            </select>
+                        </div>
+                        <div class="col-md-3">
+                            <label for="invoiceTypeFilter" class="form-label fw-semibold">Filter Invoices</label>
+                            <select class="form-select" id="invoiceTypeFilter" name="InvoiceTypeFilter" onchange="this.form.submit()">
+                                <option value="">All Invoices</option>
+                                <option value="AR" selected="@(Model.InvoiceTypeFilter == "AR")">Accounts Receivable</option>
+                                <option value="AP" selected="@(Model.InvoiceTypeFilter == "AP")">Accounts Payable</option>
+                            </select>
+                        </div>
+                        <div class="col-md-3">
+                            <label for="paymentTypeFilter" class="form-label fw-semibold">Filter Payments</label>
+                            <select class="form-select" id="paymentTypeFilter" name="PaymentTypeFilter" onchange="this.form.submit()">
+                                <option value="">All Payments</option>
+                                <option value="Inflow" selected="@(Model.PaymentTypeFilter == "Inflow")">Inflow</option>
+                                <option value="Outflow" selected="@(Model.PaymentTypeFilter == "Outflow")">Outflow</option>
+                            </select>
+                        </div>
+                        <div class="col-md-3 d-flex align-items-end">
+                            <a href="/FinancialManagement" class="btn btn-outline-secondary w-100">
+                                <i class="fas fa-times me-1"></i>Clear Filters
+                            </a>
+                        </div>
+                    </form>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Toast Container -->
+    <div class="toast-container position-fixed top-0 end-0 p-3" style="z-index: 1055;">
+        <div id="successToast" class="toast" role="alert" aria-live="assertive" aria-atomic="true" data-bs-autohide="true" data-bs-delay="5000">
+            <div class="toast-header bg-success text-white d-flex align-items-center">
+                <i class="fas fa-check-circle me-2"></i>
+                <strong class="me-auto">Success</strong>
+                <button type="button" class="btn-close btn-close-white" data-bs-dismiss="toast" aria-label="Close"></button>
+            </div>
+            <div class="toast-body bg-white" id="successToastBody"></div>
+        </div>
+        <div id="errorToast" class="toast" role="alert" aria-live="assertive" aria-atomic="true" data-bs-autohide="true" data-bs-delay="5000">
+            <div class="toast-header bg-danger text-white d-flex align-items-center">
+                <i class="fas fa-exclamation-circle me-2"></i>
+                <strong class="me-auto">Error</strong>
+                <button type="button" class="btn-close btn-close-white" data-bs-dismiss="toast" aria-label="Close"></button>
+            </div>
+            <div class="toast-body bg-white" id="errorToastBody"></div>
+        </div>
+    </div>
+
+    <!-- Accounts Section -->
+    <div class="row mb-4 section-content" id="accounts-section" style="display: none;">
+        <div class="col-12">
+            <div class="card shadow-sm border-0">
+                <div class="card-header bg-primary text-white">
+                    <div class="row align-items-center">
+                        <div class="col-md-6">
+                            <h2 class="h4 mb-0 fw-bold">Accounts</h2>
+                        </div>
+                        <div class="col-md-6 text-md-end">
+                            <button class="btn btn-light btn-sm" data-bs-toggle="modal" data-bs-target="#addAccountModal">
+                                <i class="fas fa-plus me-1"></i>Add Account
+                            </button>
+                        </div>
+                    </div>
+                </div>
+                <div class="card-body p-0">
+                    <div class="table-responsive">
+                        <table class="table table-hover table-hrm mb-0">
+                            <thead class="table-primary">
+                                <tr>
+                                    <th>Account Name</th>
+                                    <th>Type</th>
+                                    <th>Bank</th>
+                                    <th>Account Number</th>
+                                    <th>Balance</th>
+                                    <th>Actions</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                @foreach (var account in Model.Accounts)
+                                {
+                                    <tr>
+                                        <td class="fw-semibold">@account.AccountName</td>
+                                        <td>@account.AccountType</td>
+                                        <td>@account.BankName</td>
+                                        <td>@account.AccountNumber</td>
+                                        <td class="@(account.Balance >= 0 ? "text-success" : "text-danger") fw-bold">$@account.Balance.ToString("N2")</td>
+                                        <td>
+                                            <button class="btn btn-sm btn-outline-warning edit-account-btn" data-account-id="@account.Id" data-account-name="@account.AccountName" data-account-type="@account.AccountType" data-account-bank="@account.BankName" data-account-number="@account.AccountNumber" data-account-balance="@account.Balance" data-account-description="@account.Description">
+                                                <i class="fas fa-edit"></i>
+                                            </button>
+                                            <button class="btn btn-sm btn-outline-danger delete-account-btn" data-account-id="@account.Id" data-account-name="@account.AccountName">
+                                                <i class="fas fa-trash"></i>
+                                            </button>
+                                        </td>
+                                    </tr>
+                                }
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Partners Section -->
+    <div class="row mb-4 section-content" id="partners-section" style="display: none;">
+        <div class="col-12">
+            <div class="card shadow-sm border-0">
+                <div class="card-header bg-primary text-white">
+                    <div class="row align-items-center">
+                        <div class="col-md-6">
+                            <h2 class="h4 mb-0 fw-bold">Partners</h2>
+                        </div>
+                        <div class="col-md-6 text-md-end">
+                            <button class="btn btn-light btn-sm" data-bs-toggle="modal" data-bs-target="#addPartnerModal">
+                                <i class="fas fa-plus me-1"></i>Add Partner
+                            </button>
+                        </div>
+                    </div>
+                </div>
+                <div class="card-body p-0">
+                    <div class="table-responsive">
+                        <table class="table table-hover table-hrm mb-0">
+                            <thead class="table-primary">
+                                <tr>
+                                    <th>Name</th>
+                                    <th>Type</th>
+                                    <th>Email</th>
+                                    <th>Phone</th>
+                                    <th>City</th>
+                                    <th>State</th>
+                                    <th>Actions</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                @foreach (var partner in Model.Partners)
+                                {
+                                    <tr>
+                                        <td class="fw-semibold">@partner.Name</td>
+                                        <td><span class="badge @(partner.Type == "Customer" ? "bg-success" : partner.Type == "Vendor" ? "bg-info" : "bg-warning")">@partner.Type</span></td>
+                                        <td>@partner.Email</td>
+                                        <td>@partner.Phone</td>
+                                        <td>@partner.City</td>
+                                        <td>@partner.State</td>
+                                        <td>
+                                            <button class="btn btn-sm btn-outline-warning edit-partner-btn" data-partner-id="@partner.Id" data-partner-name="@partner.Name" data-partner-type="@partner.Type" data-partner-email="@partner.Email" data-partner-phone="@partner.Phone" data-partner-address="@partner.Address" data-partner-city="@partner.City" data-partner-state="@partner.State" data-partner-zip="@partner.ZipCode" data-partner-contact="@partner.ContactPerson" data-partner-notes="@partner.Notes">
+                                                <i class="fas fa-edit"></i>
+                                            </button>
+                                            <button class="btn btn-sm btn-outline-danger delete-partner-btn" data-partner-id="@partner.Id" data-partner-name="@partner.Name">
+                                                <i class="fas fa-trash"></i>
+                                            </button>
+                                        </td>
+                                    </tr>
+                                }
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Tax Rates Section -->
+    <div class="row mb-4 section-content" id="tax-rates-section" style="display: none;">
+        <div class="col-12">
+            <div class="card shadow-sm border-0">
+                <div class="card-header bg-primary text-white">
+                    <div class="row align-items-center">
+                        <div class="col-md-6">
+                            <h2 class="h4 mb-0 fw-bold">Tax Rates</h2>
+                        </div>
+                        <div class="col-md-6 text-md-end">
+                            <button class="btn btn-light btn-sm" data-bs-toggle="modal" data-bs-target="#addTaxRateModal">
+                                <i class="fas fa-plus me-1"></i>Add Tax Rate
+                            </button>
+                        </div>
+                    </div>
+                </div>
+                <div class="card-body p-0">
+                    <div class="table-responsive">
+                        <table class="table table-hover table-hrm mb-0">
+                            <thead class="table-primary">
+                                <tr>
+                                    <th>Name</th>
+                                    <th>Rate</th>
+                                    <th>Type</th>
+                                    <th>Jurisdiction</th>
+                                    <th>Effective Date</th>
+                                    <th>Actions</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                @foreach (var taxRate in Model.TaxRates)
+                                {
+                                    <tr>
+                                        <td class="fw-semibold">@taxRate.Name</td>
+                                        <td>@taxRate.Rate.ToString("N2")%</td>
+                                        <td>@taxRate.TaxType</td>
+                                        <td>@taxRate.Jurisdiction</td>
+                                        <td>@taxRate.EffectiveDate.ToString("MM/dd/yyyy")</td>
+                                        <td>
+                                            <button class="btn btn-sm btn-outline-warning edit-taxrate-btn" data-taxrate-id="@taxRate.Id" data-taxrate-name="@taxRate.Name" data-taxrate-rate="@taxRate.Rate" data-taxrate-type="@taxRate.TaxType" data-taxrate-jurisdiction="@taxRate.Jurisdiction" data-taxrate-description="@taxRate.Description" data-taxrate-effectivedate="@taxRate.EffectiveDate.ToString("yyyy-MM-dd")">
+                                                <i class="fas fa-edit"></i>
+                                            </button>
+                                            <button class="btn btn-sm btn-outline-danger delete-taxrate-btn" data-taxrate-id="@taxRate.Id" data-taxrate-name="@taxRate.Name">
+                                                <i class="fas fa-trash"></i>
+                                            </button>
+                                        </td>
+                                    </tr>
+                                }
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Invoices Section -->
+    <div class="row mb-4 section-content" id="invoices-section" style="display: none;">
+        <div class="col-12">
+            <div class="card shadow-sm border-0">
+                <div class="card-header bg-primary text-white">
+                    <div class="row align-items-center">
+                        <div class="col-md-6">
+                            <h2 class="h4 mb-0 fw-bold">Invoices</h2>
+                        </div>
+                        <div class="col-md-6 text-md-end">
+                            <button class="btn btn-light btn-sm" data-bs-toggle="modal" data-bs-target="#addInvoiceModal">
+                                <i class="fas fa-plus me-1"></i>Add Invoice
+                            </button>
+                        </div>
+                    </div>
+                </div>
+                <div class="card-body p-0">
+                    <div class="table-responsive">
+                        <table class="table table-hover table-hrm mb-0">
+                            <thead class="table-primary">
+                                <tr>
+                                    <th>Invoice #</th>
+                                    <th>Customer</th>
+                                    <th>Type</th>
+                                    <th>Amount</th>
+                                    <th>Paid</th>
+                                    <th>Balance</th>
+                                    <th>Status</th>
+                                    <th>Actions</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                @foreach (var invoice in Model.Invoices)
+                                {
+                                    <tr>
+                                        <td class="fw-semibold">@invoice.InvoiceNumber</td>
+                                        <td>@invoice.CustomerName</td>
+                                        <td><span class="badge @(invoice.InvoiceType == "AR" ? "bg-success" : "bg-danger")">@invoice.InvoiceType</span></td>
+                                        <td class="fw-bold">$@invoice.Amount.ToString("N2")</td>
+                                        <td>$@invoice.PaidAmount.ToString("N2")</td>
+                                        <td class="@(invoice.Balance >= 0 ? "text-success" : "text-danger") fw-bold">$@invoice.Balance.ToString("N2")</td>
+                                        <td><span class="badge @(invoice.Status == "Paid" ? "bg-success" : invoice.Status == "Overdue" ? "bg-danger" : "bg-warning")">@invoice.Status</span></td>
+                                        <td>
+                                            <button class="btn btn-sm btn-outline-warning edit-invoice-btn" data-invoice-id="@invoice.Id" data-invoice-number="@invoice.InvoiceNumber" data-invoice-customer="@invoice.CustomerName" data-invoice-partnerid="@invoice.PartnerId" data-invoice-type="@invoice.InvoiceType" data-invoice-amount="@invoice.Amount" data-invoice-paid="@invoice.PaidAmount" data-invoice-date="@invoice.InvoiceDate.ToString("yyyy-MM-dd")" data-invoice-duedate="@invoice.DueDate.ToString("yyyy-MM-dd")" data-invoice-status="@invoice.Status" data-invoice-description="@invoice.Description" data-invoice-email="@invoice.CustomerEmail" data-invoice-phone="@invoice.CustomerPhone" data-invoice-notes="@invoice.Notes">
+                                                <i class="fas fa-edit"></i>
+                                            </button>
+                                            <button class="btn btn-sm btn-outline-danger delete-invoice-btn" data-invoice-id="@invoice.Id" data-invoice-number="@invoice.InvoiceNumber">
+                                                <i class="fas fa-trash"></i>
+                                            </button>
+                                        </td>
+                                    </tr>
+                                }
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Invoice Lines Section -->
+    <div class="row mb-4 section-content" id="invoice-lines-section" style="display: none;">
+        <div class="col-12">
+            <div class="card shadow-sm border-0">
+                <div class="card-header bg-primary text-white">
+                    <div class="row align-items-center">
+                        <div class="col-md-6">
+                            <h2 class="h4 mb-0 fw-bold">Invoice Lines</h2>
+                        </div>
+                        <div class="col-md-6 text-md-end">
+                            <button class="btn btn-light btn-sm" data-bs-toggle="modal" data-bs-target="#addInvoiceLineModal">
+                                <i class="fas fa-plus me-1"></i>Add Invoice Line
+                            </button>
+                        </div>
+                    </div>
+                </div>
+                <div class="card-body p-0">
+                    <div class="table-responsive">
+                        <table class="table table-hover table-hrm mb-0">
+                            <thead class="table-primary">
+                                <tr>
+                                    <th>Invoice #</th>
+                                    <th>Description</th>
+                                    <th>Quantity</th>
+                                    <th>Unit Price</th>
+                                    <th>Tax Rate</th>
+                                    <th>Line Total</th>
+                                    <th>Actions</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                @foreach (var line in Model.InvoiceLines)
+                                {
+                                    <tr>
+                                        <td>@(line.Invoice?.InvoiceNumber ?? "N/A")</td>
+                                        <td class="fw-semibold">@line.Description</td>
+                                        <td>@line.Quantity.ToString("N2")</td>
+                                        <td>$@line.UnitPrice.ToString("N2")</td>
+                                        <td>@line.TaxRate.ToString("N2")%</td>
+                                        <td class="fw-bold">$@line.LineTotal.ToString("N2")</td>
+                                        <td>
+                                            <button class="btn btn-sm btn-outline-warning edit-invoiceline-btn" data-line-id="@line.Id" data-line-invoiceid="@line.InvoiceId" data-line-description="@line.Description" data-line-quantity="@line.Quantity" data-line-unitprice="@line.UnitPrice" data-line-taxrate="@line.TaxRate" data-line-notes="@line.Notes">
+                                                <i class="fas fa-edit"></i>
+                                            </button>
+                                            <button class="btn btn-sm btn-outline-danger delete-invoiceline-btn" data-line-id="@line.Id" data-line-description="@line.Description">
+                                                <i class="fas fa-trash"></i>
+                                            </button>
+                                        </td>
+                                    </tr>
+                                }
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Payments Section -->
+    <div class="row mb-4 section-content" id="payments-section" style="display: none;">
+        <div class="col-12">
+            <div class="card shadow-sm border-0">
+                <div class="card-header bg-primary text-white">
+                    <div class="row align-items-center">
+                        <div class="col-md-6">
+                            <h2 class="h4 mb-0 fw-bold">Payments</h2>
+                        </div>
+                        <div class="col-md-6 text-md-end">
+                            <button class="btn btn-light btn-sm" data-bs-toggle="modal" data-bs-target="#addPaymentModal">
+                                <i class="fas fa-plus me-1"></i>Add Payment
+                            </button>
+                        </div>
+                    </div>
+                </div>
+                <div class="card-body p-0">
+                    <div class="table-responsive">
+                        <table class="table table-hover table-hrm mb-0">
+                            <thead class="table-primary">
+                                <tr>
+                                    <th>Payment #</th>
+                                    <th>Payee</th>
+                                    <th>Type</th>
+                                    <th>Amount</th>
+                                    <th>Date</th>
+                                    <th>Method</th>
+                                    <th>Status</th>
+                                    <th>Actions</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                @foreach (var payment in Model.Payments)
+                                {
+                                    <tr>
+                                        <td class="fw-semibold">@payment.PaymentNumber</td>
+                                        <td>@payment.PayeeName</td>
+                                        <td><span class="badge @(payment.PaymentType == "Inflow" ? "bg-success" : "bg-danger")">@payment.PaymentType</span></td>
+                                        <td class="fw-bold">$@payment.Amount.ToString("N2")</td>
+                                        <td>@payment.PaymentDate.ToString("MM/dd/yyyy")</td>
+                                        <td>@payment.PaymentMethod</td>
+                                        <td><span class="badge @(payment.Status == "Completed" ? "bg-success" : payment.Status == "Pending" ? "bg-warning" : "bg-danger")">@payment.Status</span></td>
+                                        <td>
+                                            <button class="btn btn-sm btn-outline-warning edit-payment-btn" data-payment-id="@payment.Id" data-payment-number="@payment.PaymentNumber" data-payment-payee="@payment.PayeeName" data-payment-partnerid="@payment.PartnerId" data-payment-type="@payment.PaymentType" data-payment-amount="@payment.Amount" data-payment-date="@payment.PaymentDate.ToString("yyyy-MM-dd")" data-payment-accountid="@payment.AccountId" data-payment-invoiceid="@payment.InvoiceId" data-payment-method="@payment.PaymentMethod" data-payment-status="@payment.Status" data-payment-description="@payment.Description" data-payment-ref="@payment.ReferenceNumber" data-payment-notes="@payment.Notes">
+                                                <i class="fas fa-edit"></i>
+                                            </button>
+                                            <button class="btn btn-sm btn-outline-danger delete-payment-btn" data-payment-id="@payment.Id" data-payment-number="@payment.PaymentNumber">
+                                                <i class="fas fa-trash"></i>
+                                            </button>
+                                        </td>
+                                    </tr>
+                                }
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Journal Entries Section -->
+    <div class="row mb-4 section-content" id="journal-section" style="display: none;">
+        <div class="col-12">
+            <div class="card shadow-sm border-0">
+                <div class="card-header bg-primary text-white">
+                    <div class="row align-items-center">
+                        <div class="col-md-6">
+                            <h2 class="h4 mb-0 fw-bold">Journal Entries</h2>
+                        </div>
+                        <div class="col-md-6 text-md-end">
+                            <button class="btn btn-light btn-sm" data-bs-toggle="modal" data-bs-target="#addJournalEntryModal">
+                                <i class="fas fa-plus me-1"></i>Add Journal Entry
+                            </button>
+                        </div>
+                    </div>
+                </div>
+                <div class="card-body p-0">
+                    <div class="table-responsive">
+                        <table class="table table-hover table-hrm mb-0">
+                            <thead class="table-primary">
+                                <tr>
+                                    <th>Entry #</th>
+                                    <th>Date</th>
+                                    <th>Description</th>
+                                    <th>Reference</th>
+                                    <th>Status</th>
+                                    <th>Lines</th>
+                                    <th>Actions</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                @foreach (var entry in Model.JournalEntries)
+                                {
+                                    <tr>
+                                        <td class="fw-semibold">@entry.EntryNumber</td>
+                                        <td>@entry.EntryDate.ToString("MM/dd/yyyy")</td>
+                                        <td>@entry.Description</td>
+                                        <td>@entry.Reference</td>
+                                        <td><span class="badge @(entry.Status == "Posted" ? "bg-success" : "bg-warning")">@entry.Status</span></td>
+                                        <td>@entry.JournalLines.Count</td>
+                                        <td>
+                                            <button class="btn btn-sm btn-outline-warning edit-journalentry-btn" data-entry-id="@entry.Id" data-entry-number="@entry.EntryNumber" data-entry-date="@entry.EntryDate.ToString("yyyy-MM-dd")" data-entry-description="@entry.Description" data-entry-reference="@entry.Reference" data-entry-status="@entry.Status" data-entry-notes="@entry.Notes">
+                                                <i class="fas fa-edit"></i>
+                                            </button>
+                                            <button class="btn btn-sm btn-outline-danger delete-journalentry-btn" data-entry-id="@entry.Id" data-entry-number="@entry.EntryNumber">
+                                                <i class="fas fa-trash"></i>
+                                            </button>
+                                        </td>
+                                    </tr>
+                                }
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Journal Lines Section -->
+    <div class="row mb-4 section-content" id="journal-lines-section" style="display: none;">
+        <div class="col-12">
+            <div class="card shadow-sm border-0">
+                <div class="card-header bg-primary text-white">
+                    <div class="row align-items-center">
+                        <div class="col-md-6">
+                            <h2 class="h4 mb-0 fw-bold">Journal Lines</h2>
+                        </div>
+                        <div class="col-md-6 text-md-end">
+                            <button class="btn btn-light btn-sm" data-bs-toggle="modal" data-bs-target="#addJournalLineModal">
+                                <i class="fas fa-plus me-1"></i>Add Journal Line
+                            </button>
+                        </div>
+                    </div>
+                </div>
+                <div class="card-body p-0">
+                    <div class="table-responsive">
+                        <table class="table table-hover table-hrm mb-0">
+                            <thead class="table-primary">
+                                <tr>
+                                    <th>Entry #</th>
+                                    <th>Account Code</th>
+                                    <th>Account Name</th>
+                                    <th>Description</th>
+                                    <th>Debit</th>
+                                    <th>Credit</th>
+                                    <th>Actions</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                @foreach (var line in Model.JournalLines)
+                                {
+                                    <tr>
+                                        <td>@(line.JournalEntry?.EntryNumber ?? "N/A")</td>
+                                        <td class="fw-semibold">@line.AccountCode</td>
+                                        <td>@line.AccountName</td>
+                                        <td>@line.Description</td>
+                                        <td class="text-success fw-bold">$@line.DebitAmount.ToString("N2")</td>
+                                        <td class="text-danger fw-bold">$@line.CreditAmount.ToString("N2")</td>
+                                        <td>
+                                            <button class="btn btn-sm btn-outline-warning edit-journalline-btn" data-line-id="@line.Id" data-line-entryid="@line.JournalEntryId" data-line-accountcode="@line.AccountCode" data-line-accountname="@line.AccountName" data-line-description="@line.Description" data-line-debit="@line.DebitAmount" data-line-credit="@line.CreditAmount" data-line-notes="@line.Notes">
+                                                <i class="fas fa-edit"></i>
+                                            </button>
+                                            <button class="btn btn-sm btn-outline-danger delete-journalline-btn" data-line-id="@line.Id" data-line-description="@line.Description">
+                                                <i class="fas fa-trash"></i>
+                                            </button>
+                                        </td>
+                                    </tr>
+                                }
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Open Balances Section (shows invoice balances summary) -->
+    <div class="row mb-4 section-content" id="open-balances-section" style="display: none;">
+        <div class="col-12">
+            <div class="card shadow-sm border-0">
+                <div class="card-header bg-primary text-white">
+                    <h2 class="h4 mb-0 fw-bold">Open Balances Summary</h2>
+                </div>
+                <div class="card-body">
+                    <div class="row">
+                        <div class="col-md-6">
+                            <h5>Accounts Receivable (AR)</h5>
+                            <p class="display-6 text-success">$@Model.TotalAR.ToString("N2")</p>
+                        </div>
+                        <div class="col-md-6">
+                            <h5>Accounts Payable (AP)</h5>
+                            <p class="display-6 text-danger">$@Model.TotalAP.ToString("N2")</p>
+                        </div>
+                    </div>
+                    <hr>
+                    <h5>Total Open Balance</h5>
+                    <p class="display-5 @(Model.OpenBalances >= 0 ? "text-success" : "text-danger")">$@Model.OpenBalances.ToString("N2")</p>
+                </div>
+            </div>
+        </div>
+    </div>
+    
+</div>
+
+<!-- Add Account Modal -->
+<div class="modal fade" id="addAccountModal" tabindex="-1">
+    <div class="modal-dialog modal-lg">
+        <div class="modal-content">
+            <div class="modal-header bg-primary text-white">
+                <h5 class="modal-title">Add Account</h5>
+                <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal"></button>
+            </div>
+            <form method="post" asp-page-handler="AddAccount">
+                <div class="modal-body">
+                    <div class="mb-3">
+                        <label class="form-label">Account Name *</label>
+                        <input type="text" class="form-control" name="AccountName" required>
+                    </div>
+                    <div class="mb-3">
+                        <label class="form-label">Account Type *</label>
+                        <select class="form-select" name="AccountType" required>
+                            <option value="">Select Type</option>
+                            <option value="Checking">Checking</option>
+                            <option value="Savings">Savings</option>
+                            <option value="Credit">Credit</option>
+                            <option value="Cash">Cash</option>
+                            <option value="Investment">Investment</option>
+                        </select>
+                    </div>
+                    <div class="mb-3">
+                        <label class="form-label">Bank Name</label>
+                        <input type="text" class="form-control" name="BankName">
+                    </div>
+                    <div class="mb-3">
+                        <label class="form-label">Account Number</label>
+                        <input type="text" class="form-control" name="AccountNumber">
+                    </div>
+                    <div class="mb-3">
+                        <label class="form-label">Balance *</label>
+                        <input type="number" step="0.01" class="form-control" name="Balance" required min="0">
+                    </div>
+                    <div class="mb-3">
+                        <label class="form-label">Description</label>
+                        <textarea class="form-control" name="Description"></textarea>
+                    </div>
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cancel</button>
+                    <button type="submit" class="btn btn-primary">Save</button>
+                </div>
+            </form>
+        </div>
+    </div>
+</div>
+
+<!-- Add Partner Modal -->
+<div class="modal fade" id="addPartnerModal" tabindex="-1">
+    <div class="modal-dialog modal-lg">
+        <div class="modal-content">
+            <div class="modal-header bg-primary text-white">
+                <h5 class="modal-title">Add Partner</h5>
+                <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal"></button>
+            </div>
+            <form method="post" asp-page-handler="AddPartner">
+                <div class="modal-body">
+                    <div class="mb-3">
+                        <label class="form-label">Name *</label>
+                        <input type="text" class="form-control" name="Name" required>
+                    </div>
+                    <div class="mb-3">
+                        <label class="form-label">Type *</label>
+                        <select class="form-select" name="Type" required>
+                            <option value="">Select Type</option>
+                            <option value="Customer">Customer</option>
+                            <option value="Vendor">Vendor</option>
+                            <option value="Both">Both</option>
+                        </select>
+                    </div>
+                    <div class="row">
+                        <div class="col-md-6 mb-3">
+                            <label class="form-label">Email</label>
+                            <input type="email" class="form-control" name="Email">
+                        </div>
+                        <div class="col-md-6 mb-3">
+                            <label class="form-label">Phone</label>
+                            <input type="tel" class="form-control" name="Phone">
+                        </div>
+                    </div>
+                    <div class="mb-3">
+                        <label class="form-label">Address</label>
+                        <input type="text" class="form-control" name="Address">
+                    </div>
+                    <div class="row">
+                        <div class="col-md-4 mb-3">
+                            <label class="form-label">City</label>
+                            <input type="text" class="form-control" name="City">
+                        </div>
+                        <div class="col-md-4 mb-3">
+                            <label class="form-label">State</label>
+                            <input type="text" class="form-control" name="State">
+                        </div>
+                        <div class="col-md-4 mb-3">
+                            <label class="form-label">Zip Code</label>
+                            <input type="text" class="form-control" name="ZipCode">
+                        </div>
+                    </div>
+                    <div class="mb-3">
+                        <label class="form-label">Contact Person</label>
+                        <input type="text" class="form-control" name="ContactPerson">
+                    </div>
+                    <div class="mb-3">
+                        <label class="form-label">Notes</label>
+                        <textarea class="form-control" name="Notes"></textarea>
+                    </div>
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cancel</button>
+                    <button type="submit" class="btn btn-primary">Save</button>
+                </div>
+            </form>
+        </div>
+    </div>
+</div>
+
+<!-- Add Tax Rate Modal -->
+<div class="modal fade" id="addTaxRateModal" tabindex="-1">
+    <div class="modal-dialog">
+        <div class="modal-content">
+            <div class="modal-header bg-primary text-white">
+                <h5 class="modal-title">Add Tax Rate</h5>
+                <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal"></button>
+            </div>
+            <form method="post" asp-page-handler="AddTaxRate">
+                <div class="modal-body">
+                    <div class="mb-3">
+                        <label class="form-label">Name *</label>
+                        <input type="text" class="form-control" name="Name" required>
+                    </div>
+                    <div class="mb-3">
+                        <label class="form-label">Rate (%) *</label>
+                        <input type="number" step="0.01" min="0" max="100" class="form-control" name="Rate" required>
+                    </div>
+                    <div class="mb-3">
+                        <label class="form-label">Tax Type</label>
+                        <input type="text" class="form-control" name="TaxType">
+                    </div>
+                    <div class="mb-3">
+                        <label class="form-label">Jurisdiction</label>
+                        <input type="text" class="form-control" name="Jurisdiction">
+                    </div>
+                    <div class="mb-3">
+                        <label class="form-label">Effective Date *</label>
+                        <input type="date" class="form-control" name="EffectiveDate" value="@DateTime.Now.ToString("yyyy-MM-dd")" required>
+                    </div>
+                    <div class="mb-3">
+                        <label class="form-label">Description</label>
+                        <textarea class="form-control" name="Description"></textarea>
+                    </div>
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cancel</button>
+                    <button type="submit" class="btn btn-primary">Save</button>
+                </div>
+            </form>
+        </div>
+    </div>
+</div>
+
+<!-- Add Invoice Modal -->
+<div class="modal fade" id="addInvoiceModal" tabindex="-1">
+    <div class="modal-dialog modal-lg">
+        <div class="modal-content">
+            <div class="modal-header bg-primary text-white">
+                <h5 class="modal-title">Add Invoice</h5>
+                <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal"></button>
+            </div>
+            <form method="post" asp-page-handler="AddInvoice">
+                <div class="modal-body">
+                    <div class="mb-3">
+                        <label class="form-label">Invoice Number *</label>
+                        <input type="text" class="form-control" name="InvoiceNumber" required>
+                    </div>
+                    <div class="mb-3">
+                        <label class="form-label">Customer Name *</label>
+                        <input type="text" class="form-control" name="CustomerName" required>
+                    </div>
+                    <div class="mb-3">
+                        <label class="form-label">Invoice Type *</label>
+                        <select class="form-select" name="InvoiceType" required>
+                            <option value="">Select Type</option>
+                            <option value="AR">Accounts Receivable</option>
+                            <option value="AP">Accounts Payable</option>
+                        </select>
+                    </div>
+                    <div class="mb-3">
+                        <label class="form-label">Amount *</label>
+                        <input type="number" step="0.01" min="0.01" class="form-control" name="Amount" required>
+                    </div>
+                    <div class="row">
+                        <div class="col-md-6 mb-3">
+                            <label class="form-label">Invoice Date *</label>
+                            <input type="date" class="form-control" name="InvoiceDate" value="@DateTime.Now.ToString("yyyy-MM-dd")" required>
+                        </div>
+                        <div class="col-md-6 mb-3">
+                            <label class="form-label">Due Date *</label>
+                            <input type="date" class="form-control" name="DueDate" required>
+                        </div>
+                    </div>
+                    <div class="mb-3">
+                        <label class="form-label">Status</label>
+                        <select class="form-select" name="Status">
+                            <option value="Pending">Pending</option>
+                            <option value="Paid">Paid</option>
+                            <option value="Overdue">Overdue</option>
+                        </select>
+                    </div>
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cancel</button>
+                    <button type="submit" class="btn btn-primary">Save</button>
+                </div>
+            </form>
+        </div>
+    </div>
+</div>
+
+<!-- Add Invoice Line Modal -->
+<div class="modal fade" id="addInvoiceLineModal" tabindex="-1">
+    <div class="modal-dialog modal-lg">
+        <div class="modal-content">
+            <div class="modal-header bg-primary text-white">
+                <h5 class="modal-title">Add Invoice Line</h5>
+                <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal"></button>
+            </div>
+            <form method="post" asp-page-handler="AddInvoiceLine">
+                <div class="modal-body">
+                    <div class="mb-3">
+                        <label class="form-label">Invoice *</label>
+                        <select class="form-select" name="InvoiceId" required>
+                            <option value="">Select Invoice</option>
+                            @foreach (var invoice in Model.Invoices)
+                            {
+                                <option value="@invoice.Id">@invoice.InvoiceNumber - @invoice.CustomerName</option>
+                            }
+                        </select>
+                    </div>
+                    <div class="mb-3">
+                        <label class="form-label">Description *</label>
+                        <input type="text" class="form-control" name="Description" required>
+                    </div>
+                    <div class="row">
+                        <div class="col-md-4 mb-3">
+                            <label class="form-label">Quantity *</label>
+                            <input type="number" step="0.01" min="0.01" class="form-control" name="Quantity" required>
+                        </div>
+                        <div class="col-md-4 mb-3">
+                            <label class="form-label">Unit Price *</label>
+                            <input type="number" step="0.01" min="0.01" class="form-control" name="UnitPrice" required>
+                        </div>
+                        <div class="col-md-4 mb-3">
+                            <label class="form-label">Tax Rate (%)</label>
+                            <input type="number" step="0.01" min="0" max="100" class="form-control" name="TaxRate" value="0">
+                        </div>
+                    </div>
+                    <div class="mb-3">
+                        <label class="form-label">Notes</label>
+                        <textarea class="form-control" name="Notes"></textarea>
+                    </div>
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cancel</button>
+                    <button type="submit" class="btn btn-primary">Save</button>
+                </div>
+            </form>
+        </div>
+    </div>
+</div>
+
+<!-- Add Payment Modal -->
+<div class="modal fade" id="addPaymentModal" tabindex="-1">
+    <div class="modal-dialog modal-lg">
+        <div class="modal-content">
+            <div class="modal-header bg-primary text-white">
+                <h5 class="modal-title">Add Payment</h5>
+                <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal"></button>
+            </div>
+            <form method="post" asp-page-handler="AddPayment">
+                <div class="modal-body">
+                    <div class="mb-3">
+                        <label class="form-label">Payment Number *</label>
+                        <input type="text" class="form-control" name="PaymentNumber" required>
+                    </div>
+                    <div class="mb-3">
+                        <label class="form-label">Payee Name *</label>
+                        <input type="text" class="form-control" name="PayeeName" required>
+                    </div>
+                    <div class="mb-3">
+                        <label class="form-label">Payment Type *</label>
+                        <select class="form-select" name="PaymentType" required>
+                            <option value="">Select Type</option>
+                            <option value="Inflow">Inflow</option>
+                            <option value="Outflow">Outflow</option>
+                        </select>
+                    </div>
+                    <div class="mb-3">
+                        <label class="form-label">Amount *</label>
+                        <input type="number" step="0.01" min="0.01" class="form-control" name="Amount" required>
+                    </div>
+                    <div class="mb-3">
+                        <label class="form-label">Payment Date *</label>
+                        <input type="date" class="form-control" name="PaymentDate" value="@DateTime.Now.ToString("yyyy-MM-dd")" required>
+                    </div>
+                    <div class="mb-3">
+                        <label class="form-label">Account *</label>
+                        <select class="form-select" name="AccountId" required>
+                            <option value="">Select Account</option>
+                            @foreach (var account in Model.Accounts)
+                            {
+                                <option value="@account.Id">@account.AccountName</option>
+                            }
+                        </select>
+                    </div>
+                    <div class="mb-3">
+                        <label class="form-label">Payment Method *</label>
+                        <select class="form-select" name="PaymentMethod" required>
+                            <option value="">Select Method</option>
+                            <option value="Check">Check</option>
+                            <option value="Wire Transfer">Wire Transfer</option>
+                            <option value="Credit Card">Credit Card</option>
+                            <option value="Cash">Cash</option>
+                            <option value="ACH">ACH</option>
+                        </select>
+                    </div>
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cancel</button>
+                    <button type="submit" class="btn btn-primary">Save</button>
+                </div>
+            </form>
+        </div>
+    </div>
+</div>
+
+<!-- Add Journal Entry Modal -->
+<div class="modal fade" id="addJournalEntryModal" tabindex="-1">
+    <div class="modal-dialog modal-lg">
+        <div class="modal-content">
+            <div class="modal-header bg-primary text-white">
+                <h5 class="modal-title">Add Journal Entry</h5>
+                <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal"></button>
+            </div>
+            <form method="post" asp-page-handler="AddJournalEntry">
+                <div class="modal-body">
+                    <div class="mb-3">
+                        <label class="form-label">Entry Number *</label>
+                        <input type="text" class="form-control" name="EntryNumber" required>
+                    </div>
+                    <div class="mb-3">
+                        <label class="form-label">Entry Date *</label>
+                        <input type="date" class="form-control" name="EntryDate" value="@DateTime.Now.ToString("yyyy-MM-dd")" required>
+                    </div>
+                    <div class="mb-3">
+                        <label class="form-label">Description *</label>
+                        <input type="text" class="form-control" name="Description" required>
+                    </div>
+                    <div class="mb-3">
+                        <label class="form-label">Reference</label>
+                        <input type="text" class="form-control" name="Reference">
+                    </div>
+                    <div class="mb-3">
+                        <label class="form-label">Status</label>
+                        <select class="form-select" name="Status">
+                            <option value="Draft">Draft</option>
+                            <option value="Posted">Posted</option>
+                            <option value="Reversed">Reversed</option>
+                        </select>
+                    </div>
+                    <div class="mb-3">
+                        <label class="form-label">Notes</label>
+                        <textarea class="form-control" name="Notes"></textarea>
+                    </div>
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cancel</button>
+                    <button type="submit" class="btn btn-primary">Save</button>
+                </div>
+            </form>
+        </div>
+    </div>
+</div>
+
+<!-- Add Journal Line Modal -->
+<div class="modal fade" id="addJournalLineModal" tabindex="-1">
+    <div class="modal-dialog modal-lg">
+        <div class="modal-content">
+            <div class="modal-header bg-primary text-white">
+                <h5 class="modal-title">Add Journal Line</h5>
+                <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal"></button>
+            </div>
+            <form method="post" asp-page-handler="AddJournalLine">
+                <div class="modal-body">
+                    <div class="mb-3">
+                        <label class="form-label">Journal Entry *</label>
+                        <select class="form-select" name="JournalEntryId" required>
+                            <option value="">Select Entry</option>
+                            @foreach (var entry in Model.JournalEntries)
+                            {
+                                <option value="@entry.Id">@entry.EntryNumber - @entry.Description</option>
+                            }
+                        </select>
+                    </div>
+                    <div class="mb-3">
+                        <label class="form-label">Account Code *</label>
+                        <input type="text" class="form-control" name="AccountCode" required>
+                    </div>
+                    <div class="mb-3">
+                        <label class="form-label">Account Name</label>
+                        <input type="text" class="form-control" name="AccountName">
+                    </div>
+                    <div class="mb-3">
+                        <label class="form-label">Description *</label>
+                        <input type="text" class="form-control" name="Description" required>
+                    </div>
+                    <div class="row">
+                        <div class="col-md-6 mb-3">
+                            <label class="form-label">Debit Amount</label>
+                            <input type="number" step="0.01" min="0" class="form-control" name="DebitAmount" value="0">
+                        </div>
+                        <div class="col-md-6 mb-3">
+                            <label class="form-label">Credit Amount</label>
+                            <input type="number" step="0.01" min="0" class="form-control" name="CreditAmount" value="0">
+                        </div>
+                    </div>
+                    <div class="mb-3">
+                        <label class="form-label">Notes</label>
+                        <textarea class="form-control" name="Notes"></textarea>
+                    </div>
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cancel</button>
+                    <button type="submit" class="btn btn-primary">Save</button>
+                </div>
+            </form>
+        </div>
+    </div>
+</div>
+
+<!-- Edit Account Modal -->
+<div class="modal fade" id="editAccountModal" tabindex="-1">
+    <div class="modal-dialog modal-lg">
+        <div class="modal-content">
+            <div class="modal-header bg-primary text-white">
+                <h5 class="modal-title">Edit Account</h5>
+                <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal"></button>
+            </div>
+            <form method="post" asp-page-handler="UpdateAccount" class="edit-form" data-section="accounts">
+                <input type="hidden" id="editAccountId" name="Id" />
+                <div class="modal-body">
+                    <div class="mb-3">
+                        <label class="form-label">Account Name *</label>
+                        <input type="text" class="form-control" id="editAccountName" name="AccountName" required>
+                    </div>
+                    <div class="mb-3">
+                        <label class="form-label">Account Type *</label>
+                        <select class="form-select" id="editAccountType" name="AccountType" required>
+                            <option value="">Select Type</option>
+                            <option value="Checking">Checking</option>
+                            <option value="Savings">Savings</option>
+                            <option value="Credit">Credit</option>
+                            <option value="Cash">Cash</option>
+                            <option value="Investment">Investment</option>
+                        </select>
+                    </div>
+                    <div class="mb-3">
+                        <label class="form-label">Bank Name</label>
+                        <input type="text" class="form-control" id="editBankName" name="BankName">
+                    </div>
+                    <div class="mb-3">
+                        <label class="form-label">Account Number</label>
+                        <input type="text" class="form-control" id="editAccountNumber" name="AccountNumber">
+                    </div>
+                    <div class="mb-3">
+                        <label class="form-label">Balance *</label>
+                        <input type="number" step="0.01" class="form-control" id="editBalance" name="Balance" required min="0">
+                    </div>
+                    <div class="mb-3">
+                        <label class="form-label">Description</label>
+                        <textarea class="form-control" id="editAccountDescription" name="Description"></textarea>
+                    </div>
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cancel</button>
+                    <button type="submit" class="btn btn-primary">Update</button>
+                </div>
+            </form>
+        </div>
+    </div>
+</div>
+
+<!-- Edit Partner Modal -->
+<div class="modal fade" id="editPartnerModal" tabindex="-1">
+    <div class="modal-dialog modal-lg">
+        <div class="modal-content">
+            <div class="modal-header bg-primary text-white">
+                <h5 class="modal-title">Edit Partner</h5>
+                <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal"></button>
+            </div>
+            <form method="post" asp-page-handler="UpdatePartner" class="edit-form" data-section="partners">
+                <input type="hidden" id="editPartnerId" name="Id" />
+                <div class="modal-body">
+                    <div class="mb-3">
+                        <label class="form-label">Name *</label>
+                        <input type="text" class="form-control" id="editPartnerName" name="Name" required>
+                    </div>
+                    <div class="mb-3">
+                        <label class="form-label">Type *</label>
+                        <select class="form-select" id="editPartnerType" name="Type" required>
+                            <option value="">Select Type</option>
+                            <option value="Customer">Customer</option>
+                            <option value="Vendor">Vendor</option>
+                            <option value="Both">Both</option>
+                        </select>
+                    </div>
+                    <div class="row">
+                        <div class="col-md-6 mb-3">
+                            <label class="form-label">Email</label>
+                            <input type="email" class="form-control" id="editPartnerEmail" name="Email">
+                        </div>
+                        <div class="col-md-6 mb-3">
+                            <label class="form-label">Phone</label>
+                            <input type="tel" class="form-control" id="editPartnerPhone" name="Phone">
+                        </div>
+                    </div>
+                    <div class="mb-3">
+                        <label class="form-label">Address</label>
+                        <input type="text" class="form-control" id="editPartnerAddress" name="Address">
+                    </div>
+                    <div class="row">
+                        <div class="col-md-4 mb-3">
+                            <label class="form-label">City</label>
+                            <input type="text" class="form-control" id="editPartnerCity" name="City">
+                        </div>
+                        <div class="col-md-4 mb-3">
+                            <label class="form-label">State</label>
+                            <input type="text" class="form-control" id="editPartnerState" name="State">
+                        </div>
+                        <div class="col-md-4 mb-3">
+                            <label class="form-label">Zip Code</label>
+                            <input type="text" class="form-control" id="editPartnerZip" name="ZipCode">
+                        </div>
+                    </div>
+                    <div class="mb-3">
+                        <label class="form-label">Contact Person</label>
+                        <input type="text" class="form-control" id="editPartnerContact" name="ContactPerson">
+                    </div>
+                    <div class="mb-3">
+                        <label class="form-label">Notes</label>
+                        <textarea class="form-control" id="editPartnerNotes" name="Notes"></textarea>
+                    </div>
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cancel</button>
+                    <button type="submit" class="btn btn-primary">Update</button>
+                </div>
+            </form>
+        </div>
+    </div>
+</div>
+
+<!-- Edit Tax Rate Modal -->
+<div class="modal fade" id="editTaxRateModal" tabindex="-1">
+    <div class="modal-dialog">
+        <div class="modal-content">
+            <div class="modal-header bg-primary text-white">
+                <h5 class="modal-title">Edit Tax Rate</h5>
+                <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal"></button>
+            </div>
+            <form method="post" asp-page-handler="UpdateTaxRate" class="edit-form" data-section="tax-rates">
+                <input type="hidden" id="editTaxRateId" name="Id" />
+                <div class="modal-body">
+                    <div class="mb-3">
+                        <label class="form-label">Name *</label>
+                        <input type="text" class="form-control" id="editTaxRateName" name="Name" required>
+                    </div>
+                    <div class="mb-3">
+                        <label class="form-label">Rate (%) *</label>
+                        <input type="number" step="0.01" min="0" max="100" class="form-control" id="editTaxRateRate" name="Rate" required>
+                    </div>
+                    <div class="mb-3">
+                        <label class="form-label">Tax Type</label>
+                        <input type="text" class="form-control" id="editTaxRateType" name="TaxType">
+                    </div>
+                    <div class="mb-3">
+                        <label class="form-label">Jurisdiction</label>
+                        <input type="text" class="form-control" id="editTaxRateJurisdiction" name="Jurisdiction">
+                    </div>
+                    <div class="mb-3">
+                        <label class="form-label">Effective Date *</label>
+                        <input type="date" class="form-control" id="editTaxRateEffectiveDate" name="EffectiveDate" required>
+                    </div>
+                    <div class="mb-3">
+                        <label class="form-label">Description</label>
+                        <textarea class="form-control" id="editTaxRateDescription" name="Description"></textarea>
+                    </div>
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cancel</button>
+                    <button type="submit" class="btn btn-primary">Update</button>
+                </div>
+            </form>
+        </div>
+    </div>
+</div>
+
+<!-- Edit Invoice Modal -->
+<div class="modal fade" id="editInvoiceModal" tabindex="-1">
+    <div class="modal-dialog modal-lg">
+        <div class="modal-content">
+            <div class="modal-header bg-primary text-white">
+                <h5 class="modal-title">Edit Invoice</h5>
+                <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal"></button>
+            </div>
+            <form method="post" asp-page-handler="UpdateInvoice" class="edit-form" data-section="invoices">
+                <input type="hidden" id="editInvoiceId" name="Id" />
+                <div class="modal-body">
+                    <div class="mb-3">
+                        <label class="form-label">Invoice Number *</label>
+                        <input type="text" class="form-control" id="editInvoiceNumber" name="InvoiceNumber" required>
+                    </div>
+                    <div class="mb-3">
+                        <label class="form-label">Customer Name *</label>
+                        <input type="text" class="form-control" id="editInvoiceCustomer" name="CustomerName" required>
+                    </div>
+                    <div class="mb-3">
+                        <label class="form-label">Partner</label>
+                        <select class="form-select" id="editInvoicePartnerId" name="PartnerId">
+                            <option value="">Select Partner</option>
+                            @foreach (var partner in Model.Partners)
+                            {
+                                <option value="@partner.Id">@partner.Name</option>
+                            }
+                        </select>
+                    </div>
+                    <div class="mb-3">
+                        <label class="form-label">Invoice Type *</label>
+                        <select class="form-select" id="editInvoiceType" name="InvoiceType" required>
+                            <option value="">Select Type</option>
+                            <option value="AR">Accounts Receivable</option>
+                            <option value="AP">Accounts Payable</option>
+                        </select>
+                    </div>
+                    <div class="mb-3">
+                        <label class="form-label">Amount *</label>
+                        <input type="number" step="0.01" min="0.01" class="form-control" id="editInvoiceAmount" name="Amount" required>
+                    </div>
+                    <div class="mb-3">
+                        <label class="form-label">Paid Amount</label>
+                        <input type="number" step="0.01" min="0" class="form-control" id="editInvoicePaid" name="PaidAmount" value="0">
+                    </div>
+                    <div class="row">
+                        <div class="col-md-6 mb-3">
+                            <label class="form-label">Invoice Date *</label>
+                            <input type="date" class="form-control" id="editInvoiceDate" name="InvoiceDate" required>
+                        </div>
+                        <div class="col-md-6 mb-3">
+                            <label class="form-label">Due Date *</label>
+                            <input type="date" class="form-control" id="editInvoiceDueDate" name="DueDate" required>
+                        </div>
+                    </div>
+                    <div class="mb-3">
+                        <label class="form-label">Status</label>
+                        <select class="form-select" id="editInvoiceStatus" name="Status">
+                            <option value="Pending">Pending</option>
+                            <option value="Paid">Paid</option>
+                            <option value="Overdue">Overdue</option>
+                        </select>
+                    </div>
+                    <div class="mb-3">
+                        <label class="form-label">Description</label>
+                        <textarea class="form-control" id="editInvoiceDescription" name="Description"></textarea>
+                    </div>
+                    <div class="row">
+                        <div class="col-md-6 mb-3">
+                            <label class="form-label">Email</label>
+                            <input type="email" class="form-control" id="editInvoiceEmail" name="CustomerEmail">
+                        </div>
+                        <div class="col-md-6 mb-3">
+                            <label class="form-label">Phone</label>
+                            <input type="tel" class="form-control" id="editInvoicePhone" name="CustomerPhone">
+                        </div>
+                    </div>
+                    <div class="mb-3">
+                        <label class="form-label">Notes</label>
+                        <textarea class="form-control" id="editInvoiceNotes" name="Notes"></textarea>
+                    </div>
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cancel</button>
+                    <button type="submit" class="btn btn-primary">Update</button>
+                </div>
+            </form>
+        </div>
+    </div>
+</div>
+
+<!-- Edit Invoice Line Modal -->
+<div class="modal fade" id="editInvoiceLineModal" tabindex="-1">
+    <div class="modal-dialog modal-lg">
+        <div class="modal-content">
+            <div class="modal-header bg-primary text-white">
+                <h5 class="modal-title">Edit Invoice Line</h5>
+                <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal"></button>
+            </div>
+            <form method="post" asp-page-handler="UpdateInvoiceLine" class="edit-form" data-section="invoice-lines">
+                <input type="hidden" id="editInvoiceLineId" name="Id" />
+                <div class="modal-body">
+                    <div class="mb-3">
+                        <label class="form-label">Invoice *</label>
+                        <select class="form-select" id="editInvoiceLineInvoiceId" name="InvoiceId" required>
+                            <option value="">Select Invoice</option>
+                            @foreach (var invoice in Model.Invoices)
+                            {
+                                <option value="@invoice.Id">@invoice.InvoiceNumber - @invoice.CustomerName</option>
+                            }
+                        </select>
+                    </div>
+                    <div class="mb-3">
+                        <label class="form-label">Description *</label>
+                        <input type="text" class="form-control" id="editInvoiceLineDescription" name="Description" required>
+                    </div>
+                    <div class="row">
+                        <div class="col-md-4 mb-3">
+                            <label class="form-label">Quantity *</label>
+                            <input type="number" step="0.01" min="0" class="form-control" id="editInvoiceLineQuantity" name="Quantity" required>
+                        </div>
+                        <div class="col-md-4 mb-3">
+                            <label class="form-label">Unit Price *</label>
+                            <input type="number" step="0.01" min="0" class="form-control" id="editInvoiceLineUnitPrice" name="UnitPrice" required>
+                        </div>
+                        <div class="col-md-4 mb-3">
+                            <label class="form-label">Tax Rate (%)</label>
+                            <input type="number" step="0.01" min="0" max="100" class="form-control" id="editInvoiceLineTaxRate" name="TaxRate" value="0">
+                        </div>
+                    </div>
+                    <div class="mb-3">
+                        <label class="form-label">Notes</label>
+                        <textarea class="form-control" id="editInvoiceLineNotes" name="Notes"></textarea>
+                    </div>
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cancel</button>
+                    <button type="submit" class="btn btn-primary">Update</button>
+                </div>
+            </form>
+        </div>
+    </div>
+</div>
+
+<!-- Edit Payment Modal -->
+<div class="modal fade" id="editPaymentModal" tabindex="-1">
+    <div class="modal-dialog modal-lg">
+        <div class="modal-content">
+            <div class="modal-header bg-primary text-white">
+                <h5 class="modal-title">Edit Payment</h5>
+                <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal"></button>
+            </div>
+            <form method="post" asp-page-handler="UpdatePayment" class="edit-form" data-section="payments">
+                <input type="hidden" id="editPaymentId" name="Id" />
+                <div class="modal-body">
+                    <div class="mb-3">
+                        <label class="form-label">Payment Number *</label>
+                        <input type="text" class="form-control" id="editPaymentNumber" name="PaymentNumber" required>
+                    </div>
+                    <div class="mb-3">
+                        <label class="form-label">Payee Name *</label>
+                        <input type="text" class="form-control" id="editPaymentPayee" name="PayeeName" required>
+                    </div>
+                    <div class="mb-3">
+                        <label class="form-label">Partner</label>
+                        <select class="form-select" id="editPaymentPartnerId" name="PartnerId">
+                            <option value="">Select Partner</option>
+                            @foreach (var partner in Model.Partners)
+                            {
+                                <option value="@partner.Id">@partner.Name</option>
+                            }
+                        </select>
+                    </div>
+                    <div class="mb-3">
+                        <label class="form-label">Payment Type *</label>
+                        <select class="form-select" id="editPaymentType" name="PaymentType" required>
+                            <option value="">Select Type</option>
+                            <option value="Inflow">Inflow</option>
+                            <option value="Outflow">Outflow</option>
+                        </select>
+                    </div>
+                    <div class="mb-3">
+                        <label class="form-label">Amount *</label>
+                        <input type="number" step="0.01" min="0.01" class="form-control" id="editPaymentAmount" name="Amount" required>
+                    </div>
+                    <div class="mb-3">
+                        <label class="form-label">Payment Date *</label>
+                        <input type="date" class="form-control" id="editPaymentDate" name="PaymentDate" required>
+                    </div>
+                    <div class="mb-3">
+                        <label class="form-label">Account *</label>
+                        <select class="form-select" id="editPaymentAccountId" name="AccountId" required>
+                            <option value="">Select Account</option>
+                            @foreach (var account in Model.Accounts)
+                            {
+                                <option value="@account.Id">@account.AccountName</option>
+                            }
+                        </select>
+                    </div>
+                    <div class="mb-3">
+                        <label class="form-label">Invoice</label>
+                        <select class="form-select" id="editPaymentInvoiceId" name="InvoiceId">
+                            <option value="">Select Invoice</option>
+                            @foreach (var invoice in Model.Invoices)
+                            {
+                                <option value="@invoice.Id">@invoice.InvoiceNumber</option>
+                            }
+                        </select>
+                    </div>
+                    <div class="row">
+                        <div class="col-md-6 mb-3">
+                            <label class="form-label">Payment Method</label>
+                            <select class="form-select" id="editPaymentMethod" name="PaymentMethod">
+                                <option value="Check">Check</option>
+                                <option value="Wire">Wire</option>
+                                <option value="ACH">ACH</option>
+                                <option value="Credit Card">Credit Card</option>
+                                <option value="Cash">Cash</option>
+                            </select>
+                        </div>
+                        <div class="col-md-6 mb-3">
+                            <label class="form-label">Status</label>
+                            <select class="form-select" id="editPaymentStatus" name="Status">
+                                <option value="Pending">Pending</option>
+                                <option value="Completed">Completed</option>
+                                <option value="Failed">Failed</option>
+                            </select>
+                        </div>
+                    </div>
+                    <div class="mb-3">
+                        <label class="form-label">Description</label>
+                        <textarea class="form-control" id="editPaymentDescription" name="Description"></textarea>
+                    </div>
+                    <div class="mb-3">
+                        <label class="form-label">Reference Number</label>
+                        <input type="text" class="form-control" id="editPaymentRef" name="ReferenceNumber">
+                    </div>
+                    <div class="mb-3">
+                        <label class="form-label">Notes</label>
+                        <textarea class="form-control" id="editPaymentNotes" name="Notes"></textarea>
+                    </div>
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cancel</button>
+                    <button type="submit" class="btn btn-primary">Update</button>
+                </div>
+            </form>
+        </div>
+    </div>
+</div>
+
+<!-- Edit Journal Entry Modal -->
+<div class="modal fade" id="editJournalEntryModal" tabindex="-1">
+    <div class="modal-dialog modal-lg">
+        <div class="modal-content">
+            <div class="modal-header bg-primary text-white">
+                <h5 class="modal-title">Edit Journal Entry</h5>
+                <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal"></button>
+            </div>
+            <form method="post" asp-page-handler="UpdateJournalEntry" class="edit-form" data-section="journal">
+                <input type="hidden" id="editJournalEntryId" name="Id" />
+                <div class="modal-body">
+                    <div class="mb-3">
+                        <label class="form-label">Entry Number *</label>
+                        <input type="text" class="form-control" id="editJournalEntryNumber" name="EntryNumber" required>
+                    </div>
+                    <div class="mb-3">
+                        <label class="form-label">Entry Date *</label>
+                        <input type="date" class="form-control" id="editJournalEntryDate" name="EntryDate" required>
+                    </div>
+                    <div class="mb-3">
+                        <label class="form-label">Description *</label>
+                        <input type="text" class="form-control" id="editJournalEntryDescription" name="Description" required>
+                    </div>
+                    <div class="mb-3">
+                        <label class="form-label">Reference</label>
+                        <input type="text" class="form-control" id="editJournalEntryReference" name="Reference">
+                    </div>
+                    <div class="mb-3">
+                        <label class="form-label">Status</label>
+                        <select class="form-select" id="editJournalEntryStatus" name="Status">
+                            <option value="Draft">Draft</option>
+                            <option value="Posted">Posted</option>
+                        </select>
+                    </div>
+                    <div class="mb-3">
+                        <label class="form-label">Notes</label>
+                        <textarea class="form-control" id="editJournalEntryNotes" name="Notes"></textarea>
+                    </div>
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cancel</button>
+                    <button type="submit" class="btn btn-primary">Update</button>
+                </div>
+            </form>
+        </div>
+    </div>
+</div>
+
+<!-- Edit Journal Line Modal -->
+<div class="modal fade" id="editJournalLineModal" tabindex="-1">
+    <div class="modal-dialog modal-lg">
+        <div class="modal-content">
+            <div class="modal-header bg-primary text-white">
+                <h5 class="modal-title">Edit Journal Line</h5>
+                <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal"></button>
+            </div>
+            <form method="post" asp-page-handler="UpdateJournalLine" class="edit-form" data-section="journal-lines">
+                <input type="hidden" id="editJournalLineId" name="Id" />
+                <div class="modal-body">
+                    <div class="mb-3">
+                        <label class="form-label">Journal Entry *</label>
+                        <select class="form-select" id="editJournalLineEntryId" name="JournalEntryId" required>
+                            <option value="">Select Entry</option>
+                            @foreach (var entry in Model.JournalEntries)
+                            {
+                                <option value="@entry.Id">@entry.EntryNumber - @entry.Description</option>
+                            }
+                        </select>
+                    </div>
+                    <div class="mb-3">
+                        <label class="form-label">Account Code *</label>
+                        <input type="text" class="form-control" id="editJournalLineAccountCode" name="AccountCode" required>
+                    </div>
+                    <div class="mb-3">
+                        <label class="form-label">Account Name</label>
+                        <input type="text" class="form-control" id="editJournalLineAccountName" name="AccountName">
+                    </div>
+                    <div class="mb-3">
+                        <label class="form-label">Description *</label>
+                        <input type="text" class="form-control" id="editJournalLineDescription" name="Description" required>
+                    </div>
+                    <div class="row">
+                        <div class="col-md-6 mb-3">
+                            <label class="form-label">Debit Amount</label>
+                            <input type="number" step="0.01" min="0" class="form-control" id="editJournalLineDebit" name="DebitAmount" value="0">
+                        </div>
+                        <div class="col-md-6 mb-3">
+                            <label class="form-label">Credit Amount</label>
+                            <input type="number" step="0.01" min="0" class="form-control" id="editJournalLineCredit" name="CreditAmount" value="0">
+                        </div>
+                    </div>
+                    <div class="mb-3">
+                        <label class="form-label">Notes</label>
+                        <textarea class="form-control" id="editJournalLineNotes" name="Notes"></textarea>
+                    </div>
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cancel</button>
+                    <button type="submit" class="btn btn-primary">Update</button>
+                </div>
+            </form>
+        </div>
+    </div>
+</div>
+
+<script>
+document.addEventListener('DOMContentLoaded', function() {
+    // Show toast notifications from TempData
+    @if (TempData["Success"] != null)
+    {
+        <text>
+        const successToastEl = document.getElementById('successToast');
+        const successToast = new bootstrap.Toast(successToastEl, { autohide: true, delay: 5000 });
+        document.getElementById('successToastBody').textContent = '@Html.Raw(TempData["Success"])';
+        successToast.show();
+        </text>
+    }
+    @if (TempData["Error"] != null)
+    {
+        <text>
+        const errorToastEl = document.getElementById('errorToast');
+        const errorToast = new bootstrap.Toast(errorToastEl, { autohide: true, delay: 5000 });
+        document.getElementById('errorToastBody').textContent = '@Html.Raw(TempData["Error"])';
+        errorToast.show();
+        </text>
+    }
+
+    // Restore open section from URL parameter
+    const urlParams = new URLSearchParams(window.location.search);
+    const openSection = urlParams.get('section');
+    if (openSection) {
+        const sectionElement = document.getElementById(openSection + '-section');
+        const card = document.querySelector(`[data-section="${openSection}"]`);
+        if (sectionElement && card) {
+            document.querySelectorAll('.section-content').forEach(sec => {
+                sec.style.display = 'none';
+            });
+            document.querySelectorAll('.clickable-card').forEach(c => {
+                c.classList.remove('border-primary', 'border-2');
+            });
+            sectionElement.style.display = 'block';
+            card.classList.add('border-primary', 'border-2');
+            setTimeout(() => {
+                sectionElement.scrollIntoView({ behavior: 'smooth', block: 'start' });
+            }, 100);
+        }
+    }
+
+    // Clickable card functionality
+    document.querySelectorAll('.clickable-card').forEach(card => {
+        card.style.cursor = 'pointer';
+        card.addEventListener('click', function() {
+            const section = this.getAttribute('data-section');
+            const sectionElement = document.getElementById(section + '-section');
+            
+            if (sectionElement) {
+                const isVisible = sectionElement.style.display !== 'none';
+                
+                document.querySelectorAll('.section-content').forEach(sec => {
+                    sec.style.display = 'none';
+                });
+                
+                document.querySelectorAll('.clickable-card').forEach(c => {
+                    c.classList.remove('border-primary', 'border-2');
+                });
+                
+                // Show selected section if it was hidden
+                if (!isVisible) {
+                    sectionElement.style.display = 'block';
+                    this.classList.add('border-primary', 'border-2');
+                    sectionElement.scrollIntoView({ behavior: 'smooth', block: 'start' });
+                }
+            }
+        });
+        
+        card.addEventListener('mouseenter', function() {
+            if (!this.classList.contains('border-primary')) {
+                this.style.transform = 'translateY(-2px)';
+                this.style.transition = 'transform 0.2s';
+            }
+        });
+        
+        card.addEventListener('mouseleave', function() {
+            this.style.transform = 'translateY(0)';
+        });
+    });
+    
+    // Generic delete handler function
+    function setupDeleteHandler(selector, handlerName, idAttr, nameAttr) {
+        document.querySelectorAll(selector).forEach(btn => {
+            btn.addEventListener('click', function() {
+                const id = this.getAttribute(idAttr);
+                const name = this.getAttribute(nameAttr);
+                
+                if (confirm(`Are you sure you want to delete ${name}?`)) {
+                    const formData = new FormData();
+                    formData.append('id', id);
+                    const token = document.querySelector('input[name="__RequestVerificationToken"]').value;
+                    formData.append('__RequestVerificationToken', token);
+                    
+                    fetch(`?handler=${handlerName}`, {
+                        method: 'POST',
+                        body: formData
+                    })
+                    .then(r => r.json())
+                    .then(data => {
+                        if (data.success) {
+                            location.reload();
+                        } else {
+                            alert(data.message || 'Error deleting record');
+                        }
+                    });
+                }
+            });
+        });
+    }
+    
+    // Setup delete handlers for all entities
+    setupDeleteHandler('.delete-account-btn', 'DeleteAccount', 'data-account-id', 'data-account-name');
+    setupDeleteHandler('.delete-partner-btn', 'DeletePartner', 'data-partner-id', 'data-partner-name');
+    setupDeleteHandler('.delete-taxrate-btn', 'DeleteTaxRate', 'data-taxrate-id', 'data-taxrate-name');
+    setupDeleteHandler('.delete-invoice-btn', 'DeleteInvoice', 'data-invoice-id', 'data-invoice-number');
+    setupDeleteHandler('.delete-invoiceline-btn', 'DeleteInvoiceLine', 'data-line-id', 'data-line-description');
+    setupDeleteHandler('.delete-payment-btn', 'DeletePayment', 'data-payment-id', 'data-payment-number');
+    setupDeleteHandler('.delete-journalentry-btn', 'DeleteJournalEntry', 'data-entry-id', 'data-entry-number');
+    setupDeleteHandler('.delete-journalline-btn', 'DeleteJournalLine', 'data-line-id', 'data-line-description');
+    
+    // Edit Account handler
+    document.querySelectorAll('.edit-account-btn').forEach(btn => {
+        btn.addEventListener('click', function() {
+            document.getElementById('editAccountId').value = this.getAttribute('data-account-id');
+            document.getElementById('editAccountName').value = this.getAttribute('data-account-name');
+            document.getElementById('editAccountType').value = this.getAttribute('data-account-type');
+            document.getElementById('editBankName').value = this.getAttribute('data-account-bank') || '';
+            document.getElementById('editAccountNumber').value = this.getAttribute('data-account-number') || '';
+            document.getElementById('editBalance').value = this.getAttribute('data-account-balance');
+            document.getElementById('editAccountDescription').value = this.getAttribute('data-account-description') || '';
+            new bootstrap.Modal(document.getElementById('editAccountModal')).show();
+        });
+    });
+
+    // Edit Partner handler
+    document.querySelectorAll('.edit-partner-btn').forEach(btn => {
+        btn.addEventListener('click', function() {
+            document.getElementById('editPartnerId').value = this.getAttribute('data-partner-id');
+            document.getElementById('editPartnerName').value = this.getAttribute('data-partner-name');
+            document.getElementById('editPartnerType').value = this.getAttribute('data-partner-type');
+            document.getElementById('editPartnerEmail').value = this.getAttribute('data-partner-email') || '';
+            document.getElementById('editPartnerPhone').value = this.getAttribute('data-partner-phone') || '';
+            document.getElementById('editPartnerAddress').value = this.getAttribute('data-partner-address') || '';
+            document.getElementById('editPartnerCity').value = this.getAttribute('data-partner-city') || '';
+            document.getElementById('editPartnerState').value = this.getAttribute('data-partner-state') || '';
+            document.getElementById('editPartnerZip').value = this.getAttribute('data-partner-zip') || '';
+            document.getElementById('editPartnerContact').value = this.getAttribute('data-partner-contact') || '';
+            document.getElementById('editPartnerNotes').value = this.getAttribute('data-partner-notes') || '';
+            new bootstrap.Modal(document.getElementById('editPartnerModal')).show();
+        });
+    });
+
+    // Edit TaxRate handler
+    document.querySelectorAll('.edit-taxrate-btn').forEach(btn => {
+        btn.addEventListener('click', function() {
+            document.getElementById('editTaxRateId').value = this.getAttribute('data-taxrate-id');
+            document.getElementById('editTaxRateName').value = this.getAttribute('data-taxrate-name');
+            document.getElementById('editTaxRateRate').value = this.getAttribute('data-taxrate-rate');
+            document.getElementById('editTaxRateType').value = this.getAttribute('data-taxrate-type') || '';
+            document.getElementById('editTaxRateJurisdiction').value = this.getAttribute('data-taxrate-jurisdiction') || '';
+            document.getElementById('editTaxRateDescription').value = this.getAttribute('data-taxrate-description') || '';
+            document.getElementById('editTaxRateEffectiveDate').value = this.getAttribute('data-taxrate-effectivedate');
+            new bootstrap.Modal(document.getElementById('editTaxRateModal')).show();
+        });
+    });
+
+    // Edit Invoice handler
+    document.querySelectorAll('.edit-invoice-btn').forEach(btn => {
+        btn.addEventListener('click', function() {
+            document.getElementById('editInvoiceId').value = this.getAttribute('data-invoice-id');
+            document.getElementById('editInvoiceNumber').value = this.getAttribute('data-invoice-number');
+            document.getElementById('editInvoiceCustomer').value = this.getAttribute('data-invoice-customer');
+            document.getElementById('editInvoicePartnerId').value = this.getAttribute('data-invoice-partnerid') || '';
+            document.getElementById('editInvoiceType').value = this.getAttribute('data-invoice-type');
+            document.getElementById('editInvoiceAmount').value = this.getAttribute('data-invoice-amount');
+            document.getElementById('editInvoicePaid').value = this.getAttribute('data-invoice-paid');
+            document.getElementById('editInvoiceDate').value = this.getAttribute('data-invoice-date');
+            document.getElementById('editInvoiceDueDate').value = this.getAttribute('data-invoice-duedate');
+            document.getElementById('editInvoiceStatus').value = this.getAttribute('data-invoice-status');
+            document.getElementById('editInvoiceDescription').value = this.getAttribute('data-invoice-description') || '';
+            document.getElementById('editInvoiceEmail').value = this.getAttribute('data-invoice-email') || '';
+            document.getElementById('editInvoicePhone').value = this.getAttribute('data-invoice-phone') || '';
+            document.getElementById('editInvoiceNotes').value = this.getAttribute('data-invoice-notes') || '';
+            new bootstrap.Modal(document.getElementById('editInvoiceModal')).show();
+        });
+    });
+
+    // Edit InvoiceLine handler
+    document.querySelectorAll('.edit-invoiceline-btn').forEach(btn => {
+        btn.addEventListener('click', function() {
+            document.getElementById('editInvoiceLineId').value = this.getAttribute('data-line-id');
+            document.getElementById('editInvoiceLineInvoiceId').value = this.getAttribute('data-line-invoiceid');
+            document.getElementById('editInvoiceLineDescription').value = this.getAttribute('data-line-description');
+            document.getElementById('editInvoiceLineQuantity').value = this.getAttribute('data-line-quantity');
+            document.getElementById('editInvoiceLineUnitPrice').value = this.getAttribute('data-line-unitprice');
+            document.getElementById('editInvoiceLineTaxRate').value = this.getAttribute('data-line-taxrate');
+            document.getElementById('editInvoiceLineNotes').value = this.getAttribute('data-line-notes') || '';
+            new bootstrap.Modal(document.getElementById('editInvoiceLineModal')).show();
+        });
+    });
+
+    // Edit Payment handler
+    document.querySelectorAll('.edit-payment-btn').forEach(btn => {
+        btn.addEventListener('click', function() {
+            document.getElementById('editPaymentId').value = this.getAttribute('data-payment-id');
+            document.getElementById('editPaymentNumber').value = this.getAttribute('data-payment-number');
+            document.getElementById('editPaymentPayee').value = this.getAttribute('data-payment-payee');
+            document.getElementById('editPaymentPartnerId').value = this.getAttribute('data-payment-partnerid') || '';
+            document.getElementById('editPaymentType').value = this.getAttribute('data-payment-type');
+            document.getElementById('editPaymentAmount').value = this.getAttribute('data-payment-amount');
+            document.getElementById('editPaymentDate').value = this.getAttribute('data-payment-date');
+            document.getElementById('editPaymentAccountId').value = this.getAttribute('data-payment-accountid');
+            document.getElementById('editPaymentInvoiceId').value = this.getAttribute('data-payment-invoiceid') || '';
+            document.getElementById('editPaymentMethod').value = this.getAttribute('data-payment-method');
+            document.getElementById('editPaymentStatus').value = this.getAttribute('data-payment-status');
+            document.getElementById('editPaymentDescription').value = this.getAttribute('data-payment-description') || '';
+            document.getElementById('editPaymentRef').value = this.getAttribute('data-payment-ref') || '';
+            document.getElementById('editPaymentNotes').value = this.getAttribute('data-payment-notes') || '';
+            new bootstrap.Modal(document.getElementById('editPaymentModal')).show();
+        });
+    });
+
+    // Edit JournalEntry handler
+    document.querySelectorAll('.edit-journalentry-btn').forEach(btn => {
+        btn.addEventListener('click', function() {
+            document.getElementById('editJournalEntryId').value = this.getAttribute('data-entry-id');
+            document.getElementById('editJournalEntryNumber').value = this.getAttribute('data-entry-number');
+            document.getElementById('editJournalEntryDate').value = this.getAttribute('data-entry-date');
+            document.getElementById('editJournalEntryDescription').value = this.getAttribute('data-entry-description');
+            document.getElementById('editJournalEntryReference').value = this.getAttribute('data-entry-reference') || '';
+            document.getElementById('editJournalEntryStatus').value = this.getAttribute('data-entry-status');
+            document.getElementById('editJournalEntryNotes').value = this.getAttribute('data-entry-notes') || '';
+            new bootstrap.Modal(document.getElementById('editJournalEntryModal')).show();
+        });
+    });
+
+    // Edit JournalLine handler
+    document.querySelectorAll('.edit-journalline-btn').forEach(btn => {
+        btn.addEventListener('click', function() {
+            document.getElementById('editJournalLineId').value = this.getAttribute('data-line-id');
+            document.getElementById('editJournalLineEntryId').value = this.getAttribute('data-line-entryid');
+            document.getElementById('editJournalLineAccountCode').value = this.getAttribute('data-line-accountcode');
+            document.getElementById('editJournalLineAccountName').value = this.getAttribute('data-line-accountname') || '';
+            document.getElementById('editJournalLineDescription').value = this.getAttribute('data-line-description');
+            document.getElementById('editJournalLineDebit').value = this.getAttribute('data-line-debit');
+            document.getElementById('editJournalLineCredit').value = this.getAttribute('data-line-credit');
+            document.getElementById('editJournalLineNotes').value = this.getAttribute('data-line-notes') || '';
+            new bootstrap.Modal(document.getElementById('editJournalLineModal')).show();
+        });
+    });
+    
+    // Intercept edit form submissions to preserve section state
+    document.querySelectorAll('.edit-form').forEach(form => {
+        form.addEventListener('submit', function(e) {
+            const section = this.getAttribute('data-section');
+            if (section) {
+                // Add section parameter as hidden input
+                let sectionInput = this.querySelector('input[name="section"]');
+                if (!sectionInput) {
+                    sectionInput = document.createElement('input');
+                    sectionInput.type = 'hidden';
+                    sectionInput.name = 'section';
+                    this.appendChild(sectionInput);
+                }
+                sectionInput.value = section;
+            }
+        });
+    });
+
+});
+</script>

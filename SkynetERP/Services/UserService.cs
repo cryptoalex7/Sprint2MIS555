@@ -92,4 +92,11 @@ public class UserService
     {
         return role == "Admin" || role == "HR";
     }
+
+    public bool CanViewSpend(string? role)
+    {
+        // Only Admin can view annual spend (sensitive financial information)
+        // Similar to salary restrictions - financial data should be restricted
+        return role == "Admin";
+    }
 }

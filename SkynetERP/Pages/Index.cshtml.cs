@@ -67,7 +67,7 @@ public class IndexModel : PageModel
 
         return role switch
         {
-            "Admin" => RedirectToPage("/HRM"), // Admin can access all, default to HRM
+            "Admin" => RedirectToPage("/Dashboard"), // Admin goes to dashboard
             "HR" => RedirectToPage("/HRM"),
             "Vendor" => RedirectToPage("/VendorManagement"),
             "User" => RedirectToPage("/Privacy"),

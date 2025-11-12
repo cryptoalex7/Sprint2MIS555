@@ -18,19 +18,25 @@
                     <h1 class="login-title text-center mb-3">Create Account</h1>
                     <p class="login-subtitle text-center text-muted mb-3">Sign up for your SkynetERP account</p>
 
-                    @if (!string.IsNullOrEmpty(Model.ErrorMessage))
-                    {
-                        <div class="alert alert-danger" role="alert">
-                            <i class="fas fa-exclamation-circle me-2"></i>@Model.ErrorMessage
+                    <!-- Toast Container -->
+                    <div class="toast-container position-fixed top-0 end-0 p-3" style="z-index: 1055;">
+                        <div id="successToast" class="toast" role="alert" aria-live="assertive" aria-atomic="true" data-bs-autohide="true" data-bs-delay="5000">
+                            <div class="toast-header bg-success text-white d-flex align-items-center">
+                                <i class="fas fa-check-circle me-2"></i>
+                                <strong class="me-auto">Success</strong>
+                                <button type="button" class="btn-close btn-close-white" data-bs-dismiss="toast" aria-label="Close"></button>
+                            </div>
+                            <div class="toast-body bg-white" id="successToastBody"></div>
                         </div>
-                    }
-
-                    @if (!string.IsNullOrEmpty(Model.SuccessMessage))
-                    {
-                        <div class="alert alert-success" role="alert">
-                            <i class="fas fa-check-circle me-2"></i>@Model.SuccessMessage
+                        <div id="errorToast" class="toast" role="alert" aria-live="assertive" aria-atomic="true" data-bs-autohide="true" data-bs-delay="5000">
+                            <div class="toast-header bg-danger text-white d-flex align-items-center">
+                                <i class="fas fa-exclamation-circle me-2"></i>
+                                <strong class="me-auto">Error</strong>
+                                <button type="button" class="btn-close btn-close-white" data-bs-dismiss="toast" aria-label="Close"></button>
+                            </div>
+                            <div class="toast-body bg-white" id="errorToastBody"></div>
                         </div>
-                    }
+                    </div>
 
                     <form method="post" asp-page-handler="OnPostAsync">
                         <div class="row g-3">
@@ -197,6 +203,26 @@
                 }
             });
         });
+
+        // Show toast notifications if messages exist
+        @if (!string.IsNullOrEmpty(Model.ErrorMessage))
+        {
+            <text>
+            const errorToastEl = document.getElementById('errorToast');
+            const errorToast = new bootstrap.Toast(errorToastEl, { autohide: true, delay: 5000 });
+            document.getElementById('errorToastBody').textContent = '@Html.Raw(Model.ErrorMessage)';
+            errorToast.show();
+            </text>
+        }
+        @if (!string.IsNullOrEmpty(Model.SuccessMessage))
+        {
+            <text>
+            const successToastEl = document.getElementById('successToast');
+            const successToast = new bootstrap.Toast(successToastEl, { autohide: true, delay: 5000 });
+            document.getElementById('successToastBody').textContent = '@Html.Raw(Model.SuccessMessage)';
+            successToast.show();
+            </text>
+        }
     </script>
 }
 

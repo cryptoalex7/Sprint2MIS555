@@ -6,7 +6,27 @@
 
 @Html.AntiForgeryToken()
 
-<div class="container-fluid hrm-page">
+<div class="hrm-page">
+    <!-- Toast Container -->
+    <div class="toast-container position-fixed top-0 end-0 p-3" style="z-index: 1055;">
+        <div id="successToast" class="toast" role="alert" aria-live="assertive" aria-atomic="true" data-bs-autohide="true" data-bs-delay="5000">
+            <div class="toast-header bg-success text-white d-flex align-items-center">
+                <i class="fas fa-check-circle me-2"></i>
+                <strong class="me-auto">Success</strong>
+                <button type="button" class="btn-close btn-close-white" data-bs-dismiss="toast" aria-label="Close"></button>
+            </div>
+            <div class="toast-body bg-white" id="successToastBody"></div>
+        </div>
+        <div id="errorToast" class="toast" role="alert" aria-live="assertive" aria-atomic="true" data-bs-autohide="true" data-bs-delay="5000">
+            <div class="toast-header bg-danger text-white d-flex align-items-center">
+                <i class="fas fa-exclamation-circle me-2"></i>
+                <strong class="me-auto">Error</strong>
+                <button type="button" class="btn-close btn-close-white" data-bs-dismiss="toast" aria-label="Close"></button>
+            </div>
+            <div class="toast-body bg-white" id="errorToastBody"></div>
+        </div>
+    </div>
+
     <!-- Page Header -->
     <div class="row mb-4">
         <div class="col-12">
@@ -112,9 +132,12 @@
                             <h2 class="h4 mb-0 fw-bold">Vendor Directory</h2>
                         </div>
                         <div class="col-md-6 text-md-end">
-                            <button class="btn btn-light btn-sm me-2" data-bs-toggle="modal" data-bs-target="#addVendorModal" aria-label="Add New Vendor">
-                                <i class="fas fa-plus me-1"></i>Add Vendor
-                            </button>
+                            @if (Model.CanEditDelete)
+                            {
+                                <button class="btn btn-light btn-sm me-2" data-bs-toggle="modal" data-bs-target="#addVendorModal" aria-label="Add New Vendor">
+                                    <i class="fas fa-plus me-1"></i>Add Vendor
+                                </button>
+                            }
                             <button class="btn btn-outline-light btn-sm" id="exportBtn" aria-label="Export Vendor Data">
                                 <i class="fas fa-download me-1"></i>Export
                             </button>
@@ -166,7 +189,10 @@
                                     {
                                         <th scope="col" class="fw-bold">Annual Spend</th>
                                     }
-                                    <th scope="col" class="fw-bold text-center">Actions</th>
+                                    @if (Model.CanEditDelete)
+                                    {
+                                        <th scope="col" class="fw-bold text-center">Actions</th>
+                                    }
                                 </tr>
                             </thead>
                             <tbody>
@@ -193,37 +219,45 @@
                                             {
                                                 <td class="text-success fw-bold">$@vendor.AnnualSpend.ToString("N0")</td>
                                             }
-                                            <td class="text-center">
-                                                <div class="btn-group btn-group-hrm" role="group" aria-label="Vendor actions">
-                                                    <button class="btn btn-sm btn-outline-warning edit-vendor-btn" 
-                                                            data-vendor-id="@vendor.Id"
-                                                            data-vendor-companyname="@vendor.CompanyName"
-                                                            data-vendor-category="@vendor.Category"
-                                                            data-vendor-contactperson="@vendor.ContactPerson"
-                                                            data-vendor-address="@vendor.Address"
-                                                            data-vendor-phone="@vendor.Phone"
-                                                            data-vendor-annualspend="@vendor.AnnualSpend"
-                                                            title="Edit Vendor" 
-                                                            aria-label="Edit vendor">
-                                                        <i class="fas fa-edit"></i>
-                                                    </button>
-                                                    <button class="btn btn-sm btn-outline-danger delete-vendor-btn" 
-                                                            data-vendor-id="@vendor.Id" 
-                                                            data-vendor-name="@vendor.CompanyName"
-                                                            title="Delete Vendor" 
-                                                            aria-label="Delete vendor">
-                                                        <i class="fas fa-trash"></i>
-                                                    </button>
-                                                </div>
-                                            </td>
+                                            @if (Model.CanEditDelete)
+                                            {
+                                                <td class="text-center">
+                                                    <div class="btn-group btn-group-hrm" role="group" aria-label="Vendor actions">
+                                                        <button class="btn btn-sm btn-outline-warning edit-vendor-btn" 
+                                                                data-vendor-id="@vendor.Id"
+                                                                data-vendor-companyname="@vendor.CompanyName"
+                                                                data-vendor-category="@vendor.Category"
+                                                                data-vendor-contactperson="@vendor.ContactPerson"
+                                                                data-vendor-address="@vendor.Address"
+                                                                data-vendor-phone="@vendor.Phone"
+                                                                data-vendor-annualspend="@vendor.AnnualSpend"
+                                                                title="Edit Vendor" 
+                                                                aria-label="Edit vendor">
+                                                            <i class="fas fa-edit"></i>
+                                                        </button>
+                                                        <button class="btn btn-sm btn-outline-danger delete-vendor-btn" 
+                                                                data-vendor-id="@vendor.Id" 
+                                                                data-vendor-name="@vendor.CompanyName"
+                                                                title="Delete Vendor" 
+                                                                aria-label="Delete vendor">
+                                                            <i class="fas fa-trash"></i>
+                                                        </button>
+                                                    </div>
+                                                </td>
+                                            }
                                         </tr>
                                     }
                                 }
                                 else
                                 {
                                     <tr>
-                                        <td colspan="@(Model.CanViewSpend ? 7 : 6)" class="text-center text-muted py-4">
-                                            No vendors found. Click "Add Vendor" to get started.
+                                        @{
+                                            var colCount = 5; // Company Name, Category, Contact Person, Address, Phone
+                                            if (Model.CanViewSpend) colCount++;
+                                            if (Model.CanEditDelete) colCount++;
+                                        }
+                                        <td colspan="@colCount" class="text-center text-muted py-4">
+                                            No vendors found.@(Model.CanEditDelete ? " Click \"Add Vendor\" to get started." : "")
                                         </td>
                                     </tr>
                                 }
@@ -239,7 +273,7 @@
     <div class="row mt-4">
         <div class="col-12">
             <div class="card shadow-sm border-0">
-                <div class="card-header bg-success text-white">
+                <div class="card-header bg-primary text-white">
                     <div class="row align-items-center">
                         <div class="col-md-6">
                             <h2 class="h4 mb-0 fw-bold">Delivery Confirmations</h2>
@@ -254,7 +288,7 @@
                 <div class="card-body p-0">
                     <div class="table-responsive">
                         <table class="table table-hover table-hrm mb-0" id="deliveryTable" role="table" aria-label="Delivery Confirmations">
-                            <thead class="table-success">
+                            <thead class="table-primary">
                                 <tr>
                                     <th scope="col" class="fw-bold">Delivery #</th>
                                     <th scope="col" class="fw-bold">Vendor</th>
@@ -285,7 +319,7 @@
                                             <td>
                                                 @if (!string.IsNullOrEmpty(delivery.PhotoPath))
                                                 {
-                                                    <a href="@delivery.PhotoPath" target="_blank" class="btn btn-sm btn-outline-primary" title="View Photo">
+                                                    <a href="@delivery.PhotoPath" target="_blank" class="btn btn-sm btn-outline-info" title="View Photo">
                                                         <i class="fas fa-image"></i> View
                                                     </a>
                                                 }
@@ -1045,8 +1079,18 @@
                             // Check if table is empty and show message
                             const tbody = document.querySelector('#vendorTable tbody');
                             if (tbody && tbody.children.length === 0) {
-                                const colspan = @(Model.CanViewSpend ? 7 : 6);
-                                tbody.innerHTML = `<tr><td colspan="${colspan}" class="text-center text-muted py-4">No vendors found. Click "Add Vendor" to get started.</td></tr>`;
+                                @{
+                                    var jsColCount = 5; // Company Name, Category, Contact Person, Address, Phone
+                                    if (Model.CanViewSpend) jsColCount++;
+                                    if (Model.CanEditDelete) jsColCount++;
+                                }
+                                const colspan = @jsColCount;
+                                @{
+                                    var emptyVendorMessage = Model.CanEditDelete 
+                                        ? "No vendors found. Click \"Add Vendor\" to get started." 
+                                        : "No vendors found.";
+                                }
+                                tbody.innerHTML = `<tr><td colspan="${colspan}" class="text-center text-muted py-4">@emptyVendorMessage</td></tr>`;
                             }
                         }, 300);
                     }
@@ -1196,23 +1240,18 @@
             btn.innerHTML = '<i class="fas fa-check me-1"></i>Confirm Delivery';
         });
 
-        // Simple notification function
+        // Toast notification function (consistent with other pages)
         function showNotification(message, type) {
-            // Create notification element
-            const notification = document.createElement('div');
-            notification.className = `alert alert-${type === 'success' ? 'success' : 'danger'} alert-dismissible fade show position-fixed`;
-            notification.style.cssText = 'top: 20px; right: 20px; z-index: 9999; min-width: 300px;';
-            notification.innerHTML = `
-                ${message}
-                <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
-            `;
+            const toastId = type === 'success' ? 'successToast' : 'errorToast';
+            const bodyId = type === 'success' ? 'successToastBody' : 'errorToastBody';
+            const toastElement = document.getElementById(toastId);
+            const toastBody = document.getElementById(bodyId);
             
-            document.body.appendChild(notification);
-            
-            // Auto-remove after 3 seconds
-            setTimeout(() => {
-                notification.remove();
-            }, 3000);
+            if (toastElement && toastBody) {
+                toastBody.textContent = message;
+                const toast = new bootstrap.Toast(toastElement, { autohide: true, delay: 5000 });
+                toast.show();
+            }
         }
     </script>
 }
