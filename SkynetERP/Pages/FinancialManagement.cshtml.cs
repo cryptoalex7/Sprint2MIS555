@@ -32,6 +32,9 @@ public class FinancialManagementModel : PageModel
     public int JournalEntryCount { get; set; }
     public int JournalLineCount { get; set; }
     public int TaxRateCount { get; set; }
+    public decimal TotalRevenue { get; set; }
+    public decimal TotalExpense { get; set; }
+    public decimal NetBalance { get; set; }
 
     // Filters
     [BindProperty(SupportsGet = true)]
@@ -58,20 +61,37 @@ public class FinancialManagementModel : PageModel
 
     public void OnGet()
     {
-        LoadData();
-        CalculateMetrics();
+        try
+        {
+            LoadData();
+            CalculateMetrics();
+        }
+        catch (Exception ex)
+        {
+            _logger.LogError(ex, "Error loading financial data");
+            TempData["Error"] = $"Error loading data: {ex.Message}";
+            // Initialize empty lists to prevent null reference errors
+            Accounts = new List<Account>();
+            Partners = new List<Partner>();
+            TaxRates = new List<TaxRate>();
+            Invoices = new List<Invoice>();
+            InvoiceLines = new List<InvoiceLine>();
+            Payments = new List<Payment>();
+            JournalEntries = new List<JournalEntry>();
+            JournalLines = new List<JournalLine>();
+        }
     }
 
     private void LoadData()
     {
-        Accounts = _financialService.GetAllAccounts();
-        Partners = _financialService.GetPartnersByType(PartnerTypeFilter);
-        TaxRates = _financialService.GetAllTaxRates();
-        Invoices = _financialService.GetInvoicesByType(InvoiceTypeFilter);
-        InvoiceLines = _financialService.GetAllInvoiceLines();
-        Payments = _financialService.GetPaymentsByType(PaymentTypeFilter);
-        JournalEntries = _financialService.GetAllJournalEntries();
-        JournalLines = _financialService.GetAllJournalLines();
+        Accounts = _financialService.GetAllAccounts() ?? new List<Account>();
+        Partners = _financialService.GetPartnersByType(PartnerTypeFilter) ?? new List<Partner>();
+        TaxRates = _financialService.GetAllTaxRates() ?? new List<TaxRate>();
+        Invoices = _financialService.GetInvoicesByType(InvoiceTypeFilter) ?? new List<Invoice>();
+        InvoiceLines = _financialService.GetAllInvoiceLines() ?? new List<InvoiceLine>();
+        Payments = _financialService.GetPaymentsByType(PaymentTypeFilter) ?? new List<Payment>();
+        JournalEntries = _financialService.GetAllJournalEntries() ?? new List<JournalEntry>();
+        JournalLines = _financialService.GetAllJournalLines() ?? new List<JournalLine>();
     }
 
     private void CalculateMetrics()
@@ -88,6 +108,9 @@ public class FinancialManagementModel : PageModel
         JournalEntryCount = _financialService.GetJournalEntryCount();
         JournalLineCount = _financialService.GetJournalLineCount();
         TaxRateCount = _financialService.GetTaxRateCount();
+        TotalRevenue = _financialService.GetTotalRevenue();
+        TotalExpense = _financialService.GetTotalExpense();
+        NetBalance = TotalRevenue - TotalExpense;
     }
 
     // Account CRUD
@@ -314,17 +337,26 @@ public class FinancialManagementModel : PageModel
     // Payment CRUD
     public IActionResult OnPostAddPayment([FromForm] Payment payment)
     {
-        if (!ModelState.IsValid) return Page();
+        if (!ModelState.IsValid)
+        {
+            LoadData();
+            CalculateMetrics();
+            return Page();
+        }
         try
         {
             _financialService.AddPayment(payment);
             TempData["Success"] = "Payment added successfully";
+            // Clear any filters to ensure all data is shown
+            return RedirectToPage(new { PartnerTypeFilter = (string?)null, InvoiceTypeFilter = (string?)null, PaymentTypeFilter = (string?)null, section = (string?)null });
         }
         catch (Exception ex)
         {
+            _logger.LogError(ex, "Error adding payment: {Message}", ex.Message);
             TempData["Error"] = $"Error adding payment: {ex.Message}";
+            // Still redirect to reload data
+            return RedirectToPage(new { PartnerTypeFilter = (string?)null, InvoiceTypeFilter = (string?)null, PaymentTypeFilter = (string?)null });
         }
-        return RedirectToPage();
     }
 
     public IActionResult OnPostUpdatePayment([FromForm] Payment payment, [FromForm] string? section)

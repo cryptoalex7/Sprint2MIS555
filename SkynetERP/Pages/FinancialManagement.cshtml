@@ -15,84 +15,174 @@
         </div>
     </div>
 
+    <!-- Key Financial Metrics -->
+    <div class="row mb-4">
+        <div class="col-12">
+            <h2 class="h5 fw-bold mb-4 text-dark">Key Financial Metrics</h2>
+            <div class="row g-4">
+                <!-- Total Revenue Card -->
+                <div class="col-lg-4 col-md-4">
+                    <div class="card shadow-sm border-0 financial-metric-card" style="background: linear-gradient(135deg, #d4edda 0%, #c3e6cb 100%);">
+                        <div class="card-body p-4">
+                            <div class="d-flex align-items-center justify-content-between mb-3">
+                                <h6 class="card-title fw-bold mb-0 text-dark">Total Revenue</h6>
+                                <i class="fas fa-arrow-up fa-2x text-success opacity-75"></i>
+                            </div>
+                            <div class="display-4 fw-bold text-success mb-2">$@Model.TotalRevenue.ToString("N2")</div>
+                            <div class="text-muted small">
+                                <i class="fas fa-file-invoice me-1"></i>From AR Invoices
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                
+                <!-- Total Expense Card -->
+                <div class="col-lg-4 col-md-4">
+                    <div class="card shadow-sm border-0 financial-metric-card" style="background: linear-gradient(135deg, #f8d7da 0%, #f5c6cb 100%);">
+                        <div class="card-body p-4">
+                            <div class="d-flex align-items-center justify-content-between mb-3">
+                                <h6 class="card-title fw-bold mb-0 text-dark">Total Expense</h6>
+                                <i class="fas fa-arrow-down fa-2x text-danger opacity-75"></i>
+                            </div>
+                            <div class="display-4 fw-bold text-danger mb-2">$@Model.TotalExpense.ToString("N2")</div>
+                            <div class="text-muted small">
+                                <i class="fas fa-file-invoice me-1"></i>From AP Invoices
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                
+                <!-- Net Balance Card -->
+                <div class="col-lg-4 col-md-4">
+                    <div class="card shadow-sm border-0 financial-metric-card @(Model.NetBalance >= 0 ? "border-success border-2" : "border-danger border-2")" style="background: @(Model.NetBalance >= 0 ? "linear-gradient(135deg, #d1ecf1 0%, #bee5eb 100%)" : "linear-gradient(135deg, #f8d7da 0%, #f5c6cb 100%)");">
+                        <div class="card-body p-4">
+                            <div class="d-flex align-items-center justify-content-between mb-3">
+                                <h6 class="card-title fw-bold mb-0 text-dark">Net Balance</h6>
+                                <i class="fas fa-balance-scale fa-2x @(Model.NetBalance >= 0 ? "text-success" : "text-danger") opacity-75"></i>
+                            </div>
+                            <div class="display-4 fw-bold @(Model.NetBalance >= 0 ? "text-success" : "text-danger") mb-2">$@Model.NetBalance.ToString("N2")</div>
+                            <div class="text-muted small">
+                                <i class="fas fa-calculator me-1"></i>Revenue - Expense
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
     <!-- Overview Cards -->
     <div class="row mb-5">
         <div class="col-12">
-            <h2 class="h4 fw-bold mb-3 text-dark">Overview</h2>
-            <div class="row g-3">
+            <h2 class="h5 fw-bold mb-4 text-dark">Overview</h2>
+            <div class="row g-4">
                 <!-- Accounts Card -->
                 <div class="col-lg-3 col-md-4 col-sm-6">
-                    <div class="card shadow-sm border-0 overview-card clickable-card" data-section="accounts">
-                        <div class="card-body p-3">
-                            <h6 class="card-title fw-bold mb-2">Accounts</h6>
-                            <div class="display-5 fw-bold text-primary mb-1">@Model.ActiveAccountCount</div>
-                            <small class="text-muted">Active: @Model.ActiveAccountCount</small>
+                    <div class="card shadow-sm border-0 overview-card clickable-card h-100" data-section="accounts">
+                        <div class="card-body p-4">
+                            <div class="d-flex align-items-center justify-content-between mb-3">
+                                <h6 class="card-title fw-bold mb-0">Accounts</h6>
+                                <i class="fas fa-wallet fa-lg text-primary"></i>
+                            </div>
+                            <div class="display-6 fw-bold text-primary mb-2">@Model.ActiveAccountCount</div>
+                            <div class="text-muted small">Active Accounts</div>
                         </div>
                     </div>
                 </div>
                 
                 <!-- Partners Card -->
                 <div class="col-lg-3 col-md-4 col-sm-6">
-                    <div class="card shadow-sm border-0 overview-card clickable-card" data-section="partners">
-                        <div class="card-body p-3">
-                            <h6 class="card-title fw-bold mb-2">Partners</h6>
-                            <div class="display-5 fw-bold text-primary mb-1">@(Model.CustomerCount + Model.VendorCount + Model.BothCount)</div>
-                            <small class="text-muted">Cust: @Model.CustomerCount • Vend: @Model.VendorCount • Both: @Model.BothCount</small>
+                    <div class="card shadow-sm border-0 overview-card clickable-card h-100" data-section="partners">
+                        <div class="card-body p-4">
+                            <div class="d-flex align-items-center justify-content-between mb-3">
+                                <h6 class="card-title fw-bold mb-0">Partners</h6>
+                                <i class="fas fa-handshake fa-lg text-primary"></i>
+                            </div>
+                            <div class="display-6 fw-bold text-primary mb-2">@(Model.CustomerCount + Model.VendorCount + Model.BothCount)</div>
+                            <div class="text-muted small">
+                                <span class="badge bg-info me-1">C: @Model.CustomerCount</span>
+                                <span class="badge bg-warning me-1">V: @Model.VendorCount</span>
+                                <span class="badge bg-secondary">B: @Model.BothCount</span>
+                            </div>
                         </div>
                     </div>
                 </div>
                 
                 <!-- Invoices Card -->
                 <div class="col-lg-3 col-md-4 col-sm-6">
-                    <div class="card shadow-sm border-0 overview-card clickable-card" data-section="invoices">
-                        <div class="card-body p-3">
-                            <h6 class="card-title fw-bold mb-2">Invoices</h6>
-                            <div class="display-5 fw-bold text-primary mb-1">@Model.Invoices.Count</div>
-                            <small class="text-muted">AR: $@Model.TotalAR.ToString("N2") • AP: $@Model.TotalAP.ToString("N2")</small>
+                    <div class="card shadow-sm border-0 overview-card clickable-card h-100" data-section="invoices">
+                        <div class="card-body p-4">
+                            <div class="d-flex align-items-center justify-content-between mb-3">
+                                <h6 class="card-title fw-bold mb-0">Invoices</h6>
+                                <i class="fas fa-file-invoice-dollar fa-lg text-primary"></i>
+                            </div>
+                            <div class="display-6 fw-bold text-primary mb-2">@Model.Invoices.Count</div>
+                            <div class="text-muted small">
+                                <div>AR: <span class="fw-semibold text-success">$@Model.TotalAR.ToString("N2")</span></div>
+                                <div>AP: <span class="fw-semibold text-danger">$@Model.TotalAP.ToString("N2")</span></div>
+                            </div>
                         </div>
                     </div>
                 </div>
                 
                 <!-- Open Balances Card -->
                 <div class="col-lg-3 col-md-4 col-sm-6">
-                    <div class="card shadow-sm border-0 overview-card clickable-card" data-section="open-balances">
-                        <div class="card-body p-3">
-                            <h6 class="card-title fw-bold mb-2">Open Balances</h6>
-                            <div class="display-5 fw-bold @(Model.OpenBalances >= 0 ? "text-success" : "text-danger") mb-1">$@Model.OpenBalances.ToString("N2")</div>
-                            <small class="text-muted">Open AP: $@Model.TotalAP.ToString("N2")</small>
+                    <div class="card shadow-sm border-0 overview-card clickable-card h-100" data-section="open-balances">
+                        <div class="card-body p-4">
+                            <div class="d-flex align-items-center justify-content-between mb-3">
+                                <h6 class="card-title fw-bold mb-0">Open Balances</h6>
+                                <i class="fas fa-chart-line fa-lg text-primary"></i>
+                            </div>
+                            <div class="display-6 fw-bold @(Model.OpenBalances >= 0 ? "text-success" : "text-danger") mb-2">$@Model.OpenBalances.ToString("N2")</div>
+                            <div class="text-muted small">
+                                <div>AR: <span class="fw-semibold text-success">$@Model.TotalAR.ToString("N2")</span></div>
+                                <div>AP: <span class="fw-semibold text-danger">$@Model.TotalAP.ToString("N2")</span></div>
+                            </div>
                         </div>
                     </div>
                 </div>
                 
                 <!-- Payments Card -->
                 <div class="col-lg-3 col-md-4 col-sm-6">
-                    <div class="card shadow-sm border-0 overview-card clickable-card" data-section="payments">
-                        <div class="card-body p-3">
-                            <h6 class="card-title fw-bold mb-2">Payments</h6>
-                            <div class="display-5 fw-bold text-primary mb-1">@Model.Payments.Count</div>
-                            <small class="text-muted">In: $@Model.TotalInflow.ToString("N2") • Out: $@Model.TotalOutflow.ToString("N2")</small>
+                    <div class="card shadow-sm border-0 overview-card clickable-card h-100" data-section="payments">
+                        <div class="card-body p-4">
+                            <div class="d-flex align-items-center justify-content-between mb-3">
+                                <h6 class="card-title fw-bold mb-0">Payments</h6>
+                                <i class="fas fa-money-bill-wave fa-lg text-primary"></i>
+                            </div>
+                            <div class="display-6 fw-bold text-primary mb-2">@Model.Payments.Count</div>
+                            <div class="text-muted small">
+                                <div>In: <span class="fw-semibold text-success">$@Model.TotalInflow.ToString("N2")</span></div>
+                                <div>Out: <span class="fw-semibold text-danger">$@Model.TotalOutflow.ToString("N2")</span></div>
+                            </div>
                         </div>
                     </div>
                 </div>
                 
                 <!-- Journal Card -->
                 <div class="col-lg-3 col-md-4 col-sm-6">
-                    <div class="card shadow-sm border-0 overview-card clickable-card" data-section="journal">
-                        <div class="card-body p-3">
-                            <h6 class="card-title fw-bold mb-2">Journal</h6>
-                            <div class="display-5 fw-bold text-primary mb-1">@Model.JournalEntryCount</div>
-                            <small class="text-muted">Lines: @Model.JournalLineCount</small>
+                    <div class="card shadow-sm border-0 overview-card clickable-card h-100" data-section="journal">
+                        <div class="card-body p-4">
+                            <div class="d-flex align-items-center justify-content-between mb-3">
+                                <h6 class="card-title fw-bold mb-0">Journal</h6>
+                                <i class="fas fa-book fa-lg text-primary"></i>
+                            </div>
+                            <div class="display-6 fw-bold text-primary mb-2">@Model.JournalEntryCount</div>
+                            <div class="text-muted small">@Model.JournalLineCount Lines</div>
                         </div>
                     </div>
                 </div>
                 
                 <!-- Tax Rates Card -->
                 <div class="col-lg-3 col-md-4 col-sm-6">
-                    <div class="card shadow-sm border-0 overview-card clickable-card" data-section="tax-rates">
-                        <div class="card-body p-3">
-                            <h6 class="card-title fw-bold mb-2">Tax Rates</h6>
-                            <div class="display-5 fw-bold text-primary mb-1">@Model.TaxRateCount</div>
-                            <small class="text-muted">Configured</small>
+                    <div class="card shadow-sm border-0 overview-card clickable-card h-100" data-section="tax-rates">
+                        <div class="card-body p-4">
+                            <div class="d-flex align-items-center justify-content-between mb-3">
+                                <h6 class="card-title fw-bold mb-0">Tax Rates</h6>
+                                <i class="fas fa-percent fa-lg text-primary"></i>
+                            </div>
+                            <div class="display-6 fw-bold text-primary mb-2">@Model.TaxRateCount</div>
+                            <div class="text-muted small">Configured Rates</div>
                         </div>
                     </div>
                 </div>
@@ -634,19 +724,28 @@
                     <h2 class="h4 mb-0 fw-bold">Open Balances Summary</h2>
                 </div>
                 <div class="card-body">
-                    <div class="row">
-                        <div class="col-md-6">
-                            <h5>Accounts Receivable (AR)</h5>
-                            <p class="display-6 text-success">$@Model.TotalAR.ToString("N2")</p>
+                    <div class="row text-center mb-4">
+                        <div class="col-md-4">
+                            <h5 class="text-muted mb-3">Total Open Balance</h5>
+                            <p class="display-5 @(Model.OpenBalances >= 0 ? "text-success" : "text-danger") mb-2">$@Model.OpenBalances.ToString("N2")</p>
+                            <small class="text-muted">Sum of all unpaid invoice balances</small>
                         </div>
-                        <div class="col-md-6">
-                            <h5>Accounts Payable (AP)</h5>
-                            <p class="display-6 text-danger">$@Model.TotalAP.ToString("N2")</p>
+                        <div class="col-md-4">
+                            <h5 class="text-muted mb-3">Accounts Receivable (AR)</h5>
+                            <p class="display-5 text-success mb-2">$@Model.TotalAR.ToString("N2")</p>
+                            <small class="text-muted">Money owed to us by customers</small>
+                        </div>
+                        <div class="col-md-4">
+                            <h5 class="text-muted mb-3">Accounts Payable (AP)</h5>
+                            <p class="display-5 text-danger mb-2">$@Model.TotalAP.ToString("N2")</p>
+                            <small class="text-muted">Money we owe to vendors</small>
                         </div>
                     </div>
-                    <hr>
-                    <h5>Total Open Balance</h5>
-                    <p class="display-5 @(Model.OpenBalances >= 0 ? "text-success" : "text-danger")">$@Model.OpenBalances.ToString("N2")</p>
+                    <div class="alert alert-info mb-0">
+                        <i class="fas fa-info-circle me-2"></i>
+                        <strong>What are Open Balances?</strong> Open Balances represent the total unpaid balance across all invoices. 
+                        AR (Accounts Receivable) is money customers owe you, while AP (Accounts Payable) is money you owe vendors.
+                    </div>
                 </div>
             </div>
         </div>

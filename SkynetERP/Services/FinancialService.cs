@@ -136,9 +136,13 @@ public class FinancialService
             _context.SaveChanges();
         }
     }
-    public decimal GetTotalAR() => _context.Invoices.Where(i => i.InvoiceType == "AR").Sum(i => i.Balance);
-    public decimal GetTotalAP() => _context.Invoices.Where(i => i.InvoiceType == "AP").Sum(i => i.Balance);
-    public decimal GetOpenBalances() => _context.Invoices.Sum(i => i.Balance);
+    public decimal GetTotalAR() => _context.Invoices.Where(i => i.InvoiceType == "AR").Sum(i => (decimal?)i.Balance) ?? 0;
+    public decimal GetTotalAP() => _context.Invoices.Where(i => i.InvoiceType == "AP").Sum(i => (decimal?)i.Balance) ?? 0;
+    
+    // Revenue and Expense calculations
+    public decimal GetTotalRevenue() => _context.Invoices.Where(i => i.InvoiceType == "AR").Sum(i => (decimal?)i.Amount) ?? 0;
+    public decimal GetTotalExpense() => _context.Invoices.Where(i => i.InvoiceType == "AP").Sum(i => (decimal?)i.Amount) ?? 0;
+    public decimal GetOpenBalances() => _context.Invoices.Sum(i => (decimal?)i.Balance) ?? 0;
 
     // InvoiceLine methods
     public List<InvoiceLine> GetAllInvoiceLines() => _context.InvoiceLines
@@ -201,7 +205,7 @@ public class FinancialService
             var invoice = _context.Invoices.Find(invoiceId);
             if (invoice != null)
             {
-                invoice.Amount = _context.InvoiceLines.Where(il => il.InvoiceId == invoice.Id).Sum(il => il.LineTotal);
+                invoice.Amount = _context.InvoiceLines.Where(il => il.InvoiceId == invoice.Id).Sum(il => (decimal?)il.LineTotal) ?? 0;
                 invoice.Balance = invoice.Amount - invoice.PaidAmount;
             }
             _context.SaveChanges();
@@ -238,7 +242,7 @@ public class FinancialService
             var invoice = _context.Invoices.Find(payment.InvoiceId.Value);
             if (invoice != null)
             {
-                invoice.PaidAmount = _context.Payments.Where(p => p.InvoiceId == invoice.Id && p.Status == "Completed").Sum(p => p.Amount);
+                invoice.PaidAmount = _context.Payments.Where(p => p.InvoiceId == invoice.Id && p.Status == "Completed").Sum(p => (decimal?)p.Amount) ?? 0;
                 invoice.Balance = invoice.Amount - invoice.PaidAmount;
             }
         }
@@ -254,7 +258,7 @@ public class FinancialService
             var invoice = _context.Invoices.Find(payment.InvoiceId.Value);
             if (invoice != null)
             {
-                invoice.PaidAmount = _context.Payments.Where(p => p.InvoiceId == invoice.Id && p.Status == "Completed").Sum(p => p.Amount);
+                invoice.PaidAmount = _context.Payments.Where(p => p.InvoiceId == invoice.Id && p.Status == "Completed").Sum(p => (decimal?)p.Amount) ?? 0;
                 invoice.Balance = invoice.Amount - invoice.PaidAmount;
             }
         }
@@ -274,15 +278,15 @@ public class FinancialService
                 var invoice = _context.Invoices.Find(invoiceId.Value);
                 if (invoice != null)
                 {
-                    invoice.PaidAmount = _context.Payments.Where(p => p.InvoiceId == invoice.Id && p.Status == "Completed").Sum(p => p.Amount);
+                    invoice.PaidAmount = _context.Payments.Where(p => p.InvoiceId == invoice.Id && p.Status == "Completed").Sum(p => (decimal?)p.Amount) ?? 0;
                     invoice.Balance = invoice.Amount - invoice.PaidAmount;
                 }
             }
             _context.SaveChanges();
         }
     }
-    public decimal GetTotalInflow() => _context.Payments.Where(p => p.PaymentType == "Inflow" && p.Status == "Completed").Sum(p => p.Amount);
-    public decimal GetTotalOutflow() => _context.Payments.Where(p => p.PaymentType == "Outflow" && p.Status == "Completed").Sum(p => p.Amount);
+    public decimal GetTotalInflow() => _context.Payments.Where(p => p.PaymentType == "Inflow" && p.Status == "Completed").Sum(p => (decimal?)p.Amount) ?? 0;
+    public decimal GetTotalOutflow() => _context.Payments.Where(p => p.PaymentType == "Outflow" && p.Status == "Completed").Sum(p => (decimal?)p.Amount) ?? 0;
 
     // JournalEntry methods
     public List<JournalEntry> GetAllJournalEntries() => _context.JournalEntries

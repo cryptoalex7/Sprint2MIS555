@@ -120,6 +120,7 @@ body {
 .overview-card {
   transition: all 0.3s ease;
   border: 1px solid #dee2e6 !important;
+  min-height: 140px;
 }
 
 .overview-card:hover {
@@ -130,6 +131,29 @@ body {
 .overview-card.border-primary {
   border-color: #0d6efd !important;
   box-shadow: 0 4px 12px rgba(13, 110, 253, 0.25) !important;
+}
+
+.financial-metric-card {
+  transition: all 0.3s ease;
+  min-height: 180px;
+  border: 1px solid rgba(0, 0, 0, 0.1) !important;
+}
+
+.financial-metric-card:hover {
+  transform: translateY(-2px);
+  box-shadow: 0 0.75rem 2rem rgba(0, 0, 0, 0.2) !important;
+}
+
+.financial-metric-card .display-4 {
+  font-size: 2.5rem;
+  line-height: 1.2;
+  letter-spacing: -0.02em;
+}
+
+@media (max-width: 768px) {
+  .financial-metric-card .display-4 {
+    font-size: 2rem;
+  }
 }
 
 .clickable-card {
