@@ -351,4 +351,80 @@ public class FinancialService
         }
     }
     public int GetJournalLineCount() => _context.JournalLines.Count();
+
+    // Transaction methods
+    public List<Transaction> GetAllTransactions() => _context.Transactions
+        .Include(t => t.Account)
+        .Include(t => t.Category)
+        .OrderByDescending(t => t.TransactionDate)
+        .ToList();
+
+    public List<Transaction> GetTransactionsByType(string type) => _context.Transactions
+        .Include(t => t.Account)
+        .Include(t => t.Category)
+        .Where(t => t.Type == type)
+        .OrderByDescending(t => t.TransactionDate)
+        .ToList();
+
+    public List<Transaction> GetTransactionsByDateRange(DateTime from, DateTime to) => _context.Transactions
+        .Include(t => t.Account)
+        .Include(t => t.Category)
+        .Where(t => t.TransactionDate >= from && t.TransactionDate <= to)
+        .OrderByDescending(t => t.TransactionDate)
+        .ToList();
+
+    public List<Transaction> GetTransactionsByAccount(int accountId) => _context.Transactions
+        .Include(t => t.Account)
+        .Include(t => t.Category)
+        .Where(t => t.AccountId == accountId)
+        .OrderByDescending(t => t.TransactionDate)
+        .ToList();
+
+    public Transaction? GetTransactionById(int id) => _context.Transactions
+        .Include(t => t.Account)
+        .Include(t => t.Category)
+        .FirstOrDefault(t => t.Id == id);
+
+    public void AddTransaction(Transaction transaction)
+    {
+        transaction.CreatedAt = DateTime.Now;
+        _context.Transactions.Add(transaction);
+        _context.SaveChanges();
+    }
+
+    public void UpdateTransaction(Transaction transaction)
+    {
+        _context.Transactions.Update(transaction);
+        _context.SaveChanges();
+    }
+
+    public void DeleteTransaction(int id)
+    {
+        var transaction = _context.Transactions.Find(id);
+        if (transaction != null)
+        {
+            _context.Transactions.Remove(transaction);
+            _context.SaveChanges();
+        }
+    }
+
+    public decimal GetTotalTransactionAmount(string? type = null, DateTime? from = null, DateTime? to = null)
+    {
+        var query = _context.Transactions.AsQueryable();
+
+        if (!string.IsNullOrEmpty(type))
+            query = query.Where(t => t.Type == type);
+
+        if (from.HasValue)
+            query = query.Where(t => t.TransactionDate >= from.Value);
+
+        if (to.HasValue)
+            query = query.Where(t => t.TransactionDate <= to.Value);
+
+        return query.Sum(t => (decimal?)t.Amount) ?? 0;
+    }
+
+    // Category methods
+    public List<Category>? GetAllCategories() => _context.Categories.Where(c => c.IsActive).ToList();
+    public Category? GetCategoryById(int id) => _context.Categories.Find(id);
 }

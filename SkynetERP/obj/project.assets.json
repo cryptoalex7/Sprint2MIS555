@@ -4789,24 +4789,32 @@
     ]
   },
   "packageFolders": {
-    "/Users/alex/.nuget/packages/": {}
+    "C:\\Users\\conno\\.nuget\\packages\\": {},
+    "C:\\Program Files (x86)\\Microsoft Visual Studio\\Shared\\NuGetPackages": {}
   },
   "project": {
     "version": "1.0.0",
     "restore": {
-      "projectUniqueName": "/Users/alex/Desktop/Sprint2MIS555-3/SkynetERP/SkynetERP.csproj",
+      "projectUniqueName": "C:\\Users\\conno\\OneDrive\\Documents\\GitHub\\Sprint2MIS555\\SkynetERP\\SkynetERP.csproj",
       "projectName": "SkynetERP",
-      "projectPath": "/Users/alex/Desktop/Sprint2MIS555-3/SkynetERP/SkynetERP.csproj",
-      "packagesPath": "/Users/alex/.nuget/packages/",
-      "outputPath": "/Users/alex/Desktop/Sprint2MIS555-3/SkynetERP/obj/",
+      "projectPath": "C:\\Users\\conno\\OneDrive\\Documents\\GitHub\\Sprint2MIS555\\SkynetERP\\SkynetERP.csproj",
+      "packagesPath": "C:\\Users\\conno\\.nuget\\packages\\",
+      "outputPath": "C:\\Users\\conno\\OneDrive\\Documents\\GitHub\\Sprint2MIS555\\SkynetERP\\obj\\",
       "projectStyle": "PackageReference",
+      "fallbackFolders": [
+        "C:\\Program Files (x86)\\Microsoft Visual Studio\\Shared\\NuGetPackages"
+      ],
       "configFilePaths": [
-        "/Users/alex/.nuget/NuGet/NuGet.Config"
+        "C:\\Users\\conno\\AppData\\Roaming\\NuGet\\NuGet.Config",
+        "C:\\Program Files (x86)\\NuGet\\Config\\Microsoft.VisualStudio.FallbackLocation.config",
+        "C:\\Program Files (x86)\\NuGet\\Config\\Microsoft.VisualStudio.Offline.config"
       ],
       "originalTargetFrameworks": [
         "net9.0"
       ],
       "sources": {
+        "C:\\Program Files (x86)\\Microsoft SDKs\\NuGetPackages\\": {},
+        "C:\\Program Files\\dotnet\\library-packs": {},
         "https://api.nuget.org/v3/index.json": {}
       },
       "frameworks": {
@@ -4865,7 +4873,7 @@
             "privateAssets": "all"
           }
         },
-        "runtimeIdentifierGraphPath": "/usr/local/share/dotnet/sdk/9.0.304/PortableRuntimeIdentifierGraph.json"
+        "runtimeIdentifierGraphPath": "C:\\Program Files\\dotnet\\sdk\\9.0.306/PortableRuntimeIdentifierGraph.json"
       }
     }
   }
