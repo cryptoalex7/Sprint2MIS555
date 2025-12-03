@@ -23,6 +23,7 @@ builder.Services.AddScoped<EmployeeService>();
 builder.Services.AddScoped<VendorService>();
 builder.Services.AddScoped<DeliveryService>();
 builder.Services.AddScoped<FinancialService>();
+builder.Services.AddScoped<CRMService>();
 
 // Add session support for TempData
 builder.Services.AddSession();

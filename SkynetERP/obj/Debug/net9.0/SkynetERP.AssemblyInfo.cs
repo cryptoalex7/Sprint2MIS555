@@ -13,7 +13,7 @@ using System.Reflection;
 [assembly: System.Reflection.AssemblyCompanyAttribute("SkynetERP")]
 [assembly: System.Reflection.AssemblyConfigurationAttribute("Debug")]
 [assembly: System.Reflection.AssemblyFileVersionAttribute("1.0.0.0")]
-[assembly: System.Reflection.AssemblyInformationalVersionAttribute("1.0.0+93cceff1c2f615be53e43092c2104dd635436357")]
+[assembly: System.Reflection.AssemblyInformationalVersionAttribute("1.0.0+e6a40c92027e7b71a3a318028aedd1c86c51a004")]
 [assembly: System.Reflection.AssemblyProductAttribute("SkynetERP")]
 [assembly: System.Reflection.AssemblyTitleAttribute("SkynetERP")]
 [assembly: System.Reflection.AssemblyVersionAttribute("1.0.0.0")]

@@ -3,6 +3,7 @@ using System;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
 using Microsoft.EntityFrameworkCore.Metadata;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 using SkynetERP.Data;
 
@@ -11,9 +12,11 @@ using SkynetERP.Data;
 namespace SkynetERP.Migrations
 {
     [DbContext(typeof(ApplicationDbContext))]
-    partial class ApplicationDbContextModelSnapshot : ModelSnapshot
+    [Migration("20251202194514_AddCRMTables")]
+    partial class AddCRMTables
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        /// <inheritdoc />
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
@@ -297,92 +300,6 @@ namespace SkynetERP.Migrations
                     b.HasKey("Id");
 
                     b.ToTable("Customers", (string)null);
-
-                    b.HasData(
-                        new
-                        {
-                            Id = 1,
-                            Company = "TechCorp Solutions",
-                            CreatedAt = new DateTime(2024, 1, 1, 0, 0, 0, 0, DateTimeKind.Unspecified),
-                            Email = "john.smith@techcorp.com",
-                            LastContact = new DateTime(2025, 11, 25, 13, 50, 34, 181, DateTimeKind.Local).AddTicks(2310),
-                            Name = "John Smith",
-                            Notes = "Primary contact for enterprise solutions. Very responsive.",
-                            Phone = "(555) 111-2222",
-                            Status = "Active"
-                        },
-                        new
-                        {
-                            Id = 2,
-                            Company = "Global Industries Inc",
-                            CreatedAt = new DateTime(2024, 1, 1, 0, 0, 0, 0, DateTimeKind.Unspecified),
-                            Email = "sarah.j@globalind.com",
-                            LastContact = new DateTime(2025, 11, 29, 13, 50, 34, 185, DateTimeKind.Local).AddTicks(4450),
-                            Name = "Sarah Johnson",
-                            Notes = "Regular customer, quarterly orders. Excellent payment history.",
-                            Phone = "(555) 222-3333",
-                            Status = "Active"
-                        },
-                        new
-                        {
-                            Id = 3,
-                            Company = "Innovation Labs",
-                            CreatedAt = new DateTime(2024, 1, 1, 0, 0, 0, 0, DateTimeKind.Unspecified),
-                            Email = "mchen@innovationlabs.com",
-                            LastContact = new DateTime(2025, 11, 18, 13, 50, 34, 185, DateTimeKind.Local).AddTicks(4450),
-                            Name = "Michael Chen",
-                            Notes = "New prospect. Interested in our premium services. Follow up needed.",
-                            Phone = "(555) 333-4444",
-                            Status = "Lead"
-                        },
-                        new
-                        {
-                            Id = 4,
-                            Company = "Startup Ventures",
-                            CreatedAt = new DateTime(2024, 1, 1, 0, 0, 0, 0, DateTimeKind.Unspecified),
-                            Email = "emily@startupventures.com",
-                            LastContact = new DateTime(2025, 11, 27, 13, 50, 34, 185, DateTimeKind.Local).AddTicks(4460),
-                            Name = "Emily Rodriguez",
-                            Notes = "Early stage company. Potential for growth partnership.",
-                            Phone = "(555) 444-5555",
-                            Status = "Prospect"
-                        },
-                        new
-                        {
-                            Id = 5,
-                            Company = "Enterprise Systems",
-                            CreatedAt = new DateTime(2024, 1, 1, 0, 0, 0, 0, DateTimeKind.Unspecified),
-                            Email = "d.williams@enterprisesys.com",
-                            LastContact = new DateTime(2025, 12, 1, 13, 50, 34, 185, DateTimeKind.Local).AddTicks(4460),
-                            Name = "David Williams",
-                            Notes = "Long-term customer. Annual contract renewal coming up.",
-                            Phone = "(555) 555-6666",
-                            Status = "Active"
-                        },
-                        new
-                        {
-                            Id = 6,
-                            Company = "Digital Solutions Group",
-                            CreatedAt = new DateTime(2024, 1, 1, 0, 0, 0, 0, DateTimeKind.Unspecified),
-                            Email = "lisa.anderson@digitalsolutions.com",
-                            LastContact = new DateTime(2025, 9, 2, 13, 50, 34, 185, DateTimeKind.Local).AddTicks(4460),
-                            Name = "Lisa Anderson",
-                            Notes = "Previous customer. No recent activity. May need re-engagement campaign.",
-                            Phone = "(555) 666-7777",
-                            Status = "Inactive"
-                        },
-                        new
-                        {
-                            Id = 7,
-                            Company = "Mega Corp International",
-                            CreatedAt = new DateTime(2024, 1, 1, 0, 0, 0, 0, DateTimeKind.Unspecified),
-                            Email = "rtaylor@megacorp.com",
-                            LastContact = new DateTime(2025, 11, 30, 13, 50, 34, 185, DateTimeKind.Local).AddTicks(4480),
-                            Name = "Robert Taylor",
-                            Notes = "Large enterprise account. Dedicated account manager assigned.",
-                            Phone = "(555) 777-8888",
-                            Status = "Active"
-                        });
                 });
 
             modelBuilder.Entity("SkynetERP.Models.CustomerReview", b =>
@@ -424,85 +341,6 @@ namespace SkynetERP.Migrations
                     b.HasIndex("CustomerId");
 
                     b.ToTable("CustomerReviews", (string)null);
-
-                    b.HasData(
-                        new
-                        {
-                            Id = 1,
-                            CustomerId = 1,
-                            IsPublished = true,
-                            Rating = 5,
-                            ReviewDate = new DateTime(2025, 11, 2, 13, 50, 34, 185, DateTimeKind.Local).AddTicks(7390),
-                            ReviewText = "TechCorp Solutions has been working with this company for over a year. The service is outstanding, and the support team is always responsive. Highly recommend!",
-                            ReviewerName = "John Smith",
-                            Title = "Excellent Service and Support"
-                        },
-                        new
-                        {
-                            Id = 2,
-                            CustomerId = 2,
-                            IsPublished = true,
-                            Rating = 5,
-                            ReviewDate = new DateTime(2025, 10, 18, 13, 50, 34, 185, DateTimeKind.Local).AddTicks(7570),
-                            ReviewText = "We've been very satisfied with the products and services. The quality is consistently high, and delivery is always on time. Keep up the great work!",
-                            ReviewerName = "Sarah Johnson",
-                            Title = "Great Product Quality"
-                        },
-                        new
-                        {
-                            Id = 3,
-                            CustomerId = 5,
-                            IsPublished = true,
-                            Rating = 4,
-                            ReviewDate = new DateTime(2025, 11, 12, 13, 50, 34, 185, DateTimeKind.Local).AddTicks(7570),
-                            ReviewText = "Enterprise Systems has been a reliable partner for our business needs. The team understands our requirements and delivers accordingly. Very professional.",
-                            ReviewerName = "David Williams",
-                            Title = "Reliable Partner"
-                        },
-                        new
-                        {
-                            Id = 4,
-                            CustomerId = 7,
-                            IsPublished = true,
-                            Rating = 5,
-                            ReviewDate = new DateTime(2025, 11, 17, 13, 50, 34, 185, DateTimeKind.Local).AddTicks(7570),
-                            ReviewText = "Mega Corp International has been extremely pleased with the enterprise solution. The scalability and performance have exceeded our expectations. Excellent value for money.",
-                            ReviewerName = "Robert Taylor",
-                            Title = "Outstanding Enterprise Solution"
-                        },
-                        new
-                        {
-                            Id = 5,
-                            CustomerId = 1,
-                            IsPublished = true,
-                            Rating = 5,
-                            ReviewDate = new DateTime(2025, 11, 22, 13, 50, 34, 185, DateTimeKind.Local).AddTicks(7570),
-                            ReviewText = "What I appreciate most is the quick response time to any issues or questions. The customer service team is knowledgeable and helpful. Great experience overall.",
-                            ReviewerName = "John Smith",
-                            Title = "Quick Response Time"
-                        },
-                        new
-                        {
-                            Id = 6,
-                            CustomerId = 2,
-                            IsPublished = true,
-                            Rating = 4,
-                            ReviewDate = new DateTime(2025, 11, 7, 13, 50, 34, 185, DateTimeKind.Local).AddTicks(7570),
-                            ReviewText = "The pricing is competitive and the service quality is good. We've had a positive experience working with this company. Would recommend to others.",
-                            ReviewerName = "Sarah Johnson",
-                            Title = "Good Value"
-                        },
-                        new
-                        {
-                            Id = 7,
-                            CustomerId = 5,
-                            IsPublished = true,
-                            Rating = 5,
-                            ReviewDate = new DateTime(2025, 11, 27, 13, 50, 34, 185, DateTimeKind.Local).AddTicks(7580),
-                            ReviewText = "The team is very professional and easy to work with. They understand our business needs and provide tailored solutions. Very satisfied with the partnership.",
-                            ReviewerName = "David Williams",
-                            Title = "Professional Team"
-                        });
                 });
 
             modelBuilder.Entity("SkynetERP.Models.Delivery", b =>

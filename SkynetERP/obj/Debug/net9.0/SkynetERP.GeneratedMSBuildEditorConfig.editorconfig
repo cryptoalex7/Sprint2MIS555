@@ -17,73 +17,77 @@ build_property._SupportedPlatformList = Linux,macOS,Windows
 build_property._SupportedPlatformList = Linux,macOS,Windows
 build_property.RootNamespace = SkynetERP
 build_property.RootNamespace = SkynetERP
-build_property.ProjectDir = C:\Users\conno\OneDrive\Documents\GitHub\Sprint2MIS555\SkynetERP\
+build_property.ProjectDir = /Users/alex/Desktop/Sprint2MIS555-3/SkynetERP/
 build_property.EnableComHosting = 
 build_property.EnableGeneratedComInterfaceComImportInterop = 
 build_property.RazorLangVersion = 9.0
 build_property.SupportLocalizedComponentNames = 
 build_property.GenerateRazorMetadataSourceChecksumAttributes = 
-build_property.MSBuildProjectDirectory = C:\Users\conno\OneDrive\Documents\GitHub\Sprint2MIS555\SkynetERP
+build_property.MSBuildProjectDirectory = /Users/alex/Desktop/Sprint2MIS555-3/SkynetERP
 build_property._RazorSourceGeneratorDebug = 
 build_property.EffectiveAnalysisLevelStyle = 9.0
 build_property.EnableCodeStyleSeverity = 
 
-[C:/Users/conno/OneDrive/Documents/GitHub/Sprint2MIS555/SkynetERP/Pages/AccessDenied.cshtml]
-build_metadata.AdditionalFiles.TargetPath = UGFnZXNcQWNjZXNzRGVuaWVkLmNzaHRtbA==
+[/Users/alex/Desktop/Sprint2MIS555-3/SkynetERP/Pages/AccessDenied.cshtml]
+build_metadata.AdditionalFiles.TargetPath = UGFnZXMvQWNjZXNzRGVuaWVkLmNzaHRtbA==
 build_metadata.AdditionalFiles.CssScope = 
 
-[C:/Users/conno/OneDrive/Documents/GitHub/Sprint2MIS555/SkynetERP/Pages/Dashboard.cshtml]
-build_metadata.AdditionalFiles.TargetPath = UGFnZXNcRGFzaGJvYXJkLmNzaHRtbA==
+[/Users/alex/Desktop/Sprint2MIS555-3/SkynetERP/Pages/CRM.cshtml]
+build_metadata.AdditionalFiles.TargetPath = UGFnZXMvQ1JNLmNzaHRtbA==
 build_metadata.AdditionalFiles.CssScope = 
 
-[C:/Users/conno/OneDrive/Documents/GitHub/Sprint2MIS555/SkynetERP/Pages/Error.cshtml]
-build_metadata.AdditionalFiles.TargetPath = UGFnZXNcRXJyb3IuY3NodG1s
+[/Users/alex/Desktop/Sprint2MIS555-3/SkynetERP/Pages/Dashboard.cshtml]
+build_metadata.AdditionalFiles.TargetPath = UGFnZXMvRGFzaGJvYXJkLmNzaHRtbA==
 build_metadata.AdditionalFiles.CssScope = 
 
-[C:/Users/conno/OneDrive/Documents/GitHub/Sprint2MIS555/SkynetERP/Pages/FinancialManagement.cshtml]
-build_metadata.AdditionalFiles.TargetPath = UGFnZXNcRmluYW5jaWFsTWFuYWdlbWVudC5jc2h0bWw=
+[/Users/alex/Desktop/Sprint2MIS555-3/SkynetERP/Pages/Error.cshtml]
+build_metadata.AdditionalFiles.TargetPath = UGFnZXMvRXJyb3IuY3NodG1s
 build_metadata.AdditionalFiles.CssScope = 
 
-[C:/Users/conno/OneDrive/Documents/GitHub/Sprint2MIS555/SkynetERP/Pages/HRM.cshtml]
-build_metadata.AdditionalFiles.TargetPath = UGFnZXNcSFJNLmNzaHRtbA==
+[/Users/alex/Desktop/Sprint2MIS555-3/SkynetERP/Pages/FinancialManagement.cshtml]
+build_metadata.AdditionalFiles.TargetPath = UGFnZXMvRmluYW5jaWFsTWFuYWdlbWVudC5jc2h0bWw=
 build_metadata.AdditionalFiles.CssScope = 
 
-[C:/Users/conno/OneDrive/Documents/GitHub/Sprint2MIS555/SkynetERP/Pages/Index.cshtml]
-build_metadata.AdditionalFiles.TargetPath = UGFnZXNcSW5kZXguY3NodG1s
+[/Users/alex/Desktop/Sprint2MIS555-3/SkynetERP/Pages/HRM.cshtml]
+build_metadata.AdditionalFiles.TargetPath = UGFnZXMvSFJNLmNzaHRtbA==
 build_metadata.AdditionalFiles.CssScope = 
 
-[C:/Users/conno/OneDrive/Documents/GitHub/Sprint2MIS555/SkynetERP/Pages/Logout.cshtml]
-build_metadata.AdditionalFiles.TargetPath = UGFnZXNcTG9nb3V0LmNzaHRtbA==
+[/Users/alex/Desktop/Sprint2MIS555-3/SkynetERP/Pages/Index.cshtml]
+build_metadata.AdditionalFiles.TargetPath = UGFnZXMvSW5kZXguY3NodG1s
 build_metadata.AdditionalFiles.CssScope = 
 
-[C:/Users/conno/OneDrive/Documents/GitHub/Sprint2MIS555/SkynetERP/Pages/Privacy.cshtml]
-build_metadata.AdditionalFiles.TargetPath = UGFnZXNcUHJpdmFjeS5jc2h0bWw=
+[/Users/alex/Desktop/Sprint2MIS555-3/SkynetERP/Pages/Logout.cshtml]
+build_metadata.AdditionalFiles.TargetPath = UGFnZXMvTG9nb3V0LmNzaHRtbA==
 build_metadata.AdditionalFiles.CssScope = 
 
-[C:/Users/conno/OneDrive/Documents/GitHub/Sprint2MIS555/SkynetERP/Pages/Register.cshtml]
-build_metadata.AdditionalFiles.TargetPath = UGFnZXNcUmVnaXN0ZXIuY3NodG1s
+[/Users/alex/Desktop/Sprint2MIS555-3/SkynetERP/Pages/Privacy.cshtml]
+build_metadata.AdditionalFiles.TargetPath = UGFnZXMvUHJpdmFjeS5jc2h0bWw=
 build_metadata.AdditionalFiles.CssScope = 
 
-[C:/Users/conno/OneDrive/Documents/GitHub/Sprint2MIS555/SkynetERP/Pages/Shared/_ValidationScriptsPartial.cshtml]
-build_metadata.AdditionalFiles.TargetPath = UGFnZXNcU2hhcmVkXF9WYWxpZGF0aW9uU2NyaXB0c1BhcnRpYWwuY3NodG1s
+[/Users/alex/Desktop/Sprint2MIS555-3/SkynetERP/Pages/Register.cshtml]
+build_metadata.AdditionalFiles.TargetPath = UGFnZXMvUmVnaXN0ZXIuY3NodG1s
 build_metadata.AdditionalFiles.CssScope = 
 
-[C:/Users/conno/OneDrive/Documents/GitHub/Sprint2MIS555/SkynetERP/Pages/Transactions.cshtml]
-build_metadata.AdditionalFiles.TargetPath = UGFnZXNcVHJhbnNhY3Rpb25zLmNzaHRtbA==
+[/Users/alex/Desktop/Sprint2MIS555-3/SkynetERP/Pages/Shared/_ValidationScriptsPartial.cshtml]
+build_metadata.AdditionalFiles.TargetPath = UGFnZXMvU2hhcmVkL19WYWxpZGF0aW9uU2NyaXB0c1BhcnRpYWwuY3NodG1s
 build_metadata.AdditionalFiles.CssScope = 
 
-[C:/Users/conno/OneDrive/Documents/GitHub/Sprint2MIS555/SkynetERP/Pages/VendorManagement.cshtml]
-build_metadata.AdditionalFiles.TargetPath = UGFnZXNcVmVuZG9yTWFuYWdlbWVudC5jc2h0bWw=
+[/Users/alex/Desktop/Sprint2MIS555-3/SkynetERP/Pages/Transactions.cshtml]
+build_metadata.AdditionalFiles.TargetPath = UGFnZXMvVHJhbnNhY3Rpb25zLmNzaHRtbA==
 build_metadata.AdditionalFiles.CssScope = 
 
-[C:/Users/conno/OneDrive/Documents/GitHub/Sprint2MIS555/SkynetERP/Pages/_ViewImports.cshtml]
-build_metadata.AdditionalFiles.TargetPath = UGFnZXNcX1ZpZXdJbXBvcnRzLmNzaHRtbA==
+[/Users/alex/Desktop/Sprint2MIS555-3/SkynetERP/Pages/VendorManagement.cshtml]
+build_metadata.AdditionalFiles.TargetPath = UGFnZXMvVmVuZG9yTWFuYWdlbWVudC5jc2h0bWw=
 build_metadata.AdditionalFiles.CssScope = 
 
-[C:/Users/conno/OneDrive/Documents/GitHub/Sprint2MIS555/SkynetERP/Pages/_ViewStart.cshtml]
-build_metadata.AdditionalFiles.TargetPath = UGFnZXNcX1ZpZXdTdGFydC5jc2h0bWw=
+[/Users/alex/Desktop/Sprint2MIS555-3/SkynetERP/Pages/_ViewImports.cshtml]
+build_metadata.AdditionalFiles.TargetPath = UGFnZXMvX1ZpZXdJbXBvcnRzLmNzaHRtbA==
 build_metadata.AdditionalFiles.CssScope = 
 
-[C:/Users/conno/OneDrive/Documents/GitHub/Sprint2MIS555/SkynetERP/Pages/Shared/_Layout.cshtml]
-build_metadata.AdditionalFiles.TargetPath = UGFnZXNcU2hhcmVkXF9MYXlvdXQuY3NodG1s
-build_metadata.AdditionalFiles.CssScope = b-lxcpo6v0as
+[/Users/alex/Desktop/Sprint2MIS555-3/SkynetERP/Pages/_ViewStart.cshtml]
+build_metadata.AdditionalFiles.TargetPath = UGFnZXMvX1ZpZXdTdGFydC5jc2h0bWw=
+build_metadata.AdditionalFiles.CssScope = 
+
+[/Users/alex/Desktop/Sprint2MIS555-3/SkynetERP/Pages/Shared/_Layout.cshtml]
+build_metadata.AdditionalFiles.TargetPath = UGFnZXMvU2hhcmVkL19MYXlvdXQuY3NodG1s
+build_metadata.AdditionalFiles.CssScope = b-xxbrjybll2

@@ -14,6 +14,8 @@ public class ApplicationDbContext : DbContext
     public DbSet<Vendor> Vendors { get; set; }
     public DbSet<Delivery> Deliveries { get; set; }
     public DbSet<User> Users { get; set; }
+    public DbSet<Customer> Customers { get; set; }
+    public DbSet<CustomerReview> CustomerReviews { get; set; }
     
     // Financial Management entities (8 tables)
     public DbSet<Account> Accounts { get; set; }
@@ -138,6 +140,72 @@ public class ApplicationDbContext : DbContext
             entity.Property(d => d.CreatedBy)
                 .HasMaxLength(100);
         });
+
+        // Configure Customer entity
+        modelBuilder.Entity<Customer>(entity =>
+        {
+            entity.ToTable("Customers");
+            
+            entity.HasKey(c => c.Id);
+            
+            entity.Property(c => c.Name)
+                .IsRequired()
+                .HasMaxLength(100);
+            
+            entity.Property(c => c.Company)
+                .IsRequired()
+                .HasMaxLength(100);
+            
+            entity.Property(c => c.Email)
+                .IsRequired()
+                .HasMaxLength(100);
+            
+            entity.Property(c => c.Phone)
+                .HasMaxLength(20);
+            
+            entity.Property(c => c.Status)
+                .IsRequired()
+                .HasMaxLength(50);
+            
+            entity.Property(c => c.Notes)
+                .HasMaxLength(500);
+            
+            entity.Property(c => c.CreatedAt)
+                .IsRequired();
+        });
+
+        // Configure CustomerReview entity
+        modelBuilder.Entity<CustomerReview>(entity =>
+        {
+            entity.ToTable("CustomerReviews");
+            
+            entity.HasKey(r => r.Id);
+            
+            entity.HasOne(r => r.Customer)
+                .WithMany(c => c.Reviews)
+                .HasForeignKey(r => r.CustomerId)
+                .OnDelete(DeleteBehavior.Cascade);
+            
+            entity.Property(r => r.Title)
+                .IsRequired()
+                .HasMaxLength(200);
+            
+            entity.Property(r => r.ReviewText)
+                .IsRequired()
+                .HasMaxLength(1000);
+            
+            entity.Property(r => r.Rating)
+                .IsRequired();
+            
+            entity.Property(r => r.ReviewerName)
+                .HasMaxLength(100);
+            
+            entity.Property(r => r.ReviewDate)
+                .IsRequired();
+        });
+
+        // Seed CRM data
+        SeedCRMData(modelBuilder);
 
         // Configure User entity
         modelBuilder.Entity<User>(entity =>
@@ -503,6 +571,181 @@ public class ApplicationDbContext : DbContext
             new JournalLine { Id = 8, JournalEntryId = 4, AccountCode = "2200", AccountName = "Accrued Expenses", Description = "Accrued Utilities Payable", DebitAmount = 0, CreditAmount = 3200.00m, Notes = "Accrued liability", CreatedAt = seedDate },
             new JournalLine { Id = 9, JournalEntryId = 5, AccountCode = "1200", AccountName = "Accounts Receivable", Description = "AR Adjustment", DebitAmount = 5000.00m, CreditAmount = 0, Notes = "Revenue adjustment", CreatedAt = seedDate },
             new JournalLine { Id = 10, JournalEntryId = 5, AccountCode = "4000", AccountName = "Revenue", Description = "Revenue Correction", DebitAmount = 0, CreditAmount = 5000.00m, Notes = "Revenue correction", CreatedAt = seedDate }
+        );
+    }
+
+    private void SeedCRMData(ModelBuilder modelBuilder)
+    {
+        var seedDate = new DateTime(2024, 1, 1);
+        var recentDate = DateTime.Now.AddDays(-7);
+
+        // Seed Customers (at least 5 records)
+        modelBuilder.Entity<Customer>().HasData(
+            new Customer 
+            { 
+                Id = 1, 
+                Name = "John Smith", 
+                Company = "TechCorp Solutions", 
+                Email = "john.smith@techcorp.com", 
+                Phone = "(555) 111-2222", 
+                Status = "Active", 
+                LastContact = recentDate, 
+                Notes = "Primary contact for enterprise solutions. Very responsive.", 
+                CreatedAt = seedDate 
+            },
+            new Customer 
+            { 
+                Id = 2, 
+                Name = "Sarah Johnson", 
+                Company = "Global Industries Inc", 
+                Email = "sarah.j@globalind.com", 
+                Phone = "(555) 222-3333", 
+                Status = "Active", 
+                LastContact = DateTime.Now.AddDays(-3), 
+                Notes = "Regular customer, quarterly orders. Excellent payment history.", 
+                CreatedAt = seedDate 
+            },
+            new Customer 
+            { 
+                Id = 3, 
+                Name = "Michael Chen", 
+                Company = "Innovation Labs", 
+                Email = "mchen@innovationlabs.com", 
+                Phone = "(555) 333-4444", 
+                Status = "Lead", 
+                LastContact = DateTime.Now.AddDays(-14), 
+                Notes = "New prospect. Interested in our premium services. Follow up needed.", 
+                CreatedAt = seedDate 
+            },
+            new Customer 
+            { 
+                Id = 4, 
+                Name = "Emily Rodriguez", 
+                Company = "Startup Ventures", 
+                Email = "emily@startupventures.com", 
+                Phone = "(555) 444-5555", 
+                Status = "Prospect", 
+                LastContact = DateTime.Now.AddDays(-5), 
+                Notes = "Early stage company. Potential for growth partnership.", 
+                CreatedAt = seedDate 
+            },
+            new Customer 
+            { 
+                Id = 5, 
+                Name = "David Williams", 
+                Company = "Enterprise Systems", 
+                Email = "d.williams@enterprisesys.com", 
+                Phone = "(555) 555-6666", 
+                Status = "Active", 
+                LastContact = DateTime.Now.AddDays(-1), 
+                Notes = "Long-term customer. Annual contract renewal coming up.", 
+                CreatedAt = seedDate 
+            },
+            new Customer 
+            { 
+                Id = 6, 
+                Name = "Lisa Anderson", 
+                Company = "Digital Solutions Group", 
+                Email = "lisa.anderson@digitalsolutions.com", 
+                Phone = "(555) 666-7777", 
+                Status = "Inactive", 
+                LastContact = DateTime.Now.AddMonths(-3), 
+                Notes = "Previous customer. No recent activity. May need re-engagement campaign.", 
+                CreatedAt = seedDate 
+            },
+            new Customer 
+            { 
+                Id = 7, 
+                Name = "Robert Taylor", 
+                Company = "Mega Corp International", 
+                Email = "rtaylor@megacorp.com", 
+                Phone = "(555) 777-8888", 
+                Status = "Active", 
+                LastContact = DateTime.Now.AddDays(-2), 
+                Notes = "Large enterprise account. Dedicated account manager assigned.", 
+                CreatedAt = seedDate 
+            }
+        );
+
+        // Seed CustomerReviews (at least 5 records, linked to customers)
+        modelBuilder.Entity<CustomerReview>().HasData(
+            new CustomerReview 
+            { 
+                Id = 1, 
+                CustomerId = 1, 
+                Title = "Excellent Service and Support", 
+                ReviewText = "TechCorp Solutions has been working with this company for over a year. The service is outstanding, and the support team is always responsive. Highly recommend!", 
+                Rating = 5, 
+                ReviewerName = "John Smith", 
+                ReviewDate = DateTime.Now.AddDays(-30), 
+                IsPublished = true 
+            },
+            new CustomerReview 
+            { 
+                Id = 2, 
+                CustomerId = 2, 
+                Title = "Great Product Quality", 
+                ReviewText = "We've been very satisfied with the products and services. The quality is consistently high, and delivery is always on time. Keep up the great work!", 
+                Rating = 5, 
+                ReviewerName = "Sarah Johnson", 
+                ReviewDate = DateTime.Now.AddDays(-45), 
+                IsPublished = true 
+            },
+            new CustomerReview 
+            { 
+                Id = 3, 
+                CustomerId = 5, 
+                Title = "Reliable Partner", 
+                ReviewText = "Enterprise Systems has been a reliable partner for our business needs. The team understands our requirements and delivers accordingly. Very professional.", 
+                Rating = 4, 
+                ReviewerName = "David Williams", 
+                ReviewDate = DateTime.Now.AddDays(-20), 
+                IsPublished = true 
+            },
+            new CustomerReview 
+            { 
+                Id = 4, 
+                CustomerId = 7, 
+                Title = "Outstanding Enterprise Solution", 
+                ReviewText = "Mega Corp International has been extremely pleased with the enterprise solution. The scalability and performance have exceeded our expectations. Excellent value for money.", 
+                Rating = 5, 
+                ReviewerName = "Robert Taylor", 
+                ReviewDate = DateTime.Now.AddDays(-15), 
+                IsPublished = true 
+            },
+            new CustomerReview 
+            { 
+                Id = 5, 
+                CustomerId = 1, 
+                Title = "Quick Response Time", 
+                ReviewText = "What I appreciate most is the quick response time to any issues or questions. The customer service team is knowledgeable and helpful. Great experience overall.", 
+                Rating = 5, 
+                ReviewerName = "John Smith", 
+                ReviewDate = DateTime.Now.AddDays(-10), 
+                IsPublished = true 
+            },
+            new CustomerReview 
+            { 
+                Id = 6, 
+                CustomerId = 2, 
+                Title = "Good Value", 
+                ReviewText = "The pricing is competitive and the service quality is good. We've had a positive experience working with this company. Would recommend to others.", 
+                Rating = 4, 
+                ReviewerName = "Sarah Johnson", 
+                ReviewDate = DateTime.Now.AddDays(-25), 
+                IsPublished = true 
+            },
+            new CustomerReview 
+            { 
+                Id = 7, 
+                CustomerId = 5, 
+                Title = "Professional Team", 
+                ReviewText = "The team is very professional and easy to work with. They understand our business needs and provide tailored solutions. Very satisfied with the partnership.", 
+                Rating = 5, 
+                ReviewerName = "David Williams", 
+                ReviewDate = DateTime.Now.AddDays(-5), 
+                IsPublished = true 
+            }
         );
     }
 }
