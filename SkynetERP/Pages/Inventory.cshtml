@@ -1,0 +1,506 @@
+@page
+@model SkynetERP.Pages.InventoryModel
+@{
+    ViewData["Title"] = "Inventory Management";
+}
+
+@Html.AntiForgeryToken()
+
+<div class="hrm-page">
+    <!-- Toast Container -->
+    <div class="toast-container position-fixed top-0 end-0 p-3" style="z-index: 1055;">
+        <div id="successToast" class="toast" role="alert" aria-live="assertive" aria-atomic="true" data-bs-autohide="true" data-bs-delay="5000">
+            <div class="toast-header bg-success text-white d-flex align-items-center">
+                <i class="fas fa-check-circle me-2"></i>
+                <strong class="me-auto">Success</strong>
+                <button type="button" class="btn-close btn-close-white" data-bs-dismiss="toast" aria-label="Close"></button>
+            </div>
+            <div class="toast-body bg-white" id="successToastBody"></div>
+        </div>
+        <div id="errorToast" class="toast" role="alert" aria-live="assertive" aria-atomic="true" data-bs-autohide="true" data-bs-delay="5000">
+            <div class="toast-header bg-danger text-white d-flex align-items-center">
+                <i class="fas fa-exclamation-circle me-2"></i>
+                <strong class="me-auto">Error</strong>
+                <button type="button" class="btn-close btn-close-white" data-bs-dismiss="toast" aria-label="Close"></button>
+            </div>
+            <div class="toast-body bg-white" id="errorToastBody"></div>
+        </div>
+    </div>
+
+    <!-- Page Header -->
+    <div class="row mb-4">
+        <div class="col-12">
+            <h1 class="display-4 fw-bold text-primary mb-0">Inventory Management</h1>
+            <p class="text-muted">Track and manage your inventory levels, stock, and supplies</p>
+        </div>
+    </div>
+
+    <!-- Metric Cards -->
+    <div class="row mb-5">
+        <div class="col-12">
+            <h2 class="h4 fw-bold mb-4 text-dark">Inventory Metrics</h2>
+            <div class="row g-4">
+                <div class="col-lg-2 col-md-4 col-sm-6">
+                    <div class="card h-100 shadow-sm border-0 hrm-card">
+                        <div class="card-body text-center p-4">
+                            <div class="hrm-icon mb-3">
+                                <i class="fas fa-boxes fa-3x text-primary"></i>
+                            </div>
+                            <h5 class="card-title fw-bold">Total Stock Level</h5>
+                            <p class="card-text">
+                                <span class="display-6 fw-bold text-primary">@Model.TotalStockLevel.ToString("N0")</span>
+                                <br>
+                                <small class="text-muted">Total Units</small>
+                            </p>
+                        </div>
+                    </div>
+                </div>
+                <div class="col-lg-2 col-md-4 col-sm-6">
+                    <div class="card h-100 shadow-sm border-0 hrm-card">
+                        <div class="card-body text-center p-4">
+                            <div class="hrm-icon mb-3">
+                                <i class="fas fa-sync-alt fa-3x text-info"></i>
+                            </div>
+                            <h5 class="card-title fw-bold">Inventory Turnover</h5>
+                            <p class="card-text">
+                                <span class="display-6 fw-bold text-info">@Model.InventoryTurnover.ToString("F2")</span>
+                                <br>
+                                <small class="text-muted">Turnover Ratio</small>
+                            </p>
+                        </div>
+                    </div>
+                </div>
+                <div class="col-lg-2 col-md-4 col-sm-6">
+                    <div class="card h-100 shadow-sm border-0 hrm-card">
+                        <div class="card-body text-center p-4">
+                            <div class="hrm-icon mb-3">
+                                <i class="fas fa-clock fa-3x text-warning"></i>
+                            </div>
+                            <h5 class="card-title fw-bold">Aging Inventory</h5>
+                            <p class="card-text">
+                                <span class="display-6 fw-bold text-warning">@Model.AgingInventoryCount</span>
+                                <br>
+                                <small class="text-muted">Items (90+ days)</small>
+                            </p>
+                        </div>
+                    </div>
+                </div>
+                <div class="col-lg-2 col-md-4 col-sm-6">
+                    <div class="card h-100 shadow-sm border-0 hrm-card">
+                        <div class="card-body text-center p-4">
+                            <div class="hrm-icon mb-3">
+                                <i class="fas fa-turtle fa-3x text-secondary"></i>
+                            </div>
+                            <h5 class="card-title fw-bold">Slow-Moving Items</h5>
+                            <p class="card-text">
+                                <span class="display-6 fw-bold text-secondary">@Model.SlowMovingItemsCount</span>
+                                <br>
+                                <small class="text-muted">Items (60+ days)</small>
+                            </p>
+                        </div>
+                    </div>
+                </div>
+                <div class="col-lg-2 col-md-4 col-sm-6">
+                    <div class="card h-100 shadow-sm border-0 hrm-card">
+                        <div class="card-body text-center p-4">
+                            <div class="hrm-icon mb-3">
+                                <i class="fas fa-chart-line fa-3x text-success"></i>
+                            </div>
+                            <h5 class="card-title fw-bold">Demand Trends</h5>
+                            <p class="card-text">
+                                <span class="display-6 fw-bold text-success">$@Model.InventoryValue.ToString("N0")</span>
+                                <br>
+                                <small class="text-muted">Total Value</small>
+                            </p>
+                        </div>
+                    </div>
+                </div>
+                <div class="col-lg-2 col-md-4 col-sm-6">
+                    <div class="card h-100 shadow-sm border-0 hrm-card @(Model.LowStockCount > 0 ? "border-warning" : "")">
+                        <div class="card-body text-center p-4">
+                            <div class="hrm-icon mb-3">
+                                <i class="fas fa-exclamation-triangle fa-3x @(Model.LowStockCount > 0 ? "text-warning" : "text-muted")"></i>
+                            </div>
+                            <h5 class="card-title fw-bold">Low Stock</h5>
+                            <p class="card-text">
+                                <span class="display-6 fw-bold @(Model.LowStockCount > 0 ? "text-warning" : "text-muted")">@Model.LowStockCount</span>
+                                <br>
+                                <small class="text-muted">Items Need Reorder</small>
+                            </p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Inventory Table Section -->
+    <div class="row">
+        <div class="col-12">
+            <div class="card shadow-sm border-0">
+                <div class="card-header bg-primary text-white d-flex justify-content-between align-items-center">
+                    <h5 class="mb-0 fw-bold">
+                        <i class="fas fa-table me-2"></i>Inventory Directory
+                    </h5>
+                    <button type="button" class="btn btn-light btn-sm" data-bs-toggle="modal" data-bs-target="#addInventoryModal">
+                        <i class="fas fa-plus me-1"></i>Add Inventory Item
+                    </button>
+                </div>
+                <div class="card-body">
+                    <!-- Filter Toolbar -->
+                    <form method="get" class="mb-3">
+                        <div class="row g-3">
+                            <div class="col-md-4">
+                                <label for="categoryFilter" class="form-label fw-semibold">Filter by Category</label>
+                                <select class="form-select" id="categoryFilter" name="CategoryFilter" onchange="this.form.submit()">
+                                    <option value="">All Categories</option>
+                                    @foreach (var category in Model.Categories)
+                                    {
+                                        <option value="@category" selected="@(Model.CategoryFilter == category)">@category</option>
+                                    }
+                                </select>
+                            </div>
+                            <div class="col-md-2 d-flex align-items-end">
+                                <a href="/Inventory" class="btn btn-outline-secondary w-100">
+                                    <i class="fas fa-times me-1"></i>Clear Filter
+                                </a>
+                            </div>
+                        </div>
+                    </form>
+
+                    <!-- Inventory Table -->
+                    <div class="table-responsive">
+                        <table class="table table-hover" id="inventoryTable">
+                            <thead class="table-primary">
+                                <tr>
+                                    <th scope="col" class="fw-bold">Item Name</th>
+                                    <th scope="col" class="fw-bold">Category</th>
+                                    <th scope="col" class="fw-bold text-center">Quantity</th>
+                                    <th scope="col" class="fw-bold text-center">Reorder Level</th>
+                                    <th scope="col" class="fw-bold text-end">Unit Price</th>
+                                    <th scope="col" class="fw-bold">Supplier</th>
+                                    <th scope="col" class="fw-bold">Last Updated</th>
+                                    <th scope="col" class="fw-bold text-center">Status</th>
+                                    <th scope="col" class="fw-bold text-center">Actions</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                @if (Model.InventoryItems != null && Model.InventoryItems.Any())
+                                {
+                                    @foreach (var item in Model.InventoryItems)
+                                    {
+                                        var statusBadgeClass = item.StockStatus switch
+                                        {
+                                            "Out of Stock" => "bg-danger",
+                                            "Low Stock" => "bg-warning",
+                                            _ => "bg-success"
+                                        };
+                                        <tr data-item-id="@item.Id">
+                                            <td class="fw-semibold">@item.ItemName</td>
+                                            <td><span class="badge bg-secondary">@item.Category</span></td>
+                                            <td class="text-center">@item.Quantity</td>
+                                            <td class="text-center">@item.ReorderLevel</td>
+                                            <td class="text-end">$@item.UnitPrice.ToString("N2")</td>
+                                            <td>@(item.Supplier ?? "N/A")</td>
+                                            <td>@item.LastUpdated.ToString("MM/dd/yyyy")</td>
+                                            <td class="text-center">
+                                                <span class="badge @statusBadgeClass">@item.StockStatus</span>
+                                            </td>
+                                            <td class="text-center">
+                                                <div class="btn-group" role="group">
+                                                    <button class="btn btn-sm btn-outline-warning edit-item-btn" 
+                                                            data-item-id="@item.Id"
+                                                            data-item-name="@item.ItemName"
+                                                            data-item-category="@item.Category"
+                                                            data-item-quantity="@item.Quantity"
+                                                            data-item-reorderlevel="@item.ReorderLevel"
+                                                            data-item-unitprice="@item.UnitPrice"
+                                                            data-item-supplier="@item.Supplier"
+                                                            data-item-description="@item.Description"
+                                                            data-item-location="@item.Location"
+                                                            data-item-sku="@item.SKU"
+                                                            title="Edit Item">
+                                                        <i class="fas fa-edit"></i>
+                                                    </button>
+                                                    <button class="btn btn-sm btn-outline-danger delete-item-btn" 
+                                                            data-item-id="@item.Id" 
+                                                            data-item-name="@item.ItemName"
+                                                            title="Delete Item">
+                                                        <i class="fas fa-trash"></i>
+                                                    </button>
+                                                </div>
+                                            </td>
+                                        </tr>
+                                    }
+                                }
+                                else
+                                {
+                                    <tr>
+                                        <td colspan="9" class="text-center text-muted py-4">
+                                            No inventory items found.@(string.IsNullOrEmpty(Model.CategoryFilter) ? " Click \"Add Inventory Item\" to get started." : " Try selecting a different category.")
+                                        </td>
+                                    </tr>
+                                }
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- Add Inventory Modal -->
+<div class="modal fade modal-hrm" id="addInventoryModal" tabindex="-1" aria-labelledby="addInventoryModalLabel" aria-hidden="true">
+    <div class="modal-dialog modal-lg">
+        <div class="modal-content">
+            <div class="modal-header bg-primary text-white">
+                <h5 class="modal-title fw-bold" id="addInventoryModalLabel">Add New Inventory Item</h5>
+                <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal" aria-label="Close"></button>
+            </div>
+            <form method="post" asp-page-handler="Create" id="addInventoryForm">
+                <div class="modal-body">
+                    <div class="row g-3">
+                        <div class="col-md-6">
+                            <label for="addItemName" class="form-label fw-semibold">Item Name *</label>
+                            <input type="text" class="form-control form-control-hrm" id="addItemName" name="ItemName" required>
+                            <div class="invalid-feedback">Please provide an item name.</div>
+                        </div>
+                        <div class="col-md-6">
+                            <label for="addCategory" class="form-label fw-semibold">Category *</label>
+                            <input type="text" class="form-control form-control-hrm" id="addCategory" name="Category" list="categoryList" required>
+                            <datalist id="categoryList">
+                                @foreach (var category in Model.Categories)
+                                {
+                                    <option value="@category"></option>
+                                }
+                            </datalist>
+                            <div class="invalid-feedback">Please provide a category.</div>
+                        </div>
+                        <div class="col-md-4">
+                            <label for="addQuantity" class="form-label fw-semibold">Quantity *</label>
+                            <input type="number" step="1" class="form-control form-control-hrm" id="addQuantity" name="Quantity" required min="0" pattern="[0-9]*" inputmode="numeric">
+                            <div class="invalid-feedback">Please provide a valid quantity.</div>
+                        </div>
+                        <div class="col-md-4">
+                            <label for="addReorderLevel" class="form-label fw-semibold">Reorder Level *</label>
+                            <input type="number" step="1" class="form-control form-control-hrm" id="addReorderLevel" name="ReorderLevel" required min="0" pattern="[0-9]*" inputmode="numeric">
+                            <div class="invalid-feedback">Please provide a reorder level.</div>
+                        </div>
+                        <div class="col-md-4">
+                            <label for="addUnitPrice" class="form-label fw-semibold">Unit Price *</label>
+                            <div class="input-group">
+                                <span class="input-group-text">$</span>
+                                <input type="number" step="0.01" class="form-control form-control-hrm" id="addUnitPrice" name="UnitPrice" required min="0">
+                            </div>
+                            <div class="invalid-feedback">Please provide a valid unit price.</div>
+                        </div>
+                        <div class="col-md-6">
+                            <label for="addSupplier" class="form-label fw-semibold">Supplier</label>
+                            <input type="text" class="form-control form-control-hrm" id="addSupplier" name="Supplier">
+                        </div>
+                        <div class="col-md-6">
+                            <label for="addSKU" class="form-label fw-semibold">SKU</label>
+                            <input type="text" class="form-control form-control-hrm" id="addSKU" name="SKU">
+                        </div>
+                        <div class="col-md-6">
+                            <label for="addLocation" class="form-label fw-semibold">Location</label>
+                            <input type="text" class="form-control form-control-hrm" id="addLocation" name="Location">
+                        </div>
+                        <div class="col-12">
+                            <label for="addDescription" class="form-label fw-semibold">Description</label>
+                            <textarea class="form-control form-control-hrm" id="addDescription" name="Description" rows="3"></textarea>
+                        </div>
+                    </div>
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cancel</button>
+                    <button type="submit" class="btn btn-primary">Save Item</button>
+                </div>
+            </form>
+        </div>
+    </div>
+</div>
+
+<!-- Edit Inventory Modal -->
+<div class="modal fade modal-hrm" id="editInventoryModal" tabindex="-1" aria-labelledby="editInventoryModalLabel" aria-hidden="true">
+    <div class="modal-dialog modal-lg">
+        <div class="modal-content">
+            <div class="modal-header bg-primary text-white">
+                <h5 class="modal-title fw-bold" id="editInventoryModalLabel">Edit Inventory Item</h5>
+                <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal" aria-label="Close"></button>
+            </div>
+            <form method="post" asp-page-handler="Edit" id="editInventoryForm">
+                <input type="hidden" id="editItemId" name="Id" />
+                <div class="modal-body">
+                    <div class="row g-3">
+                        <div class="col-md-6">
+                            <label for="editItemName" class="form-label fw-semibold">Item Name *</label>
+                            <input type="text" class="form-control form-control-hrm" id="editItemName" name="ItemName" required>
+                            <div class="invalid-feedback">Please provide an item name.</div>
+                        </div>
+                        <div class="col-md-6">
+                            <label for="editCategory" class="form-label fw-semibold">Category *</label>
+                            <input type="text" class="form-control form-control-hrm" id="editCategory" name="Category" list="categoryListEdit" required>
+                            <datalist id="categoryListEdit">
+                                @foreach (var category in Model.Categories)
+                                {
+                                    <option value="@category"></option>
+                                }
+                            </datalist>
+                            <div class="invalid-feedback">Please provide a category.</div>
+                        </div>
+                        <div class="col-md-4">
+                            <label for="editQuantity" class="form-label fw-semibold">Quantity *</label>
+                            <input type="number" step="1" class="form-control form-control-hrm" id="editQuantity" name="Quantity" required min="0" pattern="[0-9]*" inputmode="numeric">
+                            <div class="invalid-feedback">Please provide a valid quantity.</div>
+                        </div>
+                        <div class="col-md-4">
+                            <label for="editReorderLevel" class="form-label fw-semibold">Reorder Level *</label>
+                            <input type="number" step="1" class="form-control form-control-hrm" id="editReorderLevel" name="ReorderLevel" required min="0" pattern="[0-9]*" inputmode="numeric">
+                            <div class="invalid-feedback">Please provide a reorder level.</div>
+                        </div>
+                        <div class="col-md-4">
+                            <label for="editUnitPrice" class="form-label fw-semibold">Unit Price *</label>
+                            <div class="input-group">
+                                <span class="input-group-text">$</span>
+                                <input type="number" step="0.01" class="form-control form-control-hrm" id="editUnitPrice" name="UnitPrice" required min="0">
+                            </div>
+                            <div class="invalid-feedback">Please provide a valid unit price.</div>
+                        </div>
+                        <div class="col-md-6">
+                            <label for="editSupplier" class="form-label fw-semibold">Supplier</label>
+                            <input type="text" class="form-control form-control-hrm" id="editSupplier" name="Supplier">
+                        </div>
+                        <div class="col-md-6">
+                            <label for="editSKU" class="form-label fw-semibold">SKU</label>
+                            <input type="text" class="form-control form-control-hrm" id="editSKU" name="SKU">
+                        </div>
+                        <div class="col-md-6">
+                            <label for="editLocation" class="form-label fw-semibold">Location</label>
+                            <input type="text" class="form-control form-control-hrm" id="editLocation" name="Location">
+                        </div>
+                        <div class="col-12">
+                            <label for="editDescription" class="form-label fw-semibold">Description</label>
+                            <textarea class="form-control form-control-hrm" id="editDescription" name="Description" rows="3"></textarea>
+                        </div>
+                    </div>
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cancel</button>
+                    <button type="submit" class="btn btn-warning">Update Item</button>
+                </div>
+            </form>
+        </div>
+    </div>
+</div>
+
+<!-- Delete Confirmation Modal -->
+<div class="modal fade" id="deleteConfirmModal" tabindex="-1" aria-labelledby="deleteConfirmModalLabel" aria-hidden="true">
+    <div class="modal-dialog modal-dialog-centered">
+        <div class="modal-content">
+            <div class="modal-header bg-danger text-white">
+                <h5 class="modal-title fw-bold" id="deleteConfirmModalLabel">
+                    <i class="fas fa-exclamation-triangle me-2"></i>Confirm Deletion
+                </h5>
+                <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal" aria-label="Close"></button>
+            </div>
+            <div class="modal-body">
+                <p class="mb-3">Are you sure you want to delete this inventory item?</p>
+                <div class="alert alert-warning mb-0">
+                    <strong id="itemNameToDelete"></strong>
+                </div>
+                <p class="text-muted mt-3 mb-0">
+                    <small>This action cannot be undone. All inventory information will be permanently deleted.</small>
+                </p>
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">
+                    <i class="fas fa-times me-1"></i>Cancel
+                </button>
+                <form method="post" asp-page-handler="Delete" id="deleteItemForm" style="display: inline;">
+                    <input type="hidden" id="deleteItemId" name="id" />
+                    <button type="submit" class="btn btn-danger">
+                        <i class="fas fa-trash me-1"></i>Yes, Delete Item
+                    </button>
+                </form>
+            </div>
+        </div>
+    </div>
+</div>
+
+@section Scripts {
+    <script>
+        // Toast notification function
+        function showNotification(message, type) {
+            const toastId = type === 'success' ? 'successToast' : 'errorToast';
+            const toastBodyId = type === 'success' ? 'successToastBody' : 'errorToastBody';
+            const toastElement = document.getElementById(toastId);
+            const toastBody = document.getElementById(toastBodyId);
+            
+            toastBody.textContent = message;
+            const toast = new bootstrap.Toast(toastElement);
+            toast.show();
+        }
+
+        // Show toasts from TempData
+        @if (TempData["Success"] != null)
+        {
+            <text>
+            showNotification('@TempData["Success"]', 'success');
+            </text>
+        }
+        @if (TempData["Error"] != null)
+        {
+            <text>
+            showNotification('@TempData["Error"]', 'error');
+            </text>
+        }
+
+        // Edit item button handlers
+        document.querySelectorAll('.edit-item-btn').forEach(btn => {
+            btn.addEventListener('click', function() {
+                const itemId = this.getAttribute('data-item-id');
+                document.getElementById('editItemId').value = itemId;
+                document.getElementById('editItemName').value = this.getAttribute('data-item-name');
+                document.getElementById('editCategory').value = this.getAttribute('data-item-category');
+                document.getElementById('editQuantity').value = this.getAttribute('data-item-quantity');
+                document.getElementById('editReorderLevel').value = this.getAttribute('data-item-reorderlevel');
+                document.getElementById('editUnitPrice').value = this.getAttribute('data-item-unitprice');
+                document.getElementById('editSupplier').value = this.getAttribute('data-item-supplier') || '';
+                document.getElementById('editSKU').value = this.getAttribute('data-item-sku') || '';
+                document.getElementById('editLocation').value = this.getAttribute('data-item-location') || '';
+                document.getElementById('editDescription').value = this.getAttribute('data-item-description') || '';
+                
+                const modal = new bootstrap.Modal(document.getElementById('editInventoryModal'));
+                modal.show();
+            });
+        });
+
+        // Delete item button handlers
+        document.querySelectorAll('.delete-item-btn').forEach(btn => {
+            btn.addEventListener('click', function() {
+                const itemId = this.getAttribute('data-item-id');
+                const itemName = this.getAttribute('data-item-name');
+                document.getElementById('deleteItemId').value = itemId;
+                document.getElementById('itemNameToDelete').textContent = itemName;
+                
+                const modal = new bootstrap.Modal(document.getElementById('deleteConfirmModal'));
+                modal.show();
+            });
+        });
+
+        // Form validation
+        const forms = document.querySelectorAll('form[id$="Form"]');
+        forms.forEach(form => {
+            form.addEventListener('submit', function(event) {
+                if (!form.checkValidity()) {
+                    event.preventDefault();
+                    event.stopPropagation();
+                }
+                form.classList.add('was-validated');
+            });
+        });
+    </script>
+}
+

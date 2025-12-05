@@ -24,6 +24,7 @@ builder.Services.AddScoped<VendorService>();
 builder.Services.AddScoped<DeliveryService>();
 builder.Services.AddScoped<FinancialService>();
 builder.Services.AddScoped<CRMService>();
+builder.Services.AddScoped<InventoryService>();
 
 // Add session support for TempData
 builder.Services.AddSession();

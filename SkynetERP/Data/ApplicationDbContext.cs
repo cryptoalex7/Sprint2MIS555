@@ -16,6 +16,7 @@ public class ApplicationDbContext : DbContext
     public DbSet<User> Users { get; set; }
     public DbSet<Customer> Customers { get; set; }
     public DbSet<CustomerReview> CustomerReviews { get; set; }
+    public DbSet<InventoryItem> InventoryItems { get; set; }
     
     // Financial Management entities (8 tables)
     public DbSet<Account> Accounts { get; set; }
@@ -204,8 +205,58 @@ public class ApplicationDbContext : DbContext
                 .IsRequired();
         });
 
+        // Configure InventoryItem entity
+        modelBuilder.Entity<InventoryItem>(entity =>
+        {
+            entity.ToTable("InventoryItems");
+            
+            entity.HasKey(i => i.Id);
+            
+            entity.Property(i => i.ItemName)
+                .IsRequired()
+                .HasMaxLength(200);
+            
+            entity.Property(i => i.Category)
+                .IsRequired()
+                .HasMaxLength(100);
+            
+            entity.Property(i => i.Quantity)
+                .IsRequired();
+            
+            entity.Property(i => i.ReorderLevel)
+                .IsRequired();
+            
+            entity.Property(i => i.UnitPrice)
+                .IsRequired()
+                .HasColumnType("decimal(18,2)");
+            
+            entity.Property(i => i.Supplier)
+                .HasMaxLength(200);
+            
+            entity.Property(i => i.Description)
+                .HasMaxLength(500);
+            
+            entity.Property(i => i.Location)
+                .HasMaxLength(50);
+            
+            entity.Property(i => i.SKU)
+                .HasMaxLength(50);
+            
+            entity.Property(i => i.LastUpdated)
+                .IsRequired();
+            
+            entity.Property(i => i.CreatedAt)
+                .IsRequired();
+            
+            entity.Property(i => i.CreatedBy)
+                .HasMaxLength(100);
+        });
+
         // Seed CRM data
         SeedCRMData(modelBuilder);
+
+        // Seed Inventory data
+        SeedInventoryData(modelBuilder);
 
         // Configure User entity
         modelBuilder.Entity<User>(entity =>
@@ -745,6 +796,147 @@ public class ApplicationDbContext : DbContext
                 ReviewerName = "David Williams", 
                 ReviewDate = DateTime.Now.AddDays(-5), 
                 IsPublished = true 
+            }
+        );
+    }
+
+    private void SeedInventoryData(ModelBuilder modelBuilder)
+    {
+        var seedDate = new DateTime(2024, 1, 1);
+        var recentDate = new DateTime(2024, 11, 1); // 30 days before seed date
+        var oldDate = new DateTime(2024, 9, 1); // 90 days before seed date
+        var veryOldDate = new DateTime(2024, 8, 1); // 120 days before seed date
+        var mediumOldDate = new DateTime(2024, 10, 15); // 45 days before seed date
+
+        // Seed Inventory Items (at least 5 records)
+        modelBuilder.Entity<InventoryItem>().HasData(
+            new InventoryItem 
+            { 
+                Id = 1, 
+                ItemName = "Laptop Computer - Dell XPS 15", 
+                Category = "Electronics", 
+                Quantity = 25, 
+                ReorderLevel = 10, 
+                UnitPrice = 1299.99m, 
+                Supplier = "Dell Technologies", 
+                Description = "High-performance laptop for business use", 
+                Location = "Warehouse A - Shelf 12", 
+                SKU = "LAP-DELL-XPS15-001", 
+                LastUpdated = recentDate, 
+                CreatedAt = seedDate, 
+                CreatedBy = "System" 
+            },
+            new InventoryItem 
+            { 
+                Id = 2, 
+                ItemName = "Office Chair - Ergonomic", 
+                Category = "Furniture", 
+                Quantity = 8, 
+                ReorderLevel = 15, 
+                UnitPrice = 299.99m, 
+                Supplier = "Office Furniture Co", 
+                Description = "Ergonomic office chair with lumbar support", 
+                Location = "Warehouse B - Section 3", 
+                SKU = "FURN-CHAIR-ERG-001", 
+                LastUpdated = oldDate, 
+                CreatedAt = seedDate, 
+                CreatedBy = "System" 
+            },
+            new InventoryItem 
+            { 
+                Id = 3, 
+                ItemName = "Printer Paper - A4", 
+                Category = "Office Supplies", 
+                Quantity = 150, 
+                ReorderLevel = 50, 
+                UnitPrice = 12.99m, 
+                Supplier = "Paper Supply Inc", 
+                Description = "Standard A4 printer paper, 500 sheets per ream", 
+                Location = "Warehouse A - Shelf 5", 
+                SKU = "SUP-PAPER-A4-500", 
+                LastUpdated = recentDate, 
+                CreatedAt = seedDate, 
+                CreatedBy = "System" 
+            },
+            new InventoryItem 
+            { 
+                Id = 4, 
+                ItemName = "Wireless Mouse - Logitech MX Master", 
+                Category = "Electronics", 
+                Quantity = 3, 
+                ReorderLevel = 20, 
+                UnitPrice = 99.99m, 
+                Supplier = "Logitech", 
+                Description = "Premium wireless mouse with advanced tracking", 
+                Location = "Warehouse A - Shelf 8", 
+                SKU = "ELEC-MOUSE-LOG-MX-001", 
+                LastUpdated = recentDate, 
+                CreatedAt = seedDate, 
+                CreatedBy = "System" 
+            },
+            new InventoryItem 
+            { 
+                Id = 5, 
+                ItemName = "Desk Lamp - LED", 
+                Category = "Furniture", 
+                Quantity = 0, 
+                ReorderLevel = 10, 
+                UnitPrice = 45.99m, 
+                Supplier = "Lighting Solutions", 
+                Description = "LED desk lamp with adjustable brightness", 
+                Location = "Warehouse B - Section 1", 
+                SKU = "FURN-LAMP-LED-001", 
+                LastUpdated = veryOldDate, 
+                CreatedAt = seedDate, 
+                CreatedBy = "System" 
+            },
+            new InventoryItem 
+            { 
+                Id = 6, 
+                ItemName = "USB-C Cable - 6ft", 
+                Category = "Electronics", 
+                Quantity = 75, 
+                ReorderLevel = 30, 
+                UnitPrice = 15.99m, 
+                Supplier = "Cable Pro", 
+                Description = "High-speed USB-C charging and data cable", 
+                Location = "Warehouse A - Shelf 3", 
+                SKU = "ELEC-CABLE-USB-C-6FT", 
+                LastUpdated = recentDate, 
+                CreatedAt = seedDate, 
+                CreatedBy = "System" 
+            },
+            new InventoryItem 
+            { 
+                Id = 7, 
+                ItemName = "Notebook - Spiral Bound", 
+                Category = "Office Supplies", 
+                Quantity = 200, 
+                ReorderLevel = 100, 
+                UnitPrice = 4.99m, 
+                Supplier = "Paper Supply Inc", 
+                Description = "Spiral bound notebook, college ruled, 100 pages", 
+                Location = "Warehouse A - Shelf 6", 
+                SKU = "SUP-NOTE-SPIRAL-100", 
+                LastUpdated = mediumOldDate, 
+                CreatedAt = seedDate, 
+                CreatedBy = "System" 
+            },
+            new InventoryItem 
+            { 
+                Id = 8, 
+                ItemName = "Monitor Stand - Adjustable", 
+                Category = "Furniture", 
+                Quantity = 12, 
+                ReorderLevel = 8, 
+                UnitPrice = 79.99m, 
+                Supplier = "Office Furniture Co", 
+                Description = "Adjustable monitor stand for dual monitor setup", 
+                Location = "Warehouse B - Section 2", 
+                SKU = "FURN-STAND-MON-ADJ", 
+                LastUpdated = recentDate, 
+                CreatedAt = seedDate, 
+                CreatedBy = "System" 
             }
         );
     }
