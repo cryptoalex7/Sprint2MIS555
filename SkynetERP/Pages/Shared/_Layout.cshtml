@@ -50,7 +50,7 @@
                                     </a>
                                 </li>
                             }
-                            @if (userRole == "Admin")
+                            @if (userRole == "Admin" || userRole == "Accountant")
                             {
                                 <li class="nav-item">
                                     <a class="nav-link modern-nav-link" asp-area="" asp-page="/FinancialManagement">
@@ -58,10 +58,21 @@
                                     </a>
                                 </li>
                                 <li class="nav-item">
+                                    <a class="nav-link modern-nav-link" asp-area="" asp-page="/Transactions">
+                                        <i class="fas fa-exchange-alt me-2"></i>Transactions
+                                    </a>
+                                </li>
+                            }
+                            @if (userRole == "Admin" || userRole == "Customer")
+                            {
+                                <li class="nav-item">
                                     <a class="nav-link modern-nav-link" asp-area="" asp-page="/CRM">
                                         <i class="fas fa-handshake me-2"></i>CRM
                                     </a>
                                 </li>
+                            }
+                            @if (userRole == "Admin" || userRole == "InventoryManager")
+                            {
                                 <li class="nav-item">
                                     <a class="nav-link modern-nav-link" asp-area="" asp-page="/Inventory">
                                         <i class="fas fa-boxes me-2"></i>Inventory

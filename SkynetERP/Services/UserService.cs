@@ -55,10 +55,14 @@ public class UserService
     {
         var hardcodedUsers = new List<UserDto>
         {
-            new UserDto { Username = "admin", Password = "password", Role = "Admin", Email = "admin@erp.com" },
+            new UserDto { Username = "admin", Password = "admin123", Role = "Admin", Email = "admin@erp.com" },
             new UserDto { Username = "hr", Password = "hr123", Role = "HR", Email = "hr@erp.com" },
             new UserDto { Username = "vendor", Password = "vendor123", Role = "Vendor", Email = "vendor@erp.com" },
-            new UserDto { Username = "user", Password = "user123", Role = "User", Email = "user@erp.com" }
+            new UserDto { Username = "user", Password = "user123", Role = "User", Email = "user@erp.com" },
+            new UserDto { Username = "guest", Password = "guest123", Role = "Guest", Email = "guest@erp.com" },
+            new UserDto { Username = "customer", Password = "customer123", Role = "Customer", Email = "customer@erp.com" },
+            new UserDto { Username = "accountant", Password = "accountant123", Role = "Accountant", Email = "accountant@erp.com" },
+            new UserDto { Username = "inventory", Password = "inventory123", Role = "InventoryManager", Email = "inventory@erp.com" }
         };
 
         return hardcodedUsers.FirstOrDefault(u => u.Email == email && u.Password == password);

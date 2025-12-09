@@ -70,6 +70,10 @@ public class IndexModel : PageModel
             "Admin" => RedirectToPage("/Dashboard"), // Admin goes to dashboard
             "HR" => RedirectToPage("/HRM"),
             "Vendor" => RedirectToPage("/VendorManagement"),
+            "Accountant" => RedirectToPage("/FinancialManagement"),
+            "InventoryManager" => RedirectToPage("/Inventory"),
+            "Customer" => RedirectToPage("/CRM"),
+            "Guest" => RedirectToPage("/Privacy"),
             "User" => RedirectToPage("/Privacy"),
             _ => RedirectToPage("/Privacy") // Default fallback
         };

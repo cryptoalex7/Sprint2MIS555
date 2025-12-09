@@ -8,7 +8,7 @@ using System.Security.Claims;
 
 namespace SkynetERP.Pages;
 
-[Authorize(Roles = "Admin")]
+[Authorize(Roles = "Admin,Customer")]
 public class CRMModel : PageModel
 {
     private readonly ILogger<CRMModel> _logger;

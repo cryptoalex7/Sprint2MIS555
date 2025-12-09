@@ -301,6 +301,7 @@ public class ApplicationDbContext : DbContext
 
         // Seed initial users (with hashed passwords)
         // Pre-computed SHA256 hashes for default passwords (Base64 encoded)
+        // All passwords follow pattern: [role]123 (e.g., admin123, guest123, etc.)
         modelBuilder.Entity<User>().HasData(
             new User
             {
@@ -309,7 +310,7 @@ public class ApplicationDbContext : DbContext
                 LastName = "User",
                 Email = "admin@erp.com",
                 Username = "admin",
-                Password = "XohImNooBHFR0OVvjcYpJ3NgPQ1qq73WKhHvch0VQtg=", // password
+                Password = "JAvlGPq9JyTdtvBO6x2llnRI1+gxwIyPqCKAn3THIKk=", // admin123
                 Role = "Admin",
                 CreatedAt = new DateTime(2024, 1, 1)
             },
@@ -344,6 +345,50 @@ public class ApplicationDbContext : DbContext
                 Username = "user",
                 Password = "5gbjiw2MGbJM8O44CBgxYup81j/3kS27IrXoAyhrREY=", // user123
                 Role = "User",
+                CreatedAt = new DateTime(2024, 1, 1)
+            },
+            new User
+            {
+                Id = 5,
+                FirstName = "Guest",
+                LastName = "User",
+                Email = "guest@erp.com",
+                Username = "guest",
+                Password = "a5PMukFKwdCuHnfz+sVgx0imcB7WlGc1pJ1GM1FRjhY=", // guest123
+                Role = "Guest",
+                CreatedAt = new DateTime(2024, 1, 1)
+            },
+            new User
+            {
+                Id = 6,
+                FirstName = "Customer",
+                LastName = "User",
+                Email = "customer@erp.com",
+                Username = "customer",
+                Password = "sEHArrNbsPpKpmjKWpILWQGW/a+aAOuFLJt/TRI8xtY=", // customer123
+                Role = "Customer",
+                CreatedAt = new DateTime(2024, 1, 1)
+            },
+            new User
+            {
+                Id = 7,
+                FirstName = "Accountant",
+                LastName = "User",
+                Email = "accountant@erp.com",
+                Username = "accountant",
+                Password = "TTk+w0w8aodbleZt9ebW/Anvwz1m8S4+mK/KNH1rdjg=", // accountant123
+                Role = "Accountant",
+                CreatedAt = new DateTime(2024, 1, 1)
+            },
+            new User
+            {
+                Id = 8,
+                FirstName = "Inventory",
+                LastName = "Manager",
+                Email = "inventory@erp.com",
+                Username = "inventory",
+                Password = "zWPvJx+fXIHDrJ4k5UT36YI2DrwCe/TmtpYEhbE/iec=", // inventory123
+                Role = "InventoryManager",
                 CreatedAt = new DateTime(2024, 1, 1)
             }
         );
@@ -528,6 +573,35 @@ public class ApplicationDbContext : DbContext
             entity.Property(jl => jl.CreatedAt).IsRequired();
             entity.HasOne(jl => jl.JournalEntry).WithMany(je => je.JournalLines).HasForeignKey(jl => jl.JournalEntryId).OnDelete(DeleteBehavior.Cascade);
         });
+
+        // Configure Category entity
+        modelBuilder.Entity<Category>(entity =>
+        {
+            entity.ToTable("Categories");
+            entity.HasKey(c => c.Id);
+            entity.Property(c => c.Name).IsRequired().HasMaxLength(100);
+            entity.Property(c => c.Type).IsRequired().HasMaxLength(50);
+            entity.Property(c => c.Description).HasMaxLength(200);
+            entity.Property(c => c.CreatedAt).IsRequired();
+        });
+
+        // Configure Transaction entity
+        modelBuilder.Entity<Transaction>(entity =>
+        {
+            entity.ToTable("Transactions");
+            entity.HasKey(t => t.Id);
+            entity.Property(t => t.Description).IsRequired().HasMaxLength(200);
+            entity.Property(t => t.Amount).IsRequired().HasColumnType("decimal(18,2)");
+            entity.Property(t => t.Type).IsRequired().HasMaxLength(20);
+            entity.Property(t => t.TransactionDate).IsRequired();
+            entity.Property(t => t.ReferenceNumber).HasMaxLength(100);
+            entity.Property(t => t.Notes).HasMaxLength(500);
+            entity.Property(t => t.Status).IsRequired().HasMaxLength(50);
+            entity.Property(t => t.CreatedBy).HasMaxLength(100);
+            entity.Property(t => t.CreatedAt).IsRequired();
+            entity.HasOne(t => t.Account).WithMany().HasForeignKey(t => t.AccountId).OnDelete(DeleteBehavior.Restrict);
+            entity.HasOne(t => t.Category).WithMany().HasForeignKey(t => t.CategoryId).OnDelete(DeleteBehavior.SetNull);
+        });
     }
 
     private void SeedFinancialData(ModelBuilder modelBuilder)
@@ -622,6 +696,39 @@ public class ApplicationDbContext : DbContext
             new JournalLine { Id = 8, JournalEntryId = 4, AccountCode = "2200", AccountName = "Accrued Expenses", Description = "Accrued Utilities Payable", DebitAmount = 0, CreditAmount = 3200.00m, Notes = "Accrued liability", CreatedAt = seedDate },
             new JournalLine { Id = 9, JournalEntryId = 5, AccountCode = "1200", AccountName = "Accounts Receivable", Description = "AR Adjustment", DebitAmount = 5000.00m, CreditAmount = 0, Notes = "Revenue adjustment", CreatedAt = seedDate },
             new JournalLine { Id = 10, JournalEntryId = 5, AccountCode = "4000", AccountName = "Revenue", Description = "Revenue Correction", DebitAmount = 0, CreditAmount = 5000.00m, Notes = "Revenue correction", CreatedAt = seedDate }
+        );
+
+        // Seed Categories (at least 5 records - mix of Revenue and Expense)
+        modelBuilder.Entity<Category>().HasData(
+            new Category { Id = 1, Name = "Product Sales", Type = "Revenue", Description = "Revenue from product sales", IsActive = true, CreatedAt = seedDate },
+            new Category { Id = 2, Name = "Service Revenue", Type = "Revenue", Description = "Revenue from services provided", IsActive = true, CreatedAt = seedDate },
+            new Category { Id = 3, Name = "Consulting Fees", Type = "Revenue", Description = "Revenue from consulting services", IsActive = true, CreatedAt = seedDate },
+            new Category { Id = 4, Name = "Office Supplies", Type = "Expense", Description = "Expenses for office supplies and materials", IsActive = true, CreatedAt = seedDate },
+            new Category { Id = 5, Name = "Utilities", Type = "Expense", Description = "Utility expenses (electricity, water, internet)", IsActive = true, CreatedAt = seedDate },
+            new Category { Id = 6, Name = "Salaries", Type = "Expense", Description = "Employee salary expenses", IsActive = true, CreatedAt = seedDate },
+            new Category { Id = 7, Name = "Marketing", Type = "Expense", Description = "Marketing and advertising expenses", IsActive = true, CreatedAt = seedDate },
+            new Category { Id = 8, Name = "Rent", Type = "Expense", Description = "Office rent and facility expenses", IsActive = true, CreatedAt = seedDate }
+        );
+
+        // Seed Transactions (at least 5 records - mix of Revenue and Expense)
+        var transactionDate1 = new DateTime(2024, 1, 15);
+        var transactionDate2 = new DateTime(2024, 2, 10);
+        var transactionDate3 = new DateTime(2024, 2, 20);
+        var transactionDate4 = new DateTime(2024, 3, 5);
+        var transactionDate5 = new DateTime(2024, 3, 25);
+        var transactionDate6 = new DateTime(2024, 4, 10);
+        var transactionDate7 = new DateTime(2024, 4, 20);
+        var transactionDate8 = new DateTime(2024, 5, 5);
+
+        modelBuilder.Entity<Transaction>().HasData(
+            new Transaction { Id = 1, Description = "Product Sales - Q1 Revenue", Amount = 50000.00m, Type = "Revenue", TransactionDate = transactionDate1, AccountId = 1, CategoryId = 1, ReferenceNumber = "TXN-2024-001", Notes = "Q1 product sales revenue", Status = "Completed", CreatedBy = "admin", CreatedAt = seedDate },
+            new Transaction { Id = 2, Description = "Consulting Services Payment", Amount = 25000.00m, Type = "Revenue", TransactionDate = transactionDate2, AccountId = 1, CategoryId = 3, ReferenceNumber = "TXN-2024-002", Notes = "Consulting services revenue", Status = "Completed", CreatedBy = "admin", CreatedAt = seedDate },
+            new Transaction { Id = 3, Description = "Office Supplies Purchase", Amount = 3500.00m, Type = "Expense", TransactionDate = transactionDate3, AccountId = 1, CategoryId = 4, ReferenceNumber = "TXN-2024-003", Notes = "Monthly office supplies", Status = "Completed", CreatedBy = "admin", CreatedAt = seedDate },
+            new Transaction { Id = 4, Description = "Utility Bill Payment", Amount = 3200.00m, Type = "Expense", TransactionDate = transactionDate4, AccountId = 1, CategoryId = 5, ReferenceNumber = "TXN-2024-004", Notes = "Electricity and water bill", Status = "Completed", CreatedBy = "admin", CreatedAt = seedDate },
+            new Transaction { Id = 5, Description = "Service Revenue - Enterprise", Amount = 75000.00m, Type = "Revenue", TransactionDate = transactionDate5, AccountId = 1, CategoryId = 2, ReferenceNumber = "TXN-2024-005", Notes = "Enterprise service contract", Status = "Completed", CreatedBy = "admin", CreatedAt = seedDate },
+            new Transaction { Id = 6, Description = "Marketing Campaign Expense", Amount = 12000.00m, Type = "Expense", TransactionDate = transactionDate6, AccountId = 1, CategoryId = 7, ReferenceNumber = "TXN-2024-006", Notes = "Q1 marketing campaign", Status = "Completed", CreatedBy = "admin", CreatedAt = seedDate },
+            new Transaction { Id = 7, Description = "Office Rent Payment", Amount = 8500.00m, Type = "Expense", TransactionDate = transactionDate7, AccountId = 1, CategoryId = 8, ReferenceNumber = "TXN-2024-007", Notes = "Monthly office rent", Status = "Completed", CreatedBy = "admin", CreatedAt = seedDate },
+            new Transaction { Id = 8, Description = "Product Sales - Q2 Revenue", Amount = 45000.00m, Type = "Revenue", TransactionDate = transactionDate8, AccountId = 1, CategoryId = 1, ReferenceNumber = "TXN-2024-008", Notes = "Q2 product sales revenue", Status = "Pending", CreatedBy = "admin", CreatedAt = seedDate }
         );
     }
 

@@ -3,6 +3,7 @@ using System;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
 using Microsoft.EntityFrameworkCore.Metadata;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 using SkynetERP.Data;
 
@@ -11,9 +12,11 @@ using SkynetERP.Data;
 namespace SkynetERP.Migrations
 {
     [DbContext(typeof(ApplicationDbContext))]
-    partial class ApplicationDbContextModelSnapshot : ModelSnapshot
+    [Migration("20251209042918_AddRoleBasedTestAccounts")]
+    partial class AddRoleBasedTestAccounts
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        /// <inheritdoc />
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
@@ -249,81 +252,7 @@ namespace SkynetERP.Migrations
 
                     b.HasKey("Id");
 
-                    b.ToTable("Categories", (string)null);
-
-                    b.HasData(
-                        new
-                        {
-                            Id = 1,
-                            CreatedAt = new DateTime(2024, 1, 1, 0, 0, 0, 0, DateTimeKind.Unspecified),
-                            Description = "Revenue from product sales",
-                            IsActive = true,
-                            Name = "Product Sales",
-                            Type = "Revenue"
-                        },
-                        new
-                        {
-                            Id = 2,
-                            CreatedAt = new DateTime(2024, 1, 1, 0, 0, 0, 0, DateTimeKind.Unspecified),
-                            Description = "Revenue from services provided",
-                            IsActive = true,
-                            Name = "Service Revenue",
-                            Type = "Revenue"
-                        },
-                        new
-                        {
-                            Id = 3,
-                            CreatedAt = new DateTime(2024, 1, 1, 0, 0, 0, 0, DateTimeKind.Unspecified),
-                            Description = "Revenue from consulting services",
-                            IsActive = true,
-                            Name = "Consulting Fees",
-                            Type = "Revenue"
-                        },
-                        new
-                        {
-                            Id = 4,
-                            CreatedAt = new DateTime(2024, 1, 1, 0, 0, 0, 0, DateTimeKind.Unspecified),
-                            Description = "Expenses for office supplies and materials",
-                            IsActive = true,
-                            Name = "Office Supplies",
-                            Type = "Expense"
-                        },
-                        new
-                        {
-                            Id = 5,
-                            CreatedAt = new DateTime(2024, 1, 1, 0, 0, 0, 0, DateTimeKind.Unspecified),
-                            Description = "Utility expenses (electricity, water, internet)",
-                            IsActive = true,
-                            Name = "Utilities",
-                            Type = "Expense"
-                        },
-                        new
-                        {
-                            Id = 6,
-                            CreatedAt = new DateTime(2024, 1, 1, 0, 0, 0, 0, DateTimeKind.Unspecified),
-                            Description = "Employee salary expenses",
-                            IsActive = true,
-                            Name = "Salaries",
-                            Type = "Expense"
-                        },
-                        new
-                        {
-                            Id = 7,
-                            CreatedAt = new DateTime(2024, 1, 1, 0, 0, 0, 0, DateTimeKind.Unspecified),
-                            Description = "Marketing and advertising expenses",
-                            IsActive = true,
-                            Name = "Marketing",
-                            Type = "Expense"
-                        },
-                        new
-                        {
-                            Id = 8,
-                            CreatedAt = new DateTime(2024, 1, 1, 0, 0, 0, 0, DateTimeKind.Unspecified),
-                            Description = "Office rent and facility expenses",
-                            IsActive = true,
-                            Name = "Rent",
-                            Type = "Expense"
-                        });
+                    b.ToTable("Categories");
                 });
 
             modelBuilder.Entity("SkynetERP.Models.Customer", b =>
@@ -379,7 +308,7 @@ namespace SkynetERP.Migrations
                             Company = "TechCorp Solutions",
                             CreatedAt = new DateTime(2024, 1, 1, 0, 0, 0, 0, DateTimeKind.Unspecified),
                             Email = "john.smith@techcorp.com",
-                            LastContact = new DateTime(2025, 12, 1, 22, 41, 29, 682, DateTimeKind.Local).AddTicks(2720),
+                            LastContact = new DateTime(2025, 12, 1, 22, 29, 18, 474, DateTimeKind.Local).AddTicks(9940),
                             Name = "John Smith",
                             Notes = "Primary contact for enterprise solutions. Very responsive.",
                             Phone = "(555) 111-2222",
@@ -391,7 +320,7 @@ namespace SkynetERP.Migrations
                             Company = "Global Industries Inc",
                             CreatedAt = new DateTime(2024, 1, 1, 0, 0, 0, 0, DateTimeKind.Unspecified),
                             Email = "sarah.j@globalind.com",
-                            LastContact = new DateTime(2025, 12, 5, 22, 41, 29, 686, DateTimeKind.Local).AddTicks(3280),
+                            LastContact = new DateTime(2025, 12, 5, 22, 29, 18, 479, DateTimeKind.Local).AddTicks(6190),
                             Name = "Sarah Johnson",
                             Notes = "Regular customer, quarterly orders. Excellent payment history.",
                             Phone = "(555) 222-3333",
@@ -403,7 +332,7 @@ namespace SkynetERP.Migrations
                             Company = "Innovation Labs",
                             CreatedAt = new DateTime(2024, 1, 1, 0, 0, 0, 0, DateTimeKind.Unspecified),
                             Email = "mchen@innovationlabs.com",
-                            LastContact = new DateTime(2025, 11, 24, 22, 41, 29, 686, DateTimeKind.Local).AddTicks(3290),
+                            LastContact = new DateTime(2025, 11, 24, 22, 29, 18, 479, DateTimeKind.Local).AddTicks(6200),
                             Name = "Michael Chen",
                             Notes = "New prospect. Interested in our premium services. Follow up needed.",
                             Phone = "(555) 333-4444",
@@ -415,7 +344,7 @@ namespace SkynetERP.Migrations
                             Company = "Startup Ventures",
                             CreatedAt = new DateTime(2024, 1, 1, 0, 0, 0, 0, DateTimeKind.Unspecified),
                             Email = "emily@startupventures.com",
-                            LastContact = new DateTime(2025, 12, 3, 22, 41, 29, 686, DateTimeKind.Local).AddTicks(3290),
+                            LastContact = new DateTime(2025, 12, 3, 22, 29, 18, 479, DateTimeKind.Local).AddTicks(6200),
                             Name = "Emily Rodriguez",
                             Notes = "Early stage company. Potential for growth partnership.",
                             Phone = "(555) 444-5555",
@@ -427,7 +356,7 @@ namespace SkynetERP.Migrations
                             Company = "Enterprise Systems",
                             CreatedAt = new DateTime(2024, 1, 1, 0, 0, 0, 0, DateTimeKind.Unspecified),
                             Email = "d.williams@enterprisesys.com",
-                            LastContact = new DateTime(2025, 12, 7, 22, 41, 29, 686, DateTimeKind.Local).AddTicks(3290),
+                            LastContact = new DateTime(2025, 12, 7, 22, 29, 18, 479, DateTimeKind.Local).AddTicks(6200),
                             Name = "David Williams",
                             Notes = "Long-term customer. Annual contract renewal coming up.",
                             Phone = "(555) 555-6666",
@@ -439,7 +368,7 @@ namespace SkynetERP.Migrations
                             Company = "Digital Solutions Group",
                             CreatedAt = new DateTime(2024, 1, 1, 0, 0, 0, 0, DateTimeKind.Unspecified),
                             Email = "lisa.anderson@digitalsolutions.com",
-                            LastContact = new DateTime(2025, 9, 8, 22, 41, 29, 686, DateTimeKind.Local).AddTicks(3290),
+                            LastContact = new DateTime(2025, 9, 8, 22, 29, 18, 479, DateTimeKind.Local).AddTicks(6210),
                             Name = "Lisa Anderson",
                             Notes = "Previous customer. No recent activity. May need re-engagement campaign.",
                             Phone = "(555) 666-7777",
@@ -451,7 +380,7 @@ namespace SkynetERP.Migrations
                             Company = "Mega Corp International",
                             CreatedAt = new DateTime(2024, 1, 1, 0, 0, 0, 0, DateTimeKind.Unspecified),
                             Email = "rtaylor@megacorp.com",
-                            LastContact = new DateTime(2025, 12, 6, 22, 41, 29, 686, DateTimeKind.Local).AddTicks(3300),
+                            LastContact = new DateTime(2025, 12, 6, 22, 29, 18, 479, DateTimeKind.Local).AddTicks(6220),
                             Name = "Robert Taylor",
                             Notes = "Large enterprise account. Dedicated account manager assigned.",
                             Phone = "(555) 777-8888",
@@ -506,7 +435,7 @@ namespace SkynetERP.Migrations
                             CustomerId = 1,
                             IsPublished = true,
                             Rating = 5,
-                            ReviewDate = new DateTime(2025, 11, 8, 22, 41, 29, 686, DateTimeKind.Local).AddTicks(6070),
+                            ReviewDate = new DateTime(2025, 11, 8, 22, 29, 18, 479, DateTimeKind.Local).AddTicks(9220),
                             ReviewText = "TechCorp Solutions has been working with this company for over a year. The service is outstanding, and the support team is always responsive. Highly recommend!",
                             ReviewerName = "John Smith",
                             Title = "Excellent Service and Support"
@@ -517,7 +446,7 @@ namespace SkynetERP.Migrations
                             CustomerId = 2,
                             IsPublished = true,
                             Rating = 5,
-                            ReviewDate = new DateTime(2025, 10, 24, 22, 41, 29, 686, DateTimeKind.Local).AddTicks(6240),
+                            ReviewDate = new DateTime(2025, 10, 24, 22, 29, 18, 479, DateTimeKind.Local).AddTicks(9390),
                             ReviewText = "We've been very satisfied with the products and services. The quality is consistently high, and delivery is always on time. Keep up the great work!",
                             ReviewerName = "Sarah Johnson",
                             Title = "Great Product Quality"
@@ -528,7 +457,7 @@ namespace SkynetERP.Migrations
                             CustomerId = 5,
                             IsPublished = true,
                             Rating = 4,
-                            ReviewDate = new DateTime(2025, 11, 18, 22, 41, 29, 686, DateTimeKind.Local).AddTicks(6240),
+                            ReviewDate = new DateTime(2025, 11, 18, 22, 29, 18, 479, DateTimeKind.Local).AddTicks(9390),
                             ReviewText = "Enterprise Systems has been a reliable partner for our business needs. The team understands our requirements and delivers accordingly. Very professional.",
                             ReviewerName = "David Williams",
                             Title = "Reliable Partner"
@@ -539,7 +468,7 @@ namespace SkynetERP.Migrations
                             CustomerId = 7,
                             IsPublished = true,
                             Rating = 5,
-                            ReviewDate = new DateTime(2025, 11, 23, 22, 41, 29, 686, DateTimeKind.Local).AddTicks(6240),
+                            ReviewDate = new DateTime(2025, 11, 23, 22, 29, 18, 479, DateTimeKind.Local).AddTicks(9390),
                             ReviewText = "Mega Corp International has been extremely pleased with the enterprise solution. The scalability and performance have exceeded our expectations. Excellent value for money.",
                             ReviewerName = "Robert Taylor",
                             Title = "Outstanding Enterprise Solution"
@@ -550,7 +479,7 @@ namespace SkynetERP.Migrations
                             CustomerId = 1,
                             IsPublished = true,
                             Rating = 5,
-                            ReviewDate = new DateTime(2025, 11, 28, 22, 41, 29, 686, DateTimeKind.Local).AddTicks(6250),
+                            ReviewDate = new DateTime(2025, 11, 28, 22, 29, 18, 479, DateTimeKind.Local).AddTicks(9400),
                             ReviewText = "What I appreciate most is the quick response time to any issues or questions. The customer service team is knowledgeable and helpful. Great experience overall.",
                             ReviewerName = "John Smith",
                             Title = "Quick Response Time"
@@ -561,7 +490,7 @@ namespace SkynetERP.Migrations
                             CustomerId = 2,
                             IsPublished = true,
                             Rating = 4,
-                            ReviewDate = new DateTime(2025, 11, 13, 22, 41, 29, 686, DateTimeKind.Local).AddTicks(6250),
+                            ReviewDate = new DateTime(2025, 11, 13, 22, 29, 18, 479, DateTimeKind.Local).AddTicks(9400),
                             ReviewText = "The pricing is competitive and the service quality is good. We've had a positive experience working with this company. Would recommend to others.",
                             ReviewerName = "Sarah Johnson",
                             Title = "Good Value"
@@ -572,7 +501,7 @@ namespace SkynetERP.Migrations
                             CustomerId = 5,
                             IsPublished = true,
                             Rating = 5,
-                            ReviewDate = new DateTime(2025, 12, 3, 22, 41, 29, 686, DateTimeKind.Local).AddTicks(6250),
+                            ReviewDate = new DateTime(2025, 12, 3, 22, 29, 18, 479, DateTimeKind.Local).AddTicks(9400),
                             ReviewText = "The team is very professional and easy to work with. They understand our business needs and provide tailored solutions. Very satisfied with the partnership.",
                             ReviewerName = "David Williams",
                             Title = "Professional Team"
@@ -2195,129 +2124,7 @@ namespace SkynetERP.Migrations
 
                     b.HasIndex("CategoryId");
 
-                    b.ToTable("Transactions", (string)null);
-
-                    b.HasData(
-                        new
-                        {
-                            Id = 1,
-                            AccountId = 1,
-                            Amount = 50000.00m,
-                            CategoryId = 1,
-                            CreatedAt = new DateTime(2024, 1, 1, 0, 0, 0, 0, DateTimeKind.Unspecified),
-                            CreatedBy = "admin",
-                            Description = "Product Sales - Q1 Revenue",
-                            Notes = "Q1 product sales revenue",
-                            ReferenceNumber = "TXN-2024-001",
-                            Status = "Completed",
-                            TransactionDate = new DateTime(2024, 1, 15, 0, 0, 0, 0, DateTimeKind.Unspecified),
-                            Type = "Revenue"
-                        },
-                        new
-                        {
-                            Id = 2,
-                            AccountId = 1,
-                            Amount = 25000.00m,
-                            CategoryId = 3,
-                            CreatedAt = new DateTime(2024, 1, 1, 0, 0, 0, 0, DateTimeKind.Unspecified),
-                            CreatedBy = "admin",
-                            Description = "Consulting Services Payment",
-                            Notes = "Consulting services revenue",
-                            ReferenceNumber = "TXN-2024-002",
-                            Status = "Completed",
-                            TransactionDate = new DateTime(2024, 2, 10, 0, 0, 0, 0, DateTimeKind.Unspecified),
-                            Type = "Revenue"
-                        },
-                        new
-                        {
-                            Id = 3,
-                            AccountId = 1,
-                            Amount = 3500.00m,
-                            CategoryId = 4,
-                            CreatedAt = new DateTime(2024, 1, 1, 0, 0, 0, 0, DateTimeKind.Unspecified),
-                            CreatedBy = "admin",
-                            Description = "Office Supplies Purchase",
-                            Notes = "Monthly office supplies",
-                            ReferenceNumber = "TXN-2024-003",
-                            Status = "Completed",
-                            TransactionDate = new DateTime(2024, 2, 20, 0, 0, 0, 0, DateTimeKind.Unspecified),
-                            Type = "Expense"
-                        },
-                        new
-                        {
-                            Id = 4,
-                            AccountId = 1,
-                            Amount = 3200.00m,
-                            CategoryId = 5,
-                            CreatedAt = new DateTime(2024, 1, 1, 0, 0, 0, 0, DateTimeKind.Unspecified),
-                            CreatedBy = "admin",
-                            Description = "Utility Bill Payment",
-                            Notes = "Electricity and water bill",
-                            ReferenceNumber = "TXN-2024-004",
-                            Status = "Completed",
-                            TransactionDate = new DateTime(2024, 3, 5, 0, 0, 0, 0, DateTimeKind.Unspecified),
-                            Type = "Expense"
-                        },
-                        new
-                        {
-                            Id = 5,
-                            AccountId = 1,
-                            Amount = 75000.00m,
-                            CategoryId = 2,
-                            CreatedAt = new DateTime(2024, 1, 1, 0, 0, 0, 0, DateTimeKind.Unspecified),
-                            CreatedBy = "admin",
-                            Description = "Service Revenue - Enterprise",
-                            Notes = "Enterprise service contract",
-                            ReferenceNumber = "TXN-2024-005",
-                            Status = "Completed",
-                            TransactionDate = new DateTime(2024, 3, 25, 0, 0, 0, 0, DateTimeKind.Unspecified),
-                            Type = "Revenue"
-                        },
-                        new
-                        {
-                            Id = 6,
-                            AccountId = 1,
-                            Amount = 12000.00m,
-                            CategoryId = 7,
-                            CreatedAt = new DateTime(2024, 1, 1, 0, 0, 0, 0, DateTimeKind.Unspecified),
-                            CreatedBy = "admin",
-                            Description = "Marketing Campaign Expense",
-                            Notes = "Q1 marketing campaign",
-                            ReferenceNumber = "TXN-2024-006",
-                            Status = "Completed",
-                            TransactionDate = new DateTime(2024, 4, 10, 0, 0, 0, 0, DateTimeKind.Unspecified),
-                            Type = "Expense"
-                        },
-                        new
-                        {
-                            Id = 7,
-                            AccountId = 1,
-                            Amount = 8500.00m,
-                            CategoryId = 8,
-                            CreatedAt = new DateTime(2024, 1, 1, 0, 0, 0, 0, DateTimeKind.Unspecified),
-                            CreatedBy = "admin",
-                            Description = "Office Rent Payment",
-                            Notes = "Monthly office rent",
-                            ReferenceNumber = "TXN-2024-007",
-                            Status = "Completed",
-                            TransactionDate = new DateTime(2024, 4, 20, 0, 0, 0, 0, DateTimeKind.Unspecified),
-                            Type = "Expense"
-                        },
-                        new
-                        {
-                            Id = 8,
-                            AccountId = 1,
-                            Amount = 45000.00m,
-                            CategoryId = 1,
-                            CreatedAt = new DateTime(2024, 1, 1, 0, 0, 0, 0, DateTimeKind.Unspecified),
-                            CreatedBy = "admin",
-                            Description = "Product Sales - Q2 Revenue",
-                            Notes = "Q2 product sales revenue",
-                            ReferenceNumber = "TXN-2024-008",
-                            Status = "Pending",
-                            TransactionDate = new DateTime(2024, 5, 5, 0, 0, 0, 0, DateTimeKind.Unspecified),
-                            Type = "Revenue"
-                        });
+                    b.ToTable("Transactions");
                 });
 
             modelBuilder.Entity("SkynetERP.Models.User", b =>
@@ -2636,13 +2443,12 @@ namespace SkynetERP.Migrations
                     b.HasOne("SkynetERP.Models.Account", "Account")
                         .WithMany()
                         .HasForeignKey("AccountId")
-                        .OnDelete(DeleteBehavior.Restrict)
+                        .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
 
                     b.HasOne("SkynetERP.Models.Category", "Category")
                         .WithMany()
-                        .HasForeignKey("CategoryId")
-                        .OnDelete(DeleteBehavior.SetNull);
+                        .HasForeignKey("CategoryId");
 
                     b.Navigation("Account");
 

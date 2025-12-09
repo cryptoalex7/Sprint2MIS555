@@ -7,7 +7,7 @@ using System.ComponentModel.DataAnnotations;
 
 namespace SkynetERP.Pages;
 
-[Authorize(Roles = "Admin")]
+[Authorize(Roles = "Admin,Accountant")]
 public class FinancialManagementModel : PageModel
 {
     private readonly ILogger<FinancialManagementModel> _logger;

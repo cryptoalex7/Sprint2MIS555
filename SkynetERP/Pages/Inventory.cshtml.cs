@@ -7,7 +7,7 @@ using System.Security.Claims;
 
 namespace SkynetERP.Pages;
 
-[Authorize(Roles = "Admin")]
+[Authorize(Roles = "Admin,InventoryManager")]
 public class InventoryModel : PageModel
 {
     private readonly ILogger<InventoryModel> _logger;
